@@ -62,7 +62,6 @@
 
 ## 🗜 Development
 
-* [Page 1](development/page-1.md)
 * [Python guidelines for developers](development/python-guidelines-for-developers.md)
 
 ***

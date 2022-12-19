@@ -1,8 +1,8 @@
 # Python guidelines for developers
 
-The "heart" of the pipeline, gempyor, is written in python taking advantage of just-in-time compilation (via. numba) and existing optimized librairies (numpy, pandas).
+The "heart" of the pipeline, gempyor, is written in python taking advantage of just-in-time compilation (via numba) and existing optimized librairies (numpy, pandas).
 
-We use [black](https://github.com/psf/black), the _Uncomprolsmising Code Formatter_ before submitting pull-requests. It provides a consistent style, which is useful when diffing. We use a custom lenght of 120 characters as the baseline is short for scienfitic code. Here is the line to use to format your code:
+We use [black](https://github.com/psf/black), the _Uncompromising Code Formatter_ before submitting pull-requests. It provides a consistent style, which is useful when diffing. We use a custom lenght of 120 characters as the baseline is short for scienfitic code. Here is the line to use to format your code:
 
 ```
 black --line-length 120 . --exclude renv*
