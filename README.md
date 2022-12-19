@@ -11,7 +11,7 @@ However, the pipeline is much more general and can be used to simulate the dynam
 In addition to producing forward simulations given a specified model and parameter values, the pipeline can also attempt to optimize unknown parameters (e.g. transmission rate, case detection rate, intervention  efficacy) to fit the model to datasets the user provides (e.g. hospitalizations due to severe di sease) using a Bayesian inference framework. This feature allows the pipeline to be utilized for short-term forecasting or longer-term scenario projections for ongoing epidemics, since it can simultaneously be fit to data for dates in the past and then use best-fit parameters to make projections into the future.&#x20;
 
 {% hint style="warning" %}
-* The current COVIDScenarioPipeline branch for run is: `main or main-flu`
+* The current COVIDScenarioPipeline branch for run is: `main`
 * The current docker version is: `latest-dev`
 * The current COVID19\_USA branch is: `main`
 {% endhint %}
