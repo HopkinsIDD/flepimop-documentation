@@ -1,8 +1,8 @@
 # Home
 
-Welcome to the COVIDScenarioPipeline wiki!
+Welcome to the FlepiMoP wiki!
 
-The **COVID-19 Scenario Pipeline** (“CSP”) is an open-source software package designed by researchers in the [Johns Hopkins Infectious Disease Dynamics Group](http://www.iddynamics.jhsph.edu/) to simulate mathematical models of infectious disease dynamics.&#x20;
+The **Flexible Epidemic Modeling Pipeline** (“FlepiMoP”, formerly the COVID Scnario Pipeline, “CSP”) is an open-source software package designed by researchers in the [Johns Hopkins Infectious Disease Dynamics Group](http://www.iddynamics.jhsph.edu/) to simulate mathematical models of infectious disease dynamics.&#x20;
 
 It was initially designed in early 2020 and was routinely used to provide projections of the emerging COVID-19 epidemic to different health authorities world-wide. Nowdays, the COVID-19 Scenario Pipeline provide its COVID-19 projections in the US to CDC-funded model aggregation sites, the [COVID-19 Forecast Hub](https://covid19forecasthub.org/) and the [COVID-19 Scenario Modeling Hub](https://covid19scenariomodelinghub.org/) and influenza projections to [FluSight ](https://www.cdc.gov/flu/weekly/flusight/index.html)and to the [Flu Scenario Modeling Hub](https://fluscenariomodelinghub.org).
 
