@@ -36,7 +36,7 @@ git pull
 
 cd COVIDScenarioPipeline
 git pull	
-git checkout main-flu
+git checkout main
 git pull
 cd .. 
 ```
@@ -60,7 +60,7 @@ git config --global credential.helper 'cache --timeout 300000'
 
 <strong>cd ~/drp/COVIDScenarioPipeline 
 </strong>git pull 
-git checkout main-flu 
+git checkout main
 git pull 
 
 Rscript local_install.R &#x26;&#x26; 
