@@ -63,7 +63,17 @@ For Mac users, the below RDP software is recommented:
 
 [https://apps.apple.com/us/app/microsoft-remote-desktop/id1295203466](https://apps.apple.com/us/app/microsoft-remote-desktop/id1295203466)
 
-## Accessing the shared space on Linux server using Samba
+## Accessing the shared space on Linux server
+
+As a shared space, the directory named:
+
+```
+/home/shared
+```
+
+is deployed among multiple server boxes using EFS(Elastic File System) which covers NFSv4 protocol. &#x20;
+
+## Accessing the shared space on Linux server using Samba(obsolete)
 
 ### Common
 
