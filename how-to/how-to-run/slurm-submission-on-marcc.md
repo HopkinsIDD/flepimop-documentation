@@ -45,6 +45,8 @@ git clone https://github.com/HopkinsIDD/Flu_USA.git
 git clone https://github.com/HopkinsIDD/COVID19_USA.git
 ```
 
+changed because no space in home dir, now /data/struelo1/flepimop-code/sloo2/
+
 ### AWS setup (in case you want runs to be save to s3 as well)
 
 and setup your AWS credentials:
@@ -77,11 +79,14 @@ module load slurm
 module load anaconda3/2022.05
 conda activate covidSP
 
-
-cd covidsp
+cd /data/struelo1/flepimop-code/sloo2/covidsp
 export COVID_PATH=$(pwd)/COVIDScenarioPipeline
+
+# COVID
 export DATA_PATH=$(pwd)/COVID19_USA
-#or export DATA_PATH=$(pwd)/Flu_USA
+
+#F lu:
+export DATA_PATH=$(pwd)/Flu_USA
 
 # set up variables important for inference-job.py
 export COVID_STOCHASTIC=false
@@ -111,8 +116,7 @@ export VALIDATION_DATE="2023-01-22" &#x26;&#x26;
 rm -rf $DATA_PATH/model_output
 
 # if doing a resume
-export RESUME_ID=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan15_tsvacc &#x26;&#x26;
-  export RESUME_LOCATION=s3://idd-inference-runs/USA-20230116T053125
+
   
 <strong>
 </strong>Rscript $COVID_PATH/R/scripts/build_US_setup.R
