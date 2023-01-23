@@ -177,19 +177,16 @@ cleanup:
 
 ```
 rm -r /data/struelo1/flepimop-runs/
-```
-
-```
+rm -r model_output
 cd $COVID_PATH;git pull;cd $DATA_PATH
-```
-
-```
 rm *.out
 ```
 
-```
-rm -r model_output
-```
+### Get a notification on your phone/mail when a run is done
+
+We use [ntfy.sh](https://ntfy.sh) for notification. Install ntfy on your Iphone or Android device. Then subscribe to the channel `ntfy.sh/flepimop_alerts` where you'll receive notifications when runs are done.
+
+* End of job notifications goes as urgent priority.
 
 ### Slurm-fu
 
