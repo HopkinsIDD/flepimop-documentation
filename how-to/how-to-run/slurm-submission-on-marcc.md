@@ -15,11 +15,11 @@ Load the right modules for the setup
 
 {% code overflow="wrap" %}
 ```bash
-conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools
+conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot 
 ```
 {% endcode %}
 
-Sometime that won't work, so do it in two times
+If the dependencies are hard to satisfy, the above line might take so long that it's killed by the watchdog of rockfish. In this case only, you can create the enviroment in two shorter commands:
 
 {% code overflow="wrap" %}
 ```bash
@@ -28,7 +28,7 @@ conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotli
 
 # activate the enviromnment and install the R stuff
 conda activate covidSP
-conda install -c conda-forge r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus
+conda install -c conda-forge r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot 
 ```
 {% endcode %}
 
