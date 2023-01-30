@@ -204,3 +204,20 @@ To cancel a job
 scancel JOB_ID
 ```
 
+
+
+### Installation
+
+this is already done for all users
+
+#### Install slack integration
+
+```
+cd /data/struelo1/flepimop-code/
+nano slack_credentials.sh
+# and fill the file:
+export SLACK_WEBHOOK="{THE SLACK WEBHOOK FOR CSP_PRODUCTION}"
+```
+
+
+
