@@ -94,7 +94,7 @@ source: [S, unvaccinated]
 destination: [I, unvaccinated]
 proportional_to: [[[S,unvaccinated]], [[I,unvaccinated],[I,vaccinated]]]
 rate: [0.3]
-proportion_exponent: [0,0.9]
+proportion_exponent: [1,0.9]
 ```
 
 corresponds to the following math
