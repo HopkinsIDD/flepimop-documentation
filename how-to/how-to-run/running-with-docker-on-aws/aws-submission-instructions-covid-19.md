@@ -113,7 +113,7 @@ If resuming from a previous run, there are an additional couple variables to set
    rm -rf data/seeding_territories.csv &#x26;&#x26; 
    rm -rf data/seeding_territories_Level5.csv data/seeding_territories_Level67.csv
    
-export RESUME_ID=FCH_R16_lowBoo_modVar_ContRes_blk4_FCH_Dec11_tsvacc &#x26;&#x26;
+export RESUME_ID=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan22_tsvacc &#x26;&#x26;
 <strong>  export RESUME_S3=USA-20221212T145730
 </strong></code></pre>
 {% endtab %}
