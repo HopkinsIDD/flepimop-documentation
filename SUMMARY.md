@@ -47,6 +47,7 @@
 ## 🛠 How-To
 
 * [Useful commands](how-to/useful-commands.md)
+* [Create a post-processing script](how-to/create-a-post-processing-script.md)
 * [Common errors](how-to/common-errors.md)
 * [Tutorials](how-to/tutorials.md)
 * [How to Run](how-to/how-to-run/README.md)

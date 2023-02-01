@@ -15,7 +15,7 @@ Load the right modules for the setup
 
 {% code overflow="wrap" %}
 ```bash
-conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot 
+conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot 
 ```
 {% endcode %}
 
@@ -24,7 +24,7 @@ If the dependencies are hard to satisfy, the above line might take so long that 
 {% code overflow="wrap" %}
 ```bash
 # install all python stuff first
-conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk
+conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3
 
 # activate the enviromnment and install the R stuff
 conda activate covidSP
@@ -34,10 +34,8 @@ conda install -c conda-forge r-readr r-sf r-lubridate r-tigris r-tidyverse r-gri
 
 ### Directory setup:
 
-<pre><code><strong>cd /data/struelo1/flepimop-code/
-</strong><strong>mkdir $USER
-</strong><strong>cd $USLER
-</strong>mkdir covidsp
+```
+mkdir covidsp
 cd covidsp
 git clone https://github.com/HopkinsIDD/COVIDScenarioPipeline.git
 cd COVIDScenarioPipeline
@@ -45,7 +43,7 @@ git checkout main
 cd ..
 git clone https://github.com/HopkinsIDD/Flu_USA.git
 git clone https://github.com/HopkinsIDD/COVID19_USA.git
-</code></pre>
+```
 
 changed because no space in home dir, now /data/struelo1/flepimop-code/sloo2/
 
@@ -66,7 +64,7 @@ Then
 ./aws-cli/bin/aws configure
 # AWS Access Key ID [None]: YOUR ID
 # AWS Secret Access Key [None]: YOUR SECRET ID
-# Default region name [None]: us-west-2
+# Default region name [None]: us-east-1
 # Default output format [None]: json
 ```
 
@@ -81,7 +79,7 @@ module load slurm
 module load anaconda3/2022.05
 conda activate covidSP
 
-cd /data/struelo1/flepimop-code/$USER/covidsp
+cd /data/struelo1/flepimop-code/sloo2/covidsp
 export COVID_PATH=$(pwd)/COVIDScenarioPipeline
 
 # COVID
@@ -95,15 +93,11 @@ export COVID_STOCHASTIC=false
 export COVID_RESET_CHIMERICS=TRUE
 export CENSUS_API_KEY="4df5d5d71d8137c46690d7be3e7836f4d64c4194"
 <strong>
-</strong><strong># TODO reset ?
-</strong><strong>
-</strong><strong>
 </strong><strong># prepare the pipeline
 </strong>cd $COVID_PATH
 git pull	
 git checkout main-flu-subfix2 # replace with main once 'cdlTools
-Rscript local_install.R # warnings are ok; there should be no error.
-#  Sometime you might need to run it two times because inference depends on report.generation that is installed just after...
+Rscript local_install.R # warnings are ok; there should be no error 
 pip install --no-deps -e gempyor_pkg/ 
 git lfs pull
 
@@ -113,14 +107,13 @@ cd $DATA_PATH
 git pull 
 git checkout main
 
-export VALIDATION_DATE="2023-01-29" &#x26;&#x26; 
+export VALIDATION_DATE="2023-01-22" &#x26;&#x26; 
    rm -rf model_output data/us_data.csv data-truth &#x26;&#x26;
    rm -rf data/mobility_territories.csv data/geodata_territories.csv &#x26;&#x26;
    rm -rf data/seeding_territories.csv &#x26;&#x26; 
    rm -rf data/seeding_territories_Level5.csv data/seeding_territories_Level67.csv
 
 rm -rf $DATA_PATH/model_output
-rm *.out
 
 # if doing a resume
 
@@ -129,12 +122,12 @@ rm *.out
 </strong>Rscript $COVID_PATH/R/scripts/build_US_setup.R
 
 # covid
-export RESUME_ID=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan22_tsvacc &#x26;&#x26;
-  export RESUME_LOCATION=s3://idd-inference-runs/USA-20230122T145824
-export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml
+export RESUME_ID=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan15_tsvacc &#x26;&#x26;
+  export RESUME_LOCATION=s3://idd-inference-runs/USA-20230116T053125
+export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan22_tsvacc.yml
 Rscript $COVID_PATH/R/scripts/build_covid_data.R
-<strong>export COVID_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
-</strong>
+export COVID_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan22_tsvacc
+
 # Flu
 export RESUME_ID=FCH_R3_highVE_pesImm_2022_Jan15 &#x26;&#x26;
   export RESUME_LOCATION=s3://idd-inference-runs/USA-20230115T202608
@@ -169,13 +162,7 @@ local({r <- getOption("repos")
 
 Default folder to copy the results: \`/data/struelo1/flepimop-runs\` where Shaun should have 20T. See [https://www.arch.jhu.edu/support/storage-and-filesystems/](https://www.arch.jhu.edu/support/storage-and-filesystems/)
 
-#### Monitor your run
 
-Two types of logfiles: in \`$DATA\_PATH\`: slurm-JOBID\_SLOTID.out and and filter\_MC logs:
-
-\`\`\`tail -f /data/struelo1/flepimop-runs/USA-20230130T163847/log\_FCH\_R16\_lowBoo\_modVar\_ContRes\_blk4\_Jan29\_tsvacc\_100.txt
-
-\`\`\`
 
 
 
@@ -216,22 +203,4 @@ To cancel a job
 ```
 scancel JOB_ID
 ```
-
-
-
-### Installation
-
-this is already done for all users
-
-#### Install slack integration
-
-```
-cd /data/struelo1/flepimop-code/
-nano slack_credentials.sh
-# and fill the file:
-export SLACK_WEBHOOK="{THE SLACK WEBHOOK FOR CSP_PRODUCTION}"
-export SLACK_TOKEN="{THE SLACK TOKEN}"
-```
-
-
 
