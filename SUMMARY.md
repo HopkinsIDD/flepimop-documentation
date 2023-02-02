@@ -6,17 +6,12 @@
 
 * [Model Description](model-of-disease-transmission-+-observation/model-description.md)
 * [Model Implementation](model-of-disease-transmission-+-observation/model-implementation/README.md)
-  * [Example](model-of-disease-transmission-+-observation/model-implementation/example.md)
-  * [Compartmental model structure](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure/README.md)
-    * [Defaults](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure/defaults.md)
-    * [Configuration File Structure](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure/configuration-file-structure.md)
-  * [Specifying population structure](model-of-disease-transmission-+-observation/model-implementation/specifying-population-structure.md)
-  * [Specifying observational model](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model/README.md)
-    * [Outcomes module](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model/outcomes-module/README.md)
-      * [Outcomes for compartments](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model/outcomes-module/outcomes-for-compartments.md)
+  * [Introduction with example](model-of-disease-transmission-+-observation/model-implementation/introduction-with-example.md)
+  * [Compartmental model structure](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure.md)
   * [Specifying model parameters](model-of-disease-transmission-+-observation/model-implementation/specifying-model-parameters.md)
-  * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions/README.md)
-    * [Intervention templates](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions/intervention-templates.md)
+  * [Specifying population structure](model-of-disease-transmission-+-observation/model-implementation/specifying-population-structure.md)
+  * [Specifying observational model](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model.md)
+  * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions.md)
   * [Other configuration options](model-of-disease-transmission-+-observation/model-implementation/other-configuration-options.md)
   * [Code structure](model-of-disease-transmission-+-observation/model-implementation/code-structure.md)
   * [Output files](model-of-disease-transmission-+-observation/model-implementation/output-files.md)
@@ -47,7 +42,6 @@
 ## 🛠 How-To
 
 * [Useful commands](how-to/useful-commands.md)
-* [Create a post-processing script](how-to/create-a-post-processing-script.md)
 * [Common errors](how-to/common-errors.md)
 * [Tutorials](how-to/tutorials.md)
 * [How to Run](how-to/how-to-run/README.md)
@@ -61,6 +55,7 @@
     * [AWS Submission Instructions: Influenza](how-to/how-to-run/running-with-docker-on-aws/aws-submission-instructions-influenza.md)
     * [AWS Submission Instructions: COVID-19](how-to/how-to-run/running-with-docker-on-aws/aws-submission-instructions-covid-19.md)
   * [Running with RStudio Server on AWS EC2](how-to/how-to-run/running-with-rstudio-server-on-aws-ec2.md)
+* [Create a post-processing script](how-to/create-a-post-processing-script.md)
 
 ## 🗜 Development
 
@@ -72,6 +67,5 @@
 
 ## Deprecated pages
 
-* [Git Setup](deprecated-pages/git-setup.md)
 * [Module specification](deprecated-pages/module-specification.md)
 * [Block that don't go anywhere](deprecated-pages/block-that-dont-go-anywhere.md)

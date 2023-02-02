@@ -1,4 +1,46 @@
-# Outcomes for compartments
+# Specifying observational model
+
+```
+#outcomes:
+#  method: delayframe                   # Only fast is supported atm. Makes fast delay_table computations. Later agent-based method ?
+#  paths:
+#    param_from_file: TRUE               #
+#    param_place_file: <path.csv>       # OPTIONAL: File with param per csv. For each param in this file 
+#  scenarios:                           # Outcomes scenarios to run
+#    - low_death_rate
+#    - mid_death_rate
+#  settings:                            # Setting for each scenario
+#    low_death_rate:
+#      new_comp1:                               # New compartement name 
+#        source: incidence                      # Source of the new compartement: either an previously defined compartement or "incidence" for diffI of the SEIR
+#        probability:  <random distribution>           # Branching probability from source
+#        delay: <random distribution>                  # Delay from incidence of source to incidence of new_compartement
+#        duration: <random distribution>               # OPTIONAL ! Duration in new_comp. If provided, the model add to it's output "new_comp1_curr" with current amount in new_comp1
+#      new_comp2:                               # Example for a second compatiment
+#        source: new_comp1                      
+#        probability: <random distribution> 
+#        delay: <random distribution> 
+#        duration: <random distribution>
+#      death_tot:                               # Possibility to combine compartements for death.
+#        sum: ['death_hosp', 'death_ICU', 'death_incid']
+#         
+#    mid_death_rate:
+#      ...
+#
+# ## Input Data
+#
+# * <b>{param_place_file}</b> is a csv with columns place, parameter, value. Parameter is constructed as, e.g for comp1:
+#                probability: Pnew_comp1|source
+#                delay:       Dnew_comp1
+#                duration:    Lnew_comp1
+
+
+# ## Output Data
+# * {output_path}/model_output/{spatial_setup::setup_name}_[scenario]/[simulation ID].hosp.parquet
+
+```
+
+
 
 Nothing changes except how to specify the source of outcomes that comes from the seir sims. Before `incidI` was defined as the incidence of individuals in compartment I1 (i.e new infected). Now there may be incidI for different variants, so the source from seir file is different.
 
