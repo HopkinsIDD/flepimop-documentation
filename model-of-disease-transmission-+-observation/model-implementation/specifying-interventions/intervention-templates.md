@@ -1,4 +1,4 @@
-# Intervention templates
+# Specifying interventions
 
 ## Overview
 

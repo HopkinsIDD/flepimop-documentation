@@ -244,7 +244,7 @@ If an alternative compartmental disease model is created that has other interact
 
 ### Time-dependent interventions
 
-Parameters in the disease transmission model or the observation model may change over time. These changes could be, for example, environmental drivers of disease seasonality,  “non-pharmaceutical interventions” like social distancing, isolation policies, or wearing of personal protective equipment, “pharmaceutical interventions” like vaccination, prophylaxis, or therapeutics, changes in healthcare seeking behavior like testing/diagnosis, changes in case reporting, etc.&#x20;
+Parameters in the disease transmiss ion model or the observation model may change over time. These changes could be, for example, environmental drivers of disease seasonality,  “non-pharmaceutical interventions” like social distancing, isolation policies, or wearing of personal protective equipment, “pharmaceutical interventions” like vaccination, prophylaxis, or therapeutics, changes in healthcare seeking behavior like testing/diagnosis, changes in case reporting, etc.&#x20;
 
 The model allows for any parameter of the disease transmission model or the observation model to change to a new value for a time interval specified by start and end times (or multiple start and end times, for interventions that are recurring). Each change may be subpopulation-specific or apply to the entire population. Changes may be overlapping in time.&#x20;
 

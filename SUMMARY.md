@@ -6,12 +6,12 @@
 
 * [Model Description](model-of-disease-transmission-+-observation/model-description.md)
 * [Model Implementation](model-of-disease-transmission-+-observation/model-implementation/README.md)
-  * [Introduction with example](model-of-disease-transmission-+-observation/model-implementation/introduction-with-example.md)
-  * [Compartmental model structure](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure.md)
+  * [Introduction with example](model-of-disease-transmission-+-observation/model-implementation/example.md)
+  * [Compartmental model structure](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure/README.md)
   * [Specifying model parameters](model-of-disease-transmission-+-observation/model-implementation/specifying-model-parameters.md)
   * [Specifying population structure](model-of-disease-transmission-+-observation/model-implementation/specifying-population-structure.md)
-  * [Specifying observational model](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model.md)
-  * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions.md)
+  * [Specifying observational model](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model/outcomes-module/outcomes-for-compartments.md)
+  * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions/intervention-templates.md)
   * [Other configuration options](model-of-disease-transmission-+-observation/model-implementation/other-configuration-options.md)
   * [Code structure](model-of-disease-transmission-+-observation/model-implementation/code-structure.md)
   * [Output files](model-of-disease-transmission-+-observation/model-implementation/output-files.md)
@@ -21,9 +21,9 @@
 
 * [Inference Description](model-inference/inference-description.md)
 * [Inference Implementation](model-inference/inference-implementation/README.md)
+  * [Configuration options](model-inference/inference-implementation/configuration-options.md)
   * [Example](model-inference/inference-implementation/example.md)
   * [Code structure](model-inference/inference-implementation/code-structure.md)
-  * [Configuration options](model-inference/inference-implementation/configuration-options.md)
 * [(OLD) Configuration setup](model-inference/old-configuration-setup.md)
 
 ## 🖥 More
