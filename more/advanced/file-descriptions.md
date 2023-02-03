@@ -98,7 +98,7 @@ Depreciated? Should be removed
 
 [https://github.com/HopkinsIDD/COVID19\_USA](https://github.com/HopkinsIDD/COVID19/\_USA)
 
-Current branch: `master`
+Current branch: `main`
 
 ### **/R**
 
@@ -110,9 +110,11 @@ Contains R scripts for generating model input parameters from data, writing conf
 
 Scripts to generate config files for particular submissions to the Scenario Modeling Hub. Most of this functionality has now been replaced by the config writer package ()
 
-#### **R/scripts/process\_sims**
+#### **R/scripts/postprocess**
 
-Scripts to process the output of model runs into data formats and plots used for Scenario Modeling Hub and Forecast Hub. Important scripts include:
+Scripts to process the output of model runs into data formats and plots used for Scenario Modeling Hub and Forecast Hub. These scripts pull runs from AWS S3 buckets and processes and formats them to specifications for submissions to Scenario Modeling Hubs, Forecast Hubs and FluSight. These formatted files are saved and the results visualized. This script uses functions defined in /COVIDScenarioPipeline/R/scripts/postprocess.
+
+* run\_sum\_processing.R
 
 ### **/data**
 
