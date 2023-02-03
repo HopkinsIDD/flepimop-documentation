@@ -104,7 +104,7 @@ Current branch: `main`
 
 Contains R scripts for generating model input parameters from data, writing config files, or processing model output. Most of the files in here are historic (specific to a particular model run) and not frequently used. Important scripts include:
 
-* get\_vacc\_rate\_and\_outcomes\_R13.R
+* get\_vacc\_rate\_and\_outcomes\_R13.R - this pulls vaccination coverage and variant prevalence data specific to rounds (either empirical, or specified by the scenario), and adjusts these data to the formats required for the model. Several data files are created in this process: variant proportions for each scenario, vaccination rates by age and dose. A file is also generated that defines the outcome ratios (taking in to account immune escape, cross protection and VE).
 
 #### **/R/scripts/config\_writers**
 
@@ -118,7 +118,7 @@ Scripts to process the output of model runs into data formats and plots used for
 
 ### **/data**
 
-Contains data files used in parameterizing the model for COVID-19 in the US (such as creating the population structure, describing vaccine efficacy, describing parameter alterations due to variants, etc). Some data files are re-downloaded frequently using scripts in the pipeline () while others are more static ()
+Contains data files used in parameterizing the model for COVID-19 in the US (such as creating the population structure, describing vaccine efficacy, describing parameter alterations due to variants, etc). Some data files are re-downloaded frequently using scripts in the pipeline (us\_data.csv) while others are more static (geodata, mobility)
 
 Important files and folders include
 
@@ -129,6 +129,7 @@ Important files and folders include
 * outcomes\_ratios.csv
 * US\_CFR\_shift\_dates\_v3.csv
 * US\_hosp\_ratio\_corrections.cs
+* seeding\_agestrat\_RX.csv
 
 #### **/data/shp**
 
