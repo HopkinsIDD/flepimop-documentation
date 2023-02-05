@@ -6,16 +6,15 @@
 
 * [Model Description](model-of-disease-transmission-+-observation/model-description.md)
 * [Model Implementation](model-of-disease-transmission-+-observation/model-implementation/README.md)
-  * [Introduction with example](model-of-disease-transmission-+-observation/model-implementation/example.md)
-  * [Compartmental model structure](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure/README.md)
-  * [Specifying model parameters](model-of-disease-transmission-+-observation/model-implementation/specifying-model-parameters.md)
+  * [Introduction to configuration files](model-of-disease-transmission-+-observation/model-implementation/introduction-to-configuration-files.md)
   * [Specifying population structure](model-of-disease-transmission-+-observation/model-implementation/specifying-population-structure.md)
+  * [Specifying compartmental model structure](model-of-disease-transmission-+-observation/model-implementation/specifying-compartmental-model-structure.md)
+  * [Specifying compartmental model parameters](model-of-disease-transmission-+-observation/model-implementation/specifying-compartmental-model-parameters.md)
   * [Specifying observational model](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model/outcomes-module/outcomes-for-compartments.md)
   * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions/intervention-templates.md)
   * [Other configuration options](model-of-disease-transmission-+-observation/model-implementation/other-configuration-options.md)
   * [Code structure](model-of-disease-transmission-+-observation/model-implementation/code-structure.md)
   * [Output files](model-of-disease-transmission-+-observation/model-implementation/output-files.md)
-  * [Configuration files](model-of-disease-transmission-+-observation/model-implementation/configuration-files.md)
 
 ## 📈 Model Inference
 

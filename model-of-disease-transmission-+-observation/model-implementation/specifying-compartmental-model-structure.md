@@ -1,10 +1,16 @@
-# Compartmental model structure
+---
+description: >-
+  This section describes how to provide the desired model structure in the
+  "seir" section of the configuration file ("config").
+---
+
+# Specifying compartmental model structure
 
 We want to allow users to work with a wide variety of infectious diseases or, in our case, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental differential equations model via configuration file.
 
 We originally considered asking users to specify each compartment and transition manually. However, we quickly found that created long confusing configuration files, and created a shorthand to more tersely specify both compartments and transitions between them.
 
-### Compartments
+### Compartments (`seir::compartments`)
 
 We specify compartments as the cross product of states of interest. For example:
 
@@ -27,7 +33,7 @@ R,               vaccinated,         R_vaccinated
 
 In order to more easily describe transitions, we want to be able to refer to a compartment by its components, but then use it by its compartment name.
 
-### Transitions
+### Transitions (`seir::transitions`)
 
 The way we specify transitions is a bit more complicated than compartments. We specify one or more transition globs, each of which corresponds to one or more transitions. Since transition globs are shorthand for collections of transitions, we describe a single transition before discussing transition globs. A transition has 5 pieces associated of information
 
