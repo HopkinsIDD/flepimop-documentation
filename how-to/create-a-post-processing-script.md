@@ -6,7 +6,7 @@ description: These scripts are run automatically after an inference run
 
 Some information to consider if you'd like your script to be run automatically after an inference run:&#x20;
 
-* Most R/python packages are installed already installed. Try to run your script on the conda environment defined on the [submission page](how-to-run/running-on-rockfish-marcc.md) (or easier if you are not set up on MARCC, ask me)
+* Most R/python packages are installed already installed. Try to run your script on the conda environment defined on the [submission page](how-to-run/slurm-submission-on-marcc.md) (or easier if you are not set up on MARCC, ask me)
 * There will be some variables set in the environment. These variables are:
   * `$COVID_CONFIG_PATH` the path to the configuration file&#x20;
   * `$COVID_RUN_INDEX` the run id for this run (e.g \``CH_R3_highVE_pesImm_2022_Jan29`\`

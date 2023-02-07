@@ -2,7 +2,7 @@
 description: or any HPC using the slurm workload manager
 ---
 
-# Running on Rockfish/MARCC
+# Running on Rockfish/MARCC 🪨🐠
 
 ## 🗂️ Files and folder organization
 
@@ -13,10 +13,10 @@ Rockfish administrators provided [several partitions](https://www.arch.jhu.edu/s
   * `/data/struelo1/flepimop-code/chadi/COVID19_USA`
   * `/data/struelo1/flepimop-code/chadi/COVIDScenarioPipeline`
   * ...
-  * (we keep separated repositories by users so that different versions of the pipeline are not mixed where we run several runs in parallel. Don't hesitate to create other subfolders in the code folder (`/data/struelo1/flepimop-code/chadi-flusight`, ...) if you need it.
+  * (we keep separated repositories by users so that different versions of the pipeline are not mixed where we run several runs in parallel. Don't hesitate to create other subfolders in the code folder (`/data/struelo1/flepimop-code/chadi-flusight`, ...) if you need them.
 
 {% hint style="warning" %}
-Note that the repository is cloned **flat,** i.e COVIDScenarioPipeline is in the same level as the data repository, not inside it !
+Note that the repository is cloned **flat,** i.e `COVIDScenarioPipeline` is at the same level as the data repository, not inside it!
 {% endhint %}
 
 * **output folder:**`/data/struelo1/flepimop-runs` stores the run outputs. After an inference run finishes, it's output and the logs files are copied from the `$DATA_PATH/model_output` to `/data/struelo1/flepimop-runs/THISRUNJOBNAME` where the jobname is usually of the form `USA-DATE.`
@@ -41,6 +41,14 @@ module load gcc/9.3.0
 module load anaconda3/2022.05  # very important to pin this version as other are buggy
 module load git                # needed for git
 module load git-lfs            # git-lfs
+```
+
+Now, type the following line so git remembers your credential and you don't have to enter your token 6 times per day:
+
+```bash
+git config --global credential.helper store
+git config --global user.name "{NAME SURNAME}"
+git config --global user.email YOUREMAIL@EMAIL.COM
 ```
 
 Now you need to create the conda environment. This command is quite long you'll have the time to brew some nice coffee ☕️:
@@ -103,8 +111,6 @@ Then run `./aws-cli/bin/aws configure`  and use the following :
 # Default output format [None]: json
 ```
 
-That's it, you are all setup to run.
-
 ## 🚀 Run inference using slurm (do everytime)
 
 log-in to rockfish via ssh, then type
@@ -133,7 +139,11 @@ export COVID_RESET_CHIMERICS=TRUE
 
 </details>
 
-Then, check that the conda environment is activated: you should see `(covidSP)` on the left of your command-line prompt. Prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date) then you can skip these steps&#x20;
+{% hint style="warning" %}
+Check that the conda environment is activated: you should see `(covidSP)` on the left of your command-line prompt.
+{% endhint %}
+
+Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date) then you can skip these steps&#x20;
 
 ```bash
 cd /data/struelo1/flepimop-code/$USER
@@ -141,11 +151,12 @@ export COVID_PATH=$(pwd)/COVIDScenarioPipeline
 cd $COVID_PATH
 git checkout main-flu-subfix2    # replace with main once this PR is merged.
 git pull
+git lfs install
 git lfs pull
 
 #install gempyor and the R module. There should be no error, please report if not.
-# Sometime you might need to run the next line two times because inference depends
-# on report.generation, which is installed later because alphabetical order.
+# Sometimes you might need to run the next line two times because inference depends
+# on report.generation, which is installed later because of alphabetical order.
 # (or if you know R well enough to fix that 😊)
 
 Rscript local_install.R # warnings are ok; there should be no error.
@@ -161,59 +172,67 @@ export DATA_PATH=$(pwd)/COVID19_USA
 
 for Flu do:&#x20;
 
-<pre class="language-bash"><code class="lang-bash">cd /data/struelo1/flepimop-code/$USER
+```bash
+cd /data/struelo1/flepimop-code/$USER
 export DATA_PATH=$(pwd)/Flu_USA
+```
 
-# set up variables important for inference-job.py
-export CENSUS_API_KEY="4df5d5d71d8137c46690d7be3e7836f4d64c4194"
-<strong>
-</strong>
+Now for any type of run:
+
+```bash
 cd $DATA_PATH
 git pull 
 git checkout main
+```
 
-export VALIDATION_DATE="2023-01-29" &#x26;&#x26; 
-   rm -rf model_output data/us_data.csv data-truth &#x26;&#x26;
-   rm -rf data/mobility_territories.csv data/geodata_territories.csv &#x26;&#x26;
-   rm -rf data/seeding_territories.csv &#x26;&#x26; 
+Do some clean-up before your run. The fast way is to restore the `$DATA_PATH` git repository to its blank states (removes everything that does not come from git):
+
+```bash
+```
+
+<details>
+
+<summary>I want more control over what is deleted</summary>
+
+&#x20;if you prefer to have more control, delete the files you like, e.g
+
+```bash
+rm -rf model_output data/us_data.csv data-truth &&
+   rm -rf data/mobility_territories.csv data/geodata_territories.csv &&
+   rm -rf data/seeding_territories.csv && 
    rm -rf data/seeding_territories_Level5.csv data/seeding_territories_Level67.csv
 
+# don't delete model_output if you have another run in //
 rm -rf $DATA_PATH/model_output
+# delete log files from previous runs
 rm *.out
+```
 
-# if doing a resume
+</details>
 
-  
-<strong>
-</strong>Rscript $COVID_PATH/R/scripts/build_US_setup.R
+Prepare the inference batch run:
 
-# covid
-export RESUME_ID=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan22_tsvacc &#x26;&#x26;
-  export RESUME_LOCATION=s3://idd-inference-runs/USA-20230122T145824
+```bash
+cd $DATA_PATH
+
+# change these accor
+export VALIDATION_DATE="2023-01-29"
+export RESUME_LOCATION=s3://idd-inference-runs/USA-20230122T145824
 export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml
+export COVID_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
+
+Rscript $COVID_PATH/R/scripts/build_US_setup.R
+
+# For covid do
 Rscript $COVID_PATH/R/scripts/build_covid_data.R
-<strong>export COVID_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
-</strong>
-# Flu
-export RESUME_ID=FCH_R3_highVE_pesImm_2022_Jan15 &#x26;&#x26;
-  export RESUME_LOCATION=s3://idd-inference-runs/USA-20230115T202608
-export CONFIG_PATH=config_FCH_R3_highVE_pesImm_2022_Jan22.yml
+
+# For Flu do
 Rscript $COVID_PATH/R/scripts/build_flu_data.R
-export COVID_RUN_INDEX=FCH_R3_highVE_pesImm_2022_Jan22
-
-</code></pre>
-
-\
-If you get an error running local install, do \`nano \~/.Rprofile\`and put the following in it.
-
-```r
-local({r <- getOption("repos")
-       r["CRAN"] <- "http://cran.r-project.org"
-       options(repos=r)
-})
 ```
 
 ### Launch your inference batch job
+
+Type the following command to launch you
 
 <pre class="language-bash"><code class="lang-bash"><strong>python $COVID_PATH/batch/inference_job.py --slurm \
 </strong><strong>                    -c $CONFIG_PATH \
@@ -296,5 +315,48 @@ export SLACK_WEBHOOK="{THE SLACK WEBHOOK FOR CSP_PRODUCTION}"
 export SLACK_TOKEN="{THE SLACK TOKEN}"
 ```
 
+### The helper script
 
+in `/data/struelo1/flepimop-code/flepimop_init.sh`
 
+```bash
+echo ">>> running some useful commands  ^= ^v, please wait"
+module purge
+module load gcc/9.3.0
+module load git
+module load git-lfs
+module load slurm
+module load anaconda3/2022.05
+conda activate covidSP
+export CENSUS_API_KEY=SOME API KEY  # joseph's key
+export COVID_STOCHASTIC=false
+export COVID_RESET_CHIMERICS=TRUE
+echo "done  ^|^e"
+```
+
+### the setup script
+
+`nano /data/struelo1/flepimop-code/flepimop_prepare.sh`
+
+```bash
+export TODAY=`date --rfc-3339='date'`
+echo "Let's set up a flepiMoP run. Today is the $TODAY"
+
+echo "(1/3) Please input the validation date:"
+read input
+export VALIDATION_DATE="$input"
+echo -e ">>> set VALIDATION DATE to $VALIDATION_DATE \n"
+
+echo "(2/3) Please input the resume location (empty if no resume, or a s3:// url or a local folder):"
+read input
+export RESUME_LOCATION="$input"
+echo -e ">>> set RESUME_LOCATION to $RESUME_LOCATION \n"
+
+echo "(3/3) Please provide the Run Index for the current run:"
+read input
+export COVID_RUN_INDEX="$input"
+echo -e ">>> set  COVID_RUN_INDEX to $COVID_RUN_INDEX \n"
+
+echo "DONE. if no error please manually set export CONFIG_PATH=YOURCONFIGPATH.yml"
+echo "(in case of error, override manually some variables or rerun this script)"
+```

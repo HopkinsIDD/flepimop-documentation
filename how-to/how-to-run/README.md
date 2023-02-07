@@ -6,8 +6,8 @@ Several different platforms can be used to run flepiMoP. Before you get started,
 
 This section provides instructions for installation and how to run on each platform.&#x20;
 
-{% content-ref url="running-on-rockfish-marcc.md" %}
-[running-on-rockfish-marcc.md](running-on-rockfish-marcc.md)
+{% content-ref url="slurm-submission-on-marcc.md" %}
+[slurm-submission-on-marcc.md](slurm-submission-on-marcc.md)
 {% endcontent-ref %}
 
 {% content-ref url="quick-start-guide.md" %}

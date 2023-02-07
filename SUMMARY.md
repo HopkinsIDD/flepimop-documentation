@@ -44,7 +44,7 @@
 * [Common errors](how-to/common-errors.md)
 * [Tutorials](how-to/tutorials.md)
 * [How to Run](how-to/how-to-run/README.md)
-  * [Running on Rockfish/MARCC](how-to/how-to-run/running-on-rockfish-marcc.md)
+  * [Running on Rockfish/MARCC 🪨🐠](how-to/how-to-run/slurm-submission-on-marcc.md)
   * [Installation](how-to/how-to-run/installation.md)
   * [Quick Start Guide](how-to/how-to-run/quick-start-guide.md)
   * [Quick Start Guide: "Conda"](how-to/how-to-run/quick-start-guide-conda.md)
