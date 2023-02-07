@@ -1,9 +1,3 @@
----
-description: >-
-  This section describes how to provide the desired model structure in the
-  "seir" section of the configuration file ("config").
----
-
 # Specifying compartmental model structure
 
 We want to allow users to work with a wide variety of infectious diseases or, in our case, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental differential equations model via configuration file.
@@ -145,7 +139,7 @@ we would have a transition from (S,unvaccinated) to (I,vaccinated) and (S,vaccin
 
 #### Rate
 
-Since there are two changes to rate, we'll do them one at a time. The first change we make, is to allow specifying a rate for each component, which are multiplied together. So,
+Since there are two changes to x a time. The first change we make, is to allow specifying a rate for each component, which are multiplied together. So,
 
 ```
 [0.1, 3]
