@@ -1,10 +1,8 @@
 ---
-description: >-
-  Short internal tutorial on running locally using an "Anaconda" environment
-  (instead of docker).
+description: Short internal tutorial on running locally using an "Anaconda" environment.
 ---
 
-# Quick Start Guide: "Conda"
+# Running with conda locally
 
 ### Setup (do it once)
 

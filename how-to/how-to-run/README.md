@@ -1,21 +1,17 @@
 # How to Run
 
-
-
-Several different platforms can be used to run flepiMoP. Before you get started, it is required to download some software and tools.
+Several different platforms can be used to run flepiMoP. Before you get started, we recommend you install some software and packages. Some of these are required, while some are helper tools or specific to your preferred pipeline.
 
 This section provides instructions for installation and how to run on each platform.&#x20;
 
-{% content-ref url="running-on-rockfish-marcc.md" %}
-[running-on-rockfish-marcc.md](running-on-rockfish-marcc.md)
+We recommend `conda` for beginners, and AWS for large simulations.&#x20;
+
+{% content-ref url="slurm-submission-on-marcc.md" %}
+[slurm-submission-on-marcc.md](slurm-submission-on-marcc.md)
 {% endcontent-ref %}
 
-{% content-ref url="quick-start-guide.md" %}
-[quick-start-guide.md](quick-start-guide.md)
-{% endcontent-ref %}
-
-{% content-ref url="quick-start-guide-conda.md" %}
-[quick-start-guide-conda.md](quick-start-guide-conda.md)
+{% content-ref url="running-with-conda-locally.md" %}
+[running-with-conda-locally.md](running-with-conda-locally.md)
 {% endcontent-ref %}
 
 {% content-ref url="running-with-docker-locally.md" %}
@@ -26,21 +22,39 @@ This section provides instructions for installation and how to run on each platf
 [running-with-docker-on-aws](running-with-docker-on-aws/)
 {% endcontent-ref %}
 
-### Installation
+The following are required to run flepiMoP regardless of what platform you are running it on.&#x20;
 
-Before you get started, the following are required to run flepiMoP regardless of what platform you are running it on.&#x20;
+* Git (Git, LFS), R, Python
 
-* Git (Git, Github Desktop, Github, LFS) Docker R
+Instructions on their individual installations for each platform can be found within each instruction guide linked above.
 
-#### Python
+#### 📂 Getting the repositories
 
-The python part of the model is named gempyor, and encompasses the everything to simulate the transmission of an infectious disease epidemic: health outcomes, interventions, transmission, ... but not e.g inference.
+In your preferred folder, clone the `COVIDScenarioPipeline` and relevant data (`COVID19_USA` or `Flu_USA)` repositories. You should have a directory structure as:
 
-You probably want to install gempyor both on your local file system (so you can play with the model, analyse the results), and on docker (to replicate the environment for run, or to run inference locally).
+```
+.../myparentfolder  # project folder
+.../myparentfolder/Flu_USA
+.../myparentfolder/COVIDScenarioPipeline
+```
 
-**Installing gempyor locally**
+in `COVIDScenarioPipeline`, do `git checkout main` to make sure you are on the `main` branch. You can also use the GitHub App to clone and checkout if you prefer.
 
-You'd need a working python3.7+ installation. We recommend using the latest stable python release (python 3.11) to benefits from huge speed-ups and future proof your installation. You may want to use conda to manage package if you're not used to python.
+#### 🐍 Python&#x20;
+
+The python part of the model is named `gempyor`, and encompasses everything to simulate the transmission of an infectious disease epidemic: health outcomes, interventions, transmission.
+
+**Installing `gempyor` locally**
+
+You need a working python3.7+ installation. We recommend using the latest stable python release (python 3.11) to benefits from huge speed-ups and future proof your installation. You may want to use conda to manage package if you're not used to python.
+
+
+
+
+
+
+
+TODO: remove the below when finished organising subpages (complete instructions are in subpages)
 
 **Using conda (recommended for beginner)**
 
@@ -85,7 +99,7 @@ In the docker we have to update pip before:
 pip install -e gempyor_pkg/
 ```
 
-**TODO update with new docker**
+****
 
 **Test your installation:**
 
@@ -96,17 +110,3 @@ import gempyor
 ```
 
 which should run without any error.
-
-### Running locally
-
-Via Docker/terminal only Via Docker/terminal + using R studio only Via Docker/terminal + Python only
-
-Initiating Docker, downloading Github repos, setting up model, running model tests, finding and interpreting model output
-
-### Running on AWS
-
-Ie update of [AWS Instructions](https://github.com/HopkinsIDD/COVIDScenarioPipeline/wiki/AWS-Instructions) on current wiki
-
-### Visualizing and interpreting results
-
-(Output file structure, how to read files, sample report generation functions and visualizations, etc)

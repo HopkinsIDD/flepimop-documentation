@@ -1,5 +1,7 @@
 # Running with docker on AWS
 
+For large simulations, running the model on a cluster or cloud computing is required. AWS provides a good solution for this, if funding or credits are available (AWS can get very expensive).
+
 ### Introduction
 
 This document contains instructions for setting up and running the two different kinds of SEIR modeling jobs supported by the COVIDScenarioPipeline repository on AWS:
