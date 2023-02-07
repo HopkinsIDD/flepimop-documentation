@@ -1,8 +1,36 @@
 # How to Run
 
+
+
+Several different platforms can be used to run flepiMoP. Before you get started, it is required to download some software and tools.
+
+This section provides instructions for installation and how to run on each platform.&#x20;
+
+{% content-ref url="running-on-rockfish-marcc.md" %}
+[running-on-rockfish-marcc.md](running-on-rockfish-marcc.md)
+{% endcontent-ref %}
+
+{% content-ref url="quick-start-guide.md" %}
+[quick-start-guide.md](quick-start-guide.md)
+{% endcontent-ref %}
+
+{% content-ref url="quick-start-guide-conda.md" %}
+[quick-start-guide-conda.md](quick-start-guide-conda.md)
+{% endcontent-ref %}
+
+{% content-ref url="running-with-docker-locally.md" %}
+[running-with-docker-locally.md](running-with-docker-locally.md)
+{% endcontent-ref %}
+
+{% content-ref url="running-with-docker-on-aws/" %}
+[running-with-docker-on-aws](running-with-docker-on-aws/)
+{% endcontent-ref %}
+
 ### Installation
 
-Git (Git, Github Desktop, Github, LFS) Docker R
+Before you get started, the following are required to run flepiMoP regardless of what platform you are running it on.&#x20;
+
+* Git (Git, Github Desktop, Github, LFS) Docker R
 
 #### Python
 
