@@ -188,6 +188,7 @@ git checkout main
 Do some clean-up before your run. The fast way is to restore the `$DATA_PATH` git repository to its blank states (removes everything that does not come from git):
 
 ```bash
+git reset --hard && git clean -f -d  # this deletes everything that is not on github in this repo !!!
 ```
 
 <details>
@@ -195,6 +196,8 @@ Do some clean-up before your run. The fast way is to restore the `$DATA_PATH` gi
 <summary>I want more control over what is deleted</summary>
 
 &#x20;if you prefer to have more control, delete the files you like, e.g
+
+If you still want to use git to clean the repo but want finer control or to understand how dangerous is the command, [read this](https://stackoverflow.com/questions/1090309/git-undo-all-working-dir-changes-including-new-files).
 
 ```bash
 rm -rf model_output data/us_data.csv data-truth &&
@@ -210,17 +213,34 @@ rm *.out
 
 </details>
 
-Prepare the inference batch run:
+Prepare the inference batch run. Launch this helper script to set up some useful variables:
 
 ```bash
-cd $DATA_PATH
+source /data/struelo1/flepimop-code/flepimop_prepare.sh
+```
 
-# change these accor
+{% hint style="success" %}
+Note that now the run-id of the run we resume from is automatically inferred by the batch script :)
+{% endhint %}
+
+<details>
+
+<summary>I want to set the variables manually</summary>
+
+you can enter the following lines manually:
+
+```bash
 export VALIDATION_DATE="2023-01-29"
 export RESUME_LOCATION=s3://idd-inference-runs/USA-20230122T145824
-export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml
 export COVID_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
+```
 
+</details>
+
+Then run the preparatory script and you are good
+
+```bash
+export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml
 Rscript $COVID_PATH/R/scripts/build_US_setup.R
 
 # For covid do
@@ -245,9 +265,9 @@ Type the following command to launch you
 </strong><strong>                    --restart-from-run-id=$RESUME_ID
 </strong></code></pre>
 
-
-
 ### Monitor your run
+
+TODO JPSEH WRITE UP TO HERE
 
 Two types of logfiles: in \`$DATA\_PATH\`: slurm-JOBID\_SLOTID.out and and filter\_MC logs:
 
