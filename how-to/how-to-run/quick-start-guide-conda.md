@@ -4,21 +4,9 @@ description: Short internal tutorial on running locally using an "Anaconda" envi
 
 # Running with conda locally
 
-### Setup (do it once)
+### Setup (do this once)
 
-#### Getting the repositories
-
-In your preferred folder, clone the `COVIDScenarioPipeline` and `Flu_USA` repositories. You should have a directory structure as:
-
-```
-.../myparentfolder  # project folder
-.../myparentfolder/Flu_USA
-.../myparentfolder/COVIDScenarioPipeline
-```
-
-in `COVIDScenarioPipeline`, do `git checkout main` to make sure you are on the `main` branch. You can also use the GitHub App to clone and checkout if you prefer, it's great.
-
-#### Installing the conda environment
+#### Installing the `conda` environment
 
 The simplest way to get everything to work is to build an Anaconda environment. Install (or update) Anaconda on your computer. You can either use the command line (here) or the graphical user interface (you just tick the packages you want). With the command line it's this one-liner:
 
@@ -31,26 +19,38 @@ conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotli
 ```
 {% endcode %}
 
-Anaconda will take some time, to come up with a proposal that works will all dependencies. On my computer, it proposes versions `r-base==4.1.3` and `python==3.10.6`, which is great. But really anything recent is good. Install the packages. It'll create a conda environment named `covidSP` that has all the necessary packages. &#x20;
+Anaconda will take some time, to come up with a proposal that works will all dependencies.&#x20;
+
+This creates a `conda` environment named `covidSP` that has all the necessary packages. &#x20;
 
 If you'd like you can install `rstudio` as a package as well, but I think your Rstudio should be able to find your conda R without problems.
 
-{% hint style="info" %}
-In fact, Anaconda is just the most reproducible way. You don't really need it. You can just carry on with the steps below without creating an environment if you'd like, and it might be easier. **How to do it?** just skip every line starting with `conda` and do not use the `--no-deps` flag when installing gempyor (so pip will install the dependencies). Then when running `local_install.R` there might be failures because some packages are missing. Install them as you usually do it from R. The rest is the same as this tutorial.
-{% endhint %}
+<details>
+
+<summary>Can I run without conda?</summary>
+
+Anaconda is the most reproducible way to run our model. However, you can still proceed without it. You can just carry on with the steps below without creating an environment.
+
+**How to do it?** Just skip every line starting with `conda` and do not use the `--no-deps` flag when installing gempyor (so pip will install the dependencies). When running `local_install.R` there may be failures because some packages are missing. Install them as you usually do from R. The rest is the same as this tutorial.
+
+</details>
 
 ### How to run inference
 
-#### Fill the enviromnment variables (do everytime)
+#### Fill the environment variables (do this every time)
 
-First, you'll need to fill in some variables that are used by the model. I usually do that in a script but for the first time, it's better to run each command individually to be sure it exits successfully. First, in `myparentfolder` populate the folder name variables:
+First, you'll need to fill in some variables that are used by the model. This can be done in a script (an example is provided at the end of this page). For your first time, it's better to run each command individually to be sure it exits successfully.&#x20;
+
+First, in `myparentfolder` populate the folder name variables:
 
 ```bash
 export COVID_PATH=$(pwd)/COVIDScenarioPipeline
 export DATA_PATH=$(pwd)/Flu_USA
 ```
 
-Then some flags and the census API key
+Note: you can replace `Flu_USA` with any relevant data folder you wish, e.g., `COVID19_USA`.
+
+Then, export variables for some flags and the census API key (you can use your own):
 
 {% code overflow="wrap" %}
 ```bash
@@ -60,7 +60,7 @@ export CENSUS_API_KEY="6a98b751a5a7a6fc365d14fa8e825d5785138935"
 ```
 {% endcode %}
 
-#### Install the packages (do everytime the COVIDScenarioPipeline repo has changed)
+#### Install the packages (do this every time the COVIDScenarioPipeline repository has changed)
 
 Activate your conda environment, if you have one.
 
@@ -68,10 +68,10 @@ Activate your conda environment, if you have one.
 conda activate covidSP
 ```
 
-Now commands with R and python will uses this environment R and python. Go into the Pipeline repo and do the installation of the repo (if you haven't just pull, do a small git pull and checkout your favorite branch):
+In this conda environment, commands with R and python will uses this environment's R and python. Go into the Pipeline repo (making sure it is up to date on your favorite branch) and do the installation required of the repository:
 
 ```bash
-cd $COVID_PATH   # it'll go in the COVIDScenarioPipeline/ directory
+cd $COVID_PATH   # it'll move to the COVIDScenarioPipeline/ directory
 Rscript local_install.R               # Install the R stuff, will fail
 Rscript local_install.R               # Install the R stuff, will sucedd
 pip install --no-deps -e gempyor_pkg/ # install gempyor
@@ -80,17 +80,22 @@ git lfs pull
 ```
 
 {% hint style="danger" %}
-When running `local_install.R` the first time, it'll give you some error:&#x20;
+When running `local_install.R` the first time, you will get an error:&#x20;
 
 <pre><code><strong>ERROR: dependency ‘report.generation’ is not available for package ‘inference’
 </strong><strong>[...]
 </strong><strong>installation of package ‘./R/pkgs//inference’ had non-zero exit status
 </strong></code></pre>
 
-and the second time it'll finish successfully (no non-zero exit status at the end). That's because there is a circular dependency in this file (inference requires report.generation which is built after) and will hopefully get fixed. For the next runs, once is enough because the package is already installed once.
+and the second time it'll finish successfully (no non-zero exit status at the end). That's because there is a circular dependency in this file (inference requires report.generation which is built after) and will hopefully get fixed.&#x20;
+
+For subsequent runs, once is enough because the package is already installed once.
 {% endhint %}
 
-{% hint style="info" %}
+<details>
+
+<summary>Help! I still have errors</summary>
+
 If you get an error because no cran mirror is selected, just create in your home directory a `.Rprofile`file:
 
 {% code title="~/.Rprofile" lineNumbers="true" %}
@@ -103,20 +108,21 @@ local({r <- getOption("repos")
 {% endcode %}
 
 Perhaps this should be added to the top of the local\_install.R script #todo
-{% endhint %}
+
+</details>
 
 ### Run the code
 
-Everything is now ready. Let's do some clean-up in the data folder (these files might not exists, but it's just to make sure it's not re-using some old files).
+Everything is now ready. 🎉 Let's do some clean-up in the data folder (these files might not exist, but it's good practice to make sure your simulation isn't re-using some old files).
 
 ```bash
 cd $DATA_PATH       # goes to Flu_USA
 git restore data/
 rm -rf data/mobility_territories.csv data/geodata_territories.csv data/us_data.csv
-rm -r model_output/ # do delete the outputs of past run if there are
+rm -r model_output/ # delete the outputs of past run if there are
 ```
 
-Stay in `$DATA_PATH`, select a config, activate the conda enviroment (if not already done) and build the setup, and run inference:
+Stay in `$DATA_PATH`, select a config, activate the conda enviroment (if not already done) and build the setup. Then, run inference:
 
 ```bash
 conda activate covidSP
@@ -127,21 +133,17 @@ Rscript $COVID_PATH/R/scripts/full_filter.R -j 1 -n 1 -k 3
 
 where:
 
-* `n` is the number of parallel inference slots
-* `j` is the number of CPU cores it'll use in your machine.
-* `k` is the number of iterations per slots
+* `n` is the number of parallel inference slots,
+* `j` is the number of CPU cores it'll use in your machine,
+* `k` is the number of iterations per slots.
 
-{% hint style="warning" %}
-It'll say that it is running without inference because it's 2022 config and there is no data yet.
-{% endhint %}
-
-It should run successfully and creates a lot of files in `model_output/`.&#x20;
+It should run successfully and create a lot of files in `model_output/`.&#x20;
 
 Okay, I'll make a part 2 on how to plot and debug what happened. You can also try to knit the Rmd file in `COVIDScenarioPipeline/gempyor_pkg/docs` which will show you how to analyze these files.
 
 ### Do it all with a script
 
-The following script does all these commands. Save it in `myparentfolder` as `quick_setup_flu.sh`. Then, just go to `myparentfolder` and type `source quick_setup_flu.sh` and it'll do everything for you!
+The following script does all the above commands in an easy script. Save it in `myparentfolder` as `quick_setup_flu.sh`. Then, just go to `myparentfolder` and type `source quick_setup_flu.sh` and it'll do everything for you!
 
 <pre class="language-bash" data-title="quick_setup_flu.sh" data-line-numbers><code class="lang-bash">export COVID_PATH=$(pwd)/COVIDScenarioPipeline
 export DATA_PATH=$(pwd)/Flu_USA

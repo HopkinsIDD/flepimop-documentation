@@ -2,13 +2,7 @@
 
 Several different platforms can be used to run flepiMoP. Before you get started, we recommend you install some software and packages. Some of these are required, while some are helper tools or specific to your preferred pipeline.
 
-This section provides instructions for installation and how to run on each platform.&#x20;
-
-We recommend `conda` for beginners, and AWS for large simulations.&#x20;
-
-{% content-ref url="slurm-submission-on-marcc.md" %}
-[slurm-submission-on-marcc.md](slurm-submission-on-marcc.md)
-{% endcontent-ref %}
+This section provides instructions for installation and how to run on each platform. We recommend `conda` for beginners, and AWS for large simulations.&#x20;
 
 {% content-ref url="quick-start-guide-conda.md" %}
 [quick-start-guide-conda.md](quick-start-guide-conda.md)
@@ -18,9 +12,15 @@ We recommend `conda` for beginners, and AWS for large simulations.&#x20;
 [running-with-docker-locally.md](running-with-docker-locally.md)
 {% endcontent-ref %}
 
+{% content-ref url="slurm-submission-on-marcc.md" %}
+[slurm-submission-on-marcc.md](slurm-submission-on-marcc.md)
+{% endcontent-ref %}
+
 {% content-ref url="running-with-docker-on-aws/" %}
 [running-with-docker-on-aws](running-with-docker-on-aws/)
 {% endcontent-ref %}
+
+## Setup requirements
 
 The following are required to run flepiMoP regardless of what platform you are running it on.&#x20;
 
@@ -38,15 +38,23 @@ In your preferred folder, clone the `COVIDScenarioPipeline` and relevant data (`
 .../myparentfolder/COVIDScenarioPipeline
 ```
 
-in `COVIDScenarioPipeline`, do `git checkout main` to make sure you are on the `main` branch. You can also use the GitHub App to clone and checkout if you prefer.
+In `COVIDScenarioPipeline`, do `git checkout main` to make sure you are on the `main` branch. You can also use the GitHub App to clone and checkout if you prefer.
+
+{% hint style="warning" %}
+In general **** repositories are cloned **flat,** i.e `COVIDScenarioPipeline` is at the same level as the data repository, not inside it!
+
+_**FOR AWS,**_ `COVIDScenarioPipeline` must be nested **within** data repositories.&#x20;
+{% endhint %}
+
+In each of our "Running with..." pages, we will assume you have all the necessary repositories all cloned ready to go.
 
 #### 🐍 Python&#x20;
 
 The python part of the model is named `gempyor`, and encompasses everything to simulate the transmission of an infectious disease epidemic: health outcomes, interventions, transmission.
 
-**Installing `gempyor` locally**
+**Installing `gempyor`**
 
-You need a working python3.7+ installation. We recommend using the latest stable python release (python 3.11) to benefits from huge speed-ups and future proof your installation. You may want to use conda to manage package if you're not used to python.
+You need a working python3.7+ installation. We recommend using the latest stable python release (python 3.11) to benefit from huge speed-ups and future-proof your installation. You may want to use `conda` to manage the packages if you're not used to python. Instructions for this are in 'Running with conda locally'.&#x20;
 
 
 

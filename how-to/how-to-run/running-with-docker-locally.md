@@ -1,92 +1,112 @@
 ---
-description: Testing the COVID Scenario Pipeline
+description: Short internal tutorial on running locally using a "Docker" container.
 ---
 
 # Running with docker locally
 
-**1. Checkout projects from GitHub:**
+### Setup
 
-We need to clone the CovidScenarioPipeline from Git Hub. Make sure to clone the ‘main\_testing’ branch. The link is as follows: [Co](https://github.com/HopkinsIDD/COVIDScenarioPipeline)[vid Scenario Pipeline](https://github.com/HopkinsIDD/COVIDScenarioPipeline)
+**Run Docker Image**
 
-**2. Run Docker Image**
+{% hint style="info" %}
+Current Docker image: `/hopkinsidd/covidscenariopipeline`
+{% endhint %}
 
-Docker is a software platform that allows you to build, test, and deploy applications quickly. Docker packages software into standardized units called containers that have everything the software needs to run including libraries, system tools, code, and runtime. A docker container is an environment which is isolated from the rest of the operating system i.e. you can create files, programs, delete and everything but that will not affect your OS. It is a local virtual OS within your OS. One installs all the packages and dependencies in the said container and deploys their application in the container. This is the reason why we install various Python and R dependencies, every time we run a docker container.
+Docker is a software platform that allows you to build, test, and deploy applications quickly. Docker packages software into standardized units called **containers** that have everything the software needs to run including libraries, system tools, code, and runtime. This means you can run and install software without installing the dependencies in the system.
 
-Docker with respect to the Covid Scenario Pipeline enables you to run and install software without installing the dependencies in the system. You instead install the required files to the docker container. To understand the basics of docker refer to the following: [Docker Basics](https://www.docker.com/)
+A docker container is an environment which is isolated from the rest of the operating system i.e. you can create files, programs, delete and everything but that will not affect your OS. It is a local virtual OS within your OS.&#x20;
 
-To install docker for windows refer to the following link: [Installing Docker](https://docs.docker.com/desktop/windows/install/)
+For flepiMoP, we have a docker container that will help you get running quickly!&#x20;
 
-The following is a good tutorial for introduction to docker: [Docker Tutorial](https://www.youtube.com/watch?v=gFjxB0Jn8Wo\&list=PL6gx4Cwl9DGBkvpSIgwchk0glHLz7CQ-7)
+```
+docker pull hopkinsidd/covidscenariopipeline:latest-dev
+docker run -it \
+  -v <dir1>\:/home/app/csp \
+  -v <dir2>:/home/app/drp \
+hopkinsidd/covidscenariopipeline:latest-dev  
+```
 
-To run the entire pipeline we use the command prompt. To open the command prompt type “Command Prompt" in the search bar and open the command prompt. Here is a tutorial video for navigating through the command prompt: [Command Prompt Tutorial](https://www.youtube.com/watch?v=A3nwRCV-bTU)
+In this command we run the docker image `hopkinsidd/covidscenariopipeline`. The `-v` command is used to allocate space from Docker and mount it at the given location.&#x20;
 
-To run the pipeline, we refer to two parts simultaneously – the data folder which has the data with respect to the area being considered like the seeding data and mobility data. The second part is the CovidScenarioPipeline folder which utilizes the data and processes it.
+This mounts the data folder `<dir1>` to a path called `drp` within the docker environment, and the COVIDScenarioPipeline `<dir2>` in `csp`.&#x20;
 
-To test, we use the test folder (test\_documentation\_inference\_us in this case) in the CovidScenariPipeline as the data repository folder. We run the docker container and set the paths.
+### How to run inference
 
-> `docker run -it -v <CD1>\:/home/app/csp -v <CD2>:/home/app/drp hopkinsidd/covidscenariopipeline:latest-dev`
+#### Fill the environment variables (do this every time)
 
-In this command we run the docker image `hopkinsidd/covidscenariopipeline`. The `-v` command is used to allocate space from Docker and mount it at the given location. We create storage spaces for both the data folder and the CovidScenarioPipeline folder and mount it to a path called `drp` and `csp` within the docker app respectively.
+First, populate the folder name variables:
 
-You need to change `<CD1>` to the path of the CovidScenarioPipeline folder and `<CD2>` to the path of the test\_documentation\_inferecene\_us folder present in the path ..\COVIDScenarioPipeline\test\test\_documentation\_inference\_us
+```bash
+export COVID_PATH=/home/app/csp/
+export DATA_PATH=/home/app/drp/
+```
 
-**3. Creating Environment Variables**
+Then, export variables for some flags and the census API key (you can use your own):
 
-We must create 3 environment variables namely: `CENSUS_API_KEY`, `COVID_PATH` and `DATA_PATH`.
+{% code overflow="wrap" %}
+```bash
+export COVID_STOCHASTIC=false
+export COVID_RESET_CHIMERICS=TRUE
+export CENSUS_API_KEY="6a98b751a5a7a6fc365d14fa8e825d5785138935"
+```
+{% endcode %}
 
-The Census Data Application Programming Interface (API) is an API that gives the public access to raw statistical data from various Census Bureau data programs. To create the CENSUS\_API\_KEY variable, we run the following command.
+<details>
 
-> `export CENSUS_API_KEY=<CD3>`
+<summary>Where do I get a census key API?</summary>
 
-You need to copy your API Key in place of `<CD3>`. To acquire the API Key, click on [here](https://api.census.gov/data/key\_signup.html)
+The Census Data Application Programming Interface (API) is an API that gives the public access to raw statistical data from various Census Bureau data programs.  To acquire your own API Key, click [here](https://api.census.gov/data/key\_signup.html).
 
 After you enter your details, you should receive an email using which you can activate your key and then use it.
 
 _Note: Do not enter the API Key in quotes, copy the key as it is._
 
-We then create the `COVID_PATH` and `DATA_PATH` environment variables, to which we assign values of the `csp` and the `drp` paths within the docker app. We run the following commands to do so.
+</details>
 
-> `export COVID_PATH=/home/app/csp/`
+Go into the Pipeline repo (making sure it is up to date on your favorite branch) and do the installation required of the repository:
 
-> `export DATA_PATH=/home/app/drp/`
+```bash
+cd $COVID_PATH   # it'll move to the COVIDScenarioPipeline/ directory
+Rscript local_install.R               # Install the R stuff, will fail
+Rscript local_install.R               # Install the R stuff, will sucedd
+pip install --no-deps -e gempyor_pkg/ # install gempyor
+git lfs install
+git lfs pull
+```
 
-**4. The docker container needs certain local R packages and Python Requirements to be installed:**
+{% hint style="info" %}
+Note: These installations take place in the docker container and not the Operating System. They must be made once while starting the container and need not be done for every time you are running tests, provided they have been installed once.
+{% endhint %}
 
-Change the directory to the Covid Path:
+### Run the code
 
-> `cd $COVID_PATH`
+Everything is now ready. 🎉 Let's do some clean-up in the data folder (these files might not exist, but it's good practice to make sure your simulation isn't re-using some old files).&#x20;
 
-Run the required files to complete the installation process:
+```bash
+cd $DATA_PATH       # goes to Flu_USA
+git restore data/
+rm -rf data/mobility_territories.csv data/geodata_territories.csv data/us_data.csv
+rm -r model_output/ # delete the outputs of past run if there are
+```
 
-1. Installing relevant R files:
+Stay in `$DATA_PATH`, select a config, and build the setup. The setup creates the population seeding file (geodata) and the population mobility file (mobility). Then, run inference:
 
-> `Rscript local_install.R`
+```bash
+export CONFIG_PATH=config_SMH_R1_lowVac_optImm_2022.yml
+Rscript $COVID_PATH/R/scripts/build_US_setup.R -c $CONFIG_PATH
+Rscript $COVID_PATH/R/scripts/build_flu_data.R
+Rscript $COVID_PATH/R/scripts/full_filter.R -c $CONFIG_PATH -j 1 -n 1 -k 1
+```
 
-1. We then need to install the gempyor package. To know about the gempyor package read the following document: ..\COVIDScenarioPipeline\gempyor\_pkg\docs\Rinterface.html
+where:
 
-> `pip install gempyor_pkg/`
+* `n` is the number of parallel inference slots,
+* `j` is the number of CPU cores it'll use in your machine,
+* `k` is the number of iterations per slots.
 
-_Note: These installations take place in the docker container and not the Operating System. They must be made once while starting the container and need not be done for every time you are running tests, provided they have been installed once._
+It should run successfully and create a lot of files in `model_output/`.&#x20;
 
-**5. We then run the corresponding Rscripts to run the test:**
-
-After we have done the necessary setup we then need to run the relevant Rscripts. We first need to change the working directory to the `DATA_PATH`.
-
-To do so we run the command.
-
-> `cd $DATA_PATH`
-
-To run the test on the given configuration file, we initially need to create the population seeding file(geodata) and the population mobility file (mobility). To do so we run the following command.
-
-> `Rscript $COVID_PATH/R/scripts/build_US_setup.R -c config.yml`
-
-This should run without any error. To check if the script did run successfully. Go to the test\_documentation\_inference\_us folder. You will now see a new folder called ‘data’ present in it. In the data folder there should be 2 csv sheets named: ‘geodata.csv’ and ‘mobility.csv’
-
-After you have run the following command:
-
-> `Rscript $COVID_PATH/R/scripts/full_filter.R -c config.yml -p $COVID_PATH -j 1 -b 1 -k 1`
-
-This should run without any error. Following should be the last few lines visible on the command prompt:
+The last few lines visible on the command prompt should be:
 
 > \[\[1]]
 >
@@ -96,4 +116,16 @@ This should run without any error. Following should be the last few lines visibl
 >
 > NULL
 
-To check if the script did run successfully. Go to the test\_documentation\_inference\_us folder. A folder called model\_output should be created. If that folder exists then the pipeline is functional and runs succesfully.
+{% hint style="info" %}
+**Other helpful tools**
+
+To understand the basics of docker refer to the following: [Docker Basics](https://www.docker.com/)
+
+To install docker for windows refer to the following link: [Installing Docker](https://docs.docker.com/desktop/windows/install/)
+
+The following is a good tutorial for introduction to docker: [Docker Tutorial](https://www.youtube.com/watch?v=gFjxB0Jn8Wo\&list=PL6gx4Cwl9DGBkvpSIgwchk0glHLz7CQ-7)
+
+To run the entire pipeline we use the command prompt. To open the command prompt type “Command Prompt" in the search bar and open the command prompt. Here is a tutorial video for navigating through the command prompt: [Command Prompt Tutorial](https://www.youtube.com/watch?v=A3nwRCV-bTU)
+{% endhint %}
+
+To test, we use the test folder (test\_documentation\_inference\_us in this case) in the CovidScenariPipeline as the data repository folder. We run the docker container and set the paths.
