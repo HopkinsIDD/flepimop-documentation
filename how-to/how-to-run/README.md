@@ -10,8 +10,8 @@ We recommend `conda` for beginners, and AWS for large simulations.&#x20;
 [slurm-submission-on-marcc.md](slurm-submission-on-marcc.md)
 {% endcontent-ref %}
 
-{% content-ref url="running-with-conda-locally.md" %}
-[running-with-conda-locally.md](running-with-conda-locally.md)
+{% content-ref url="quick-start-guide-conda.md" %}
+[quick-start-guide-conda.md](quick-start-guide-conda.md)
 {% endcontent-ref %}
 
 {% content-ref url="running-with-docker-locally.md" %}

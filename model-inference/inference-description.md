@@ -72,7 +72,7 @@ $$
 \mathcal{L}(D|\Theta) =\mathcal{L}(D|Z(\Theta)) =  \prod_i \mathcal{L}_i(D_i|Z_i(\Theta))
 $$
 
-Note that the likelihood for each subpopulation depends not only on the parameter values $$\Theta_i$$ that act within that subpopulation, but on the entire parameter set $$\Theta$$, since in general the infection dynamics in one subpopulation are also affected by those in each other region. Also note that we assume that the parameters $$\Theta$$ only impact the likelihood through the single model output timeseries $$Z_t$$. While this is exactly true for a deterministic model, we make the simplifying assumption that it is also true for stochastic models, instead of attempting to calculate the full distribution of possible trajectories for a given parameter set and include that in the likelihood as well.&#x20;
+Note that the likelihood for each subpopulation depends not only on the parameter values $$\Theta_i$$ that act within that subpopulation, but on the entire parameter set $$\Theta$$, since in general the infection dynamics in one subpopulation are also affected by those in each other region. Also note that we assume that the parameters $$\Theta$$ only impact the likelihood through the single model output timeseries $$Z_t$$. While this is exactly true for a deterministic model, we make the simplifying assumption that it is also true for stochastic models, instead of attempting to calculate the full distribution of possible trajectories for a given parameter set and include that in the likelihood as well.
 
 ### Fitting algorithm
 
@@ -89,30 +89,32 @@ Note that while the traditional Metropolis Hastings algorithm for MCMC will prov
   * Generate initial state
     * Generate an initial set of parameters $$\Theta_{m,0}$$, and copy this to both the global ($$\Theta^G_{m,0}$$) and chimeric ($$\Theta^C_{m,0}$$) parameter chain (sequence)&#x20;
     * Generate an initial epidemic trajectory $$Z(\Theta_{m,0})$$
-    * Calculate the initial likelihood for each subpopulation, $$\mathcal{L}(D_i|Z_i(\Theta_{m,0}))$$&#x20;
-    * Calculate the overall initial likelihood, $$\mathcal{L}(D|Z(\Theta_{m,0}))$$
+    * Calculate and record the initial likelihood for each subpopulation, $$\mathcal{L_i}(D_i|Z_i(\Theta_{m,0}))$$&#x20;
   * `For` $$k= 1 ... K$$ where $$K$$ is the length of the MCMC chain, add to the sequence of parameter values :
-    * Generate a proposed set of parameters $$\Theta^*$$from the proposal distribution $$g(\Theta^*|\Theta_{m,k-1})$$&#x20;
+    * Generate a proposed set of parameters $$\Theta^*$$from the current chimeric parameters using the proposal distribution $$g(\Theta^*|\Theta^C_{m,k-1})$$&#x20;
     * Generate an epidemic trajectory with these proposed parameters, $$Z(\Theta^*)$$
     * Calculate the likelihood of the data given the proposed parameters for each subpopulation, $$\mathcal{L}_i(D_i|Z_i(\Theta^*))$$
     * Calculate the overall likelihood with the proposed parameters, $$\mathcal{L}(D|Z(\Theta^*))$$
     * Make "global" decision about proposed parameters
       * Generate a uniform random number $$u^G \sim \mathcal{U}[0,1]$$
-      * Calculate the acceptance ratio $$\alpha^G=\min \left(1, \frac{\mathcal{L}(D|Z(\Theta^*)) p(\Theta^*) g(\Theta_{m,k-1}|\Theta^*)}{\mathcal{L}(D|Z(\Theta_{m,k-1})) p(\Theta_{m,k-1}) g(\Theta^*|\Theta_{m,k-1})} \right)$$​
+      * Calculate the overall likelihood with the current global parameters, $$\mathcal{L}(D|Z(\Theta^G_{m,k-1}))$$
+      * Calculate the acceptance ratio $$\alpha^G=\min \left(1, \frac{\mathcal{L}(D|Z(\Theta^*)) p(\Theta^*) }{\mathcal{L}(D|Z(\Theta^G_{m,k-1})) p(\Theta^G_{m,k-1}) } \right)$$​
       * `If` $$\alpha^G > u^G$$: ACCEPT the proposed parameters to the global and chimeric parameter chains
         * Set $$\Theta^G_{m,k} =$$$$\Theta^*$$
         * Set $$\Theta_{m,k}^C=\Theta^*$$
+        * Update the recorded subpopulation-specific likelihood values (chimeric and global) with the likelihoods calculated using the proposed parameters&#x20;
       * `Else`: REJECT the proposed parameters for the global chain and make subpopulation-specific decisions for the chimeric chain
         * Set $$\Theta^G_{m,k} = \Theta^G_{m,k-1}$$
         * Make "chimeric" decision:
           * `For` $$i = 1 \dots N$$
             * Generate a uniform random number $$u_i^C \sim \mathcal{U}[0,1]$$
-            * Calculate the acceptance ratio $$\alpha_i^C=\frac{\mathcal{L}_i(D_i|Z_i(\Theta^*)) p(\Theta^*) g(\Theta_{m,k-1}|\Theta^*)}{\mathcal{L}i(D_i|Z_i(\Theta_{m,k-1})) p(\Theta_{m,k-1}) g(\Theta^*|\Theta_{m,k-1})}$$
+            * Calculate the acceptance ratio $$\alpha_i^C=\frac{\mathcal{L}_i(D_i|Z_i(\Theta^*)) p(\Theta^*) }{\mathcal{L}i(D_i|Z_i(\Theta^C_{m,k-1})) p(\Theta_{m,k-1}) }$$
             * `If` $$\alpha_i^C > u_i^C$$: ACCEPT the proposed parameters to the chimeric parameter chain for this location
-              * Set $$\Theta_{m,k,i}^C = \Theta^*_{i}$$​
+              * Set $$\Theta_{m,k,i}^C = \Theta^*_{i}$$
+              * Update the recorded chimeric likelihood value for subpopulation $$i$$ to that calculated with the proposed parameter​
             * `Else`: REJECT the proposed parameters for the chimeric parameter chain for this location
               * Set $$\Theta_{m,k,i}^C=\Theta_{m,k-1,i}$$​
-            * `End if`
+            * `End if`&#x20;
           * `End for` $$N$$subpopulations
         * End making chimeric decisions
       * `End if`
@@ -123,6 +125,8 @@ Note that while the traditional Metropolis Hastings algorithm for MCMC will prov
 
 We consider the sequence $$\theta_m$$ to represent a sample from the posterior probability distribution, and use it to calculate statistics about the inferred parameter values and the epidemic trajectories resulting from them (e.g., mean, median, 95% credible intervals).
 
+<figure><img src="../.gitbook/assets/FlepiMop Inference.png" alt=""><figcaption><p>Diagram of the custom multi-level MCMC method used for parameter inference in FlepiMoP. Each square represents a single subpopulation which has a set of associated parameter values. Diagram is for a single MCMC chain; multiple parallel chains are typically run and combined to form a posterior distribution of parameter values. </p></figcaption></figure>
+
 There are a few important notes/limitations about our method currently:
 
 * All parameters to be fit must be location-specific. There is currently no way to fit a parameter that has the identical value across all locations
@@ -131,7 +135,8 @@ There are a few important notes/limitations about our method currently:
 * There is no model simulation run or recorded that corresponds to the combined parameters recorded in the chimeric parameter chain ($$\Theta^C_{m}$$). For entry $$m$$ in the chain, some of these parameter values were recently accepted from the last proposal and were used in the simulation produced by that proposal, while for other subpopulations, the most recent proposed parameters were rejected so $$\Theta^C_{m}$$ contains parameters accepted - and part of simulations produced - in a previous iteration.
 * It is currently not possible to infer parameters of the measurement process encoded in the likelihood function. For example, if the likelihood is chosen to be a normal distribution, which implies an assumption that the observed data is generated from the underlying truth according to a normal distribution with mean zero, then the standard deviation must be specified, and cannot be inferred along with the other model parameters.&#x20;
 * There is an option to use a slightly different version of our algorithm, in which globally accepted parameter values are not pushed back into the chimeric likelihood, but the chimeric likelihood is instead allowed to continue to evolve independently. In this variation, the chimeric acceptance decision is always made, not only if a global rejection happens.&#x20;
-* The proposal distribution ($$g(\Theta^*|\Theta)$$) for generating new parameter sets is currently constrained to be a multivariate normal distribution in which the covariance is zero and the mean depends only on the distance between the current and the proposed parameter. In other words, the value of each new proposed parameter is chosen independently of any other parameters, and has the same distribution of distances from the original parameter independent of the value of the original parameter. &#x20;
+* The proposal distribution $$g(\Theta^*|\Theta)$$ for generating new parameter sets is currently constrained to be a joint distribution in which the the value of each new proposed parameter is chosen independently of any other parameters.
+* While in general in Metropolis-Hasting algorithms the formula for the the acceptance ratio includes the proposal distribution $$g(\Theta^*|\Theta)$$, those terms cancel out if the proposal distribution is symmetrical. Our algorithm assumes such symmetry and thus does not include $$g$$ in the formula, so the user must be careful to only select symmetric distributions.
 
 ### Hierarchical parameters
 
