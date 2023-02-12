@@ -241,9 +241,27 @@ Rscript $COVID_PATH/R/scripts/build_covid_data.R
 Rscript $COVID_PATH/R/scripts/build_flu_data.R
 ```
 
+Now you may want to test that it works :&#x20;
+
+```bash
+Rscript $COVID_PATH/R/scripts/full_filter.R -c $CONFIG_PATH -j 1 -n 1 -k 1 
+```
+
+If this fails, you may want to investigate this error. In case this succeeds, then you can proceed by first deleting the model\_output:
+
+```
+rm -r model_output
+```
+
 ### Launch your inference batch job
 
-Type the following command to launch you
+Type the following command to launch:&#x20;
+
+```bash
+python $COVID_PATH/batch/inference_job.py --slurm
+```
+
+This command infers everything from you enviroment variables, if there is a resume or not, what is the run\_id, etc. If you'd like to have more control, you can specify the arguments manually:
 
 <pre class="language-bash"><code class="lang-bash"><strong>python $COVID_PATH/batch/inference_job.py --slurm \
 </strong><strong>                    -c $CONFIG_PATH \
@@ -252,8 +270,7 @@ Type the following command to launch you
 </strong><strong>                    --upload-to-s3 True \
 </strong><strong>                    --id $COVID_RUN_INDEX \
 </strong><strong>                    --fs-folder /data/struelo1/flepimop-runs \
-</strong><strong>                    --restart-from-location $RESUME_LOCATION \
-</strong><strong>                    --restart-from-run-id=$RESUME_ID
+</strong><strong>                    --restart-from-location $RESUME_LOCATION
 </strong></code></pre>
 
 ### Monitor your run
@@ -307,8 +324,6 @@ To cancel a job
 ```
 scancel JOB_ID
 ```
-
-
 
 ## Installation notes
 
