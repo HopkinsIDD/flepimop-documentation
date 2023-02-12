@@ -113,15 +113,21 @@ Then run `./aws-cli/bin/aws configure`  and use the following :
 
 ## 🚀 Run inference using slurm (do everytime)
 
-log-in to rockfish via ssh, then type
+log-in to rockfish via ssh, then type:
 
 `source /data/struelo1/flepimop-code/flepimop_init.sh`
+
+which will prepare the environment and setup variables for the validation date, the resume location and the run index for this run
+
+{% hint style="success" %}
+Note that now the run-id of the run we resume from is automatically inferred by the batch script :)
+{% endhint %}
 
 <details>
 
 <summary>what does this do || it returns an error</summary>
 
-This script runs the following commands, which you can run individually as well.
+This script runs the following commands to setup up the environment, which you can run individually as well.
 
 ```bash
 module purge
@@ -135,6 +141,15 @@ export CENSUS_API_KEY={A CENSUS API KEY}
 export COVID_STOCHASTIC=false
 export COVID_RESET_CHIMERICS=TRUE
 
+# And then it asks you some questions to setup some enviroment variables
+```
+
+and the it does some prompts to fix the following 3 enviroment variables. You can skip this part and do it later manually.&#x20;
+
+```bash
+export VALIDATION_DATE="2023-01-29"
+export RESUME_LOCATION=s3://idd-inference-runs/USA-20230122T145824
+export COVID_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
 ```
 
 </details>
@@ -209,30 +224,6 @@ rm -rf model_output data/us_data.csv data-truth &&
 rm -rf $DATA_PATH/model_output
 # delete log files from previous runs
 rm *.out
-```
-
-</details>
-
-Prepare the inference batch run. Launch this helper script to set up some useful variables:
-
-```bash
-source /data/struelo1/flepimop-code/flepimop_prepare.sh
-```
-
-{% hint style="success" %}
-Note that now the run-id of the run we resume from is automatically inferred by the batch script :)
-{% endhint %}
-
-<details>
-
-<summary>I want to set the variables manually</summary>
-
-you can enter the following lines manually:
-
-```bash
-export VALIDATION_DATE="2023-01-29"
-export RESUME_LOCATION=s3://idd-inference-runs/USA-20230122T145824
-export COVID_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
 ```
 
 </details>
@@ -348,13 +339,38 @@ module load git-lfs
 module load slurm
 module load anaconda3/2022.05
 conda activate covidSP
-export CENSUS_API_KEY=SOME API KEY  # joseph's key
+export CENSUS_API_KEY="6a98b751a5a7a6fc365d14fa8e825d5785138935"  # joseph's key
 export COVID_STOCHASTIC=false
 export COVID_RESET_CHIMERICS=TRUE
+export COVID_PATH=/data/struelo1/flepimop-code/$USER/COVIDScenarioPipeline
 echo "done  ^|^e"
+
+echo "Doing some inference_run setup, hit enter to skip a question if not relevant or you're not planning on doing a run"
+
+export TODAY=`date --rfc-3339='date'`
+echo "Let's set up a flepiMoP run. Today is the $TODAY"
+
+echo "(1/3) Please input the validation date:"
+read input
+export VALIDATION_DATE="$input"
+echo -e ">>> set VALIDATION DATE to $VALIDATION_DATE \n"
+
+echo "(2/3) Please input the resume location (empty if no resume, or a s3:// url or a local folder):"
+read input
+export RESUME_LOCATION="$input"
+echo -e ">>> set RESUME_LOCATION to $RESUME_LOCATION \n"
+
+echo "(3/3) Please provide the Run Index for the current run:"
+read input
+export COVID_RUN_INDEX="$input"
+echo -e ">>> set  COVID_RUN_INDEX to $COVID_RUN_INDEX \n"
+
+echo "DONE. if no error please manually set export CONFIG_PATH=YOURCONFIGPATH.yml"
+echo "(in case of error, override manually some variables or rerun this script)"
+
 ```
 
-### the setup script
+
 
 `nano /data/struelo1/flepimop-code/flepimop_prepare.sh`
 
