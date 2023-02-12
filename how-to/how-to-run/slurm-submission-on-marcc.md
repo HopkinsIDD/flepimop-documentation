@@ -258,10 +258,12 @@ rm -r model_output
 Type the following command to launch:&#x20;
 
 ```bash
-python $COVID_PATH/batch/inference_job.py --slurm
+python $COVID_PATH/batch/inference_job.py --slurm 2>&1 | tee $COVID_RUN_INDEX_submission.log
 ```
 
-This command infers everything from you enviroment variables, if there is a resume or not, what is the run\_id, etc. If you'd like to have more control, you can specify the arguments manually:
+This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc. The part after the "2" makes sure this file output is redirected to a script for logging, but has no impact on your submission.
+
+If you'd like to have more control, you can specify the arguments manually:
 
 <pre class="language-bash"><code class="lang-bash"><strong>python $COVID_PATH/batch/inference_job.py --slurm \
 </strong><strong>                    -c $CONFIG_PATH \
