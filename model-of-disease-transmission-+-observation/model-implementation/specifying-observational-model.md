@@ -1,5 +1,13 @@
 # Specifying observational model
 
+## Overview
+
+ALH: Note this section is currently a work in progress
+
+## Example
+
+ALH: Old example??
+
 ```
 #outcomes:
 #  method: delayframe                   # Only fast is supported atm. Makes fast delay_table computations. Later agent-based method ?
