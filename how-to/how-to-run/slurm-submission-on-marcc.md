@@ -275,6 +275,19 @@ If you'd like to have more control, you can specify the arguments manually:
 </strong><strong>                    --restart-from-location $RESUME_LOCATION
 </strong></code></pre>
 
+**Commit files to Github.** After the job is successfully submitted, you will now be in a new branch of the data repo. Commit the ground truth data files to the branch on github and then return to the main branch:
+
+<pre><code><strong>git add data/ 
+</strong>git config --global user.email "[email]" 
+git config --global user.name "[github username]" 
+git commit -m"scenario run initial" 
+branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+git push --set-upstream origin $branch
+
+git checkout main
+git pull
+</code></pre>
+
 ### Monitor your run
 
 TODO JPSEH WRITE UP TO HERE
