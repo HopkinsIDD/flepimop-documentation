@@ -1,16 +1,28 @@
 # Specifying compartmental model structure
 
-We want to allow users to work with a wide variety of infectious diseases or, in our case, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental differential equations model via configuration file.
+We want to allow users to work with a wide variety of infectious diseases or, in our case, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental differential equations model via the configuration file.
 
 We originally considered asking users to specify each compartment and transition manually. However, we quickly found that created long confusing configuration files, and created a shorthand to more tersely specify both compartments and transitions between them.
 
-### Compartments (`seir::compartments`)
+### Specifying model compartments (`compartments`)
 
-We specify compartments as the cross product of states of interest. For example:
+The first stage of specifying the model is to define the infection states (variables) that the model will track. These "compartments" are defined first in the `compartments` section of the config file, before describing the processes that lead to transitions between them. &#x20;
+
+For simple disease models, the compartments can simply be listed with whatever notation the user chooses. For example, for a simple SIR model, the compartments could be `["S", "I", "R"]`. The config also requires that there be a variable name for the property of the individual that these compartments describe, which for example in this case could be `infection_state`
 
 ```
- infection_state: ["S", "I", "R"]
- vaccination_status: ["unvaccinated", "vaccinated"]
+compartments:
+  infection_state: ["S", "I", "R"]
+```
+
+Our syntax allows for more complex models to be specified without much additional notation. For example, consider a model of a disease that followed SIR dynamics but for which individuals could receive vaccination, which might change how they experience infection.&#x20;
+
+In this case we can specify compartments as the cross product of multiple states of interest. For example:
+
+```
+ compartments:
+   infection_state: ["S", "I", "R"]
+   vaccination_status: ["unvaccinated", "vaccinated"]
 ```
 
 Corresponds to 6 compartments, which the code internally converts to this data frame
@@ -27,7 +39,52 @@ R,               vaccinated,         R_vaccinated
 
 In order to more easily describe transitions, we want to be able to refer to a compartment by its components, but then use it by its compartment name.
 
-### Transitions (`seir::transitions`)
+If the user wants to specify a model in which some compartments are repeated across states but others are not, there will be pros and cons of how the model is specified. Specifying it using the cross product notation is simpler, less error prone, and makes config files easier to read, and there is no issue with having compartments that have zero individuals in them throughout the model. However, for very large models, extra compartments increase the memory required to conduct the simulation, and so having unnecessary compartments tracked may not be desired.&#x20;
+
+For example, consider a model of a disease that follows SI dynamics in two separate age groups (children and adults), but for which only adults receive vaccination, with one or two doses of one of two vaccine types. With the simplified notation, this model could be specified as  ..
+
+```
+ compartments:
+   infection_state: ["S", "I"]
+   age_group: ["child","adult"]
+   vaccination_status: ["unvaccinated", "1dose", "2dose"]
+   vaccine_type: ["brand1", "brand2"]
+```
+
+corresponding to 12 compartments, 4 of which are unnecessary to the model
+
+```
+infection_state, age_group, vaccination_status, compartment_name
+S,		 child,	    unvaccinated,	S_child_unvaccinated	
+I,		 child,	    unvaccinated,	I_child_unvaccinated
+S,		 adult,	    unvaccinated,	S_adult_unvaccinated
+I,		 adult,	    unvaccinated,	I_adult_unvaccinated
+S,		 child,	    1dose,		S_child_1dose
+I,		 child,	    1dose,		I_child_1dose
+S,		 adult,     1dose,		S_adult_1dose
+I,		 adult,     1dose,		I_adult_1dose
+S,		 child,     2dose,		S_child_2dose	
+I,		 child,     2dose,		I_child_2dose
+S,		 adult,	    2dose,		S_adult_2dose
+I,		 adult,	    2dose,		I_adult_2dose
+```
+
+Or, it could be specified with the less concise notation
+
+```
+compartments:
+   overall_date: ["S_child","I_child","S_adult_unvaccinated","I_adult_unvaccinated","S_adult_1dose","I_adult_1dose","S_adult_2dose","I_adult_2dose"]
+```
+
+which does not result in any unnecessary compartments being included.&#x20;
+
+These compartments are referenced in multiple different subsequent sections of the config. In the `seeding (LINK TBA)` section the user can specify how the initial (or later imported) infections are distributed across compartments; in the [`seir`](./#transitions-seir-transitions) section the user can specify the form and rate of the transitions between these compartments encoded by the model; in the [`outcomes`](../specifying-observational-model/outcomes-module/outcomes-for-compartments.md) section the user can specify how the observed variables are generated from the underlying model states.
+
+Notation must be consistent between these sections.&#x20;
+
+### Specifying compartmental model transitions (`seir::transitions`)
+
+
 
 The way we specify transitions is a bit more complicated than compartments. We specify one or more transition globs, each of which corresponds to one or more transitions. Since transition globs are shorthand for collections of transitions, we describe a single transition before discussing transition globs. A transition has 5 pieces associated of information
 

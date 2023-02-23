@@ -28,7 +28,7 @@ Parameters and other options specified in the configuration files can take on a 
 * **boolean** values are either "TRUE" or "FALSE"
 * **files** names are ....
 * **probability** is a float between 0 and 1
-* **distribution** is a probability distribution from which a random value for the parameter is drawn each time a new simulation is run(or chain, if doing inference), and is specified with the following config structure: $$\lambda$$
+* **distribution** is a probability distribution from which a random value for the parameter is drawn each time a new simulation is run(or chain, if doing inference), and is specified with the following config structure:&#x20;
 
 ### Distributions
 
@@ -38,7 +38,7 @@ Parameters and other options specified in the configuration files can take on a 
 | `uniform`    | `low`      | Any real number                    | Draws all values randomly from a uniform distribution with range `[low, high]`                                                                                                   |
 |              | `high`     | Any real number greater than `low` |                                                                                                                                                                                  |
 | `poisson`    | `lam`      | Any positive real number           | Draws all values randomly from a Poisson distribution with rate parameter  (mean) `lam` (lambda)                                                                                 |
-| `binomial`   | `size`     | Any non-negative integar           | Draws all values randomly from a binomial distribution with number of trials (n) = `size` and probability of success on each trial (p) = `prob`                                  |
+| `binomial`   | `size`     | Any non-negative integer           | Draws all values randomly from a binomial distribution with number of trials (n) = `size` and probability of success on each trial (p) = `prob`                                  |
 | ``           | `prob`     | Any number in \[0,1]               |                                                                                                                                                                                  |
 | `lognormal`  | `meanlog`  | Any real number                    | Draws all values randomly from a lognormal distribution (natural log, base _e_) with mean on a log scale of `meanlog` and standard deviation on a log scale of `sdlog`           |
 |              | `sdlog`    | Any non-negative real number       |                                                                                                                                                                                  |
@@ -57,15 +57,16 @@ These global configuration options typically sit at the top of the configuration
 | ------------------------ | ------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------- |
 | file\_is\_unedited       | **required** to not be there                | Remove it!   |                                                                                                |
 | name                     | **required**                                | string       | typically named after the region/location you are modeling                                     |
-| data\_path               |                                             |              |                                                                                                |
+| setup\_name              | **required**                                | string       | ??                                                                                             |
 | start\_date              | **required**                                | date         | model simulation start date                                                                    |
 | end\_date                | **required**                                | date         | model simulation end date                                                                      |
+| data\_path               | **required? optional?**                     | folder path  | base path to folder where ground truth data files are stored                                   |
 | start\_date\_groundtruth | **required?**                               | date         | model simulation start date                                                                    |
 | end\_date\_groundtruth   | **required? optional?**                     | date         | model simulation end date                                                                      |
 | nsimulations             | **required**                                | int          | number of simulations to run \[ALH This needs more clarity, is this repeats, what changes etc] |
 | ~~dt~~                   | **required. MOVED NOW in SEIR:Integration** | float        | simulation time step in days \[ALH clarify, integration time step]                             |
 | dynfilter\_path          | optional                                    | path to file | path to filtering text file \[ALH: deprecated??]                                               |
-| smh\_round               | optional                                    | string       |                                                                                                |
+| smh\_round               | optional                                    | string       | ALH? What is point of this?                                                                    |
 | report\_location\_name   | optional                                    | string       | ALH: deprecated??                                                                              |
 
 For example, to simulate ...
@@ -85,7 +86,7 @@ This section specifies the population structure on which the model will be simul
 
 ### `compartments` section
 
-This section is where users can specify the variables (infection states) that will be tracked in the infectious disease transmission model. The other details of the model are specified in the `seir` section, including transitions between these compartments (`seir::transitions`), the names of the parameters governing the transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`)
+This section is where users can specify the variables (infection states) that will be tracked in the infectious disease transmission model. More details HERE. The other details of the model are specified in the `seir` section, including transitions between these compartments (`seir::transitions`), the names of the parameters governing the transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`)
 
 ### `seeding` section
 
