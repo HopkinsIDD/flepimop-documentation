@@ -164,7 +164,7 @@ Then prepare the pipeline directory (if you have already done that and the pipel
 cd /data/struelo1/flepimop-code/$USER
 export COVID_PATH=$(pwd)/COVIDScenarioPipeline
 cd $COVID_PATH
-git checkout main-flu-subfix2    # replace with main once this PR is merged.
+git checkout main
 git pull
 git lfs install
 git lfs pull
@@ -275,6 +275,17 @@ If you'd like to have more control, you can specify the arguments manually:
 </strong><strong>                    --restart-from-location $RESUME_LOCATION
 </strong></code></pre>
 
+**Commit files to Github.** After the job is successfully submitted, you will now be in a new branch of the data repo. Commit the ground truth data files to the branch on github and then return to the main branch:
+
+<pre><code><strong>git add data/ 
+</strong>git commit -m"scenario run initial" 
+branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+git push --set-upstream origin $branch
+
+git checkout main
+git pull
+</code></pre>
+
 ### Monitor your run
 
 TODO JPSEH WRITE UP TO HERE
@@ -326,6 +337,22 @@ To cancel a job
 ```
 scancel JOB_ID
 ```
+
+### Running an interactive session
+
+To check your code prior to submitting a large batch job, it's often helpful to run an interactive session to debug your code and check everything works as you want. On 🪨🐠 this can be done using `interact` like the below line, which requests an interactive session with 4 cores, 24GB of memory, for 12 hours.&#x20;
+
+```
+interact -p defq -n 4 -m 24G -t 12:00:00
+```
+
+The options here are `[-n tasks or cores]`, `[-t walltime]`, `[-p partition]` and `[-m memory]`, though other options can also be included or modified to your requirements. More details can be found on the [ARCH User Guide](https://marcc.readthedocs.io/Slurm.html#request-interactive-jobs).&#x20;
+
+### Moving files to your local computer
+
+Often you'll need to move files back and forth between Rockfish and your local computer. To do this, you can use Open-On-Demand, or any other command line tool.
+
+`scp -r <user>@rfdtn1.rockfish.jhu.edu:"<file path of what you want>" <where you want to put it in your local>`
 
 ## Installation notes
 
