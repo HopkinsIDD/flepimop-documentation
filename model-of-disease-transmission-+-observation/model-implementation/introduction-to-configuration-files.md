@@ -6,11 +6,13 @@ FlepiMop is set up so that all parameters and other options for running the pipe
 
 We use the `YAML` language syntax to write config files, which are typically named something like `config.yml`. The file is has simple plain text contents and follows a tabbed outline structure. When config files are read by the model code, a data structure encoding the model options is created.
 
+Comments can be added to the config file by starting with the hash key (`#`) then a space. Comments can start anywhere on a line and continue until the end, but if they run over to a new line, a new # must be used at the start of the new line.
+
 ## Example
 
 _(give a simple configuration for a toy model with two subpopulations, SEIR, single "cases" outcome, single seeded infection, single NPI that starts after some time?)_
 
-When refering to config items (individual parameters), we use their full position in the outline. For example, in the sample config file above, we denote
+When referring to config items (individual parameters), we use their full position in the outline. For example, in the sample config file above, we denote
 
 ```
 spatial_setup:

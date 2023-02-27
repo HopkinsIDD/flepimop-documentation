@@ -1,10 +1,10 @@
-# Specifying compartmental model structure
+# Specifying compartmental model
 
 We want to allow users to work with a wide variety of infectious diseases or, in our case, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental differential equations model via the configuration file.
 
 We originally considered asking users to specify each compartment and transition manually. However, we quickly found that created long confusing configuration files, and created a shorthand to more tersely specify both compartments and transitions between them.
 
-### Specifying model compartments (`compartments`)
+## Specifying model compartments (`compartments`)
 
 The first stage of specifying the model is to define the infection states (variables) that the model will track. These "compartments" are defined first in the `compartments` section of the config file, before describing the processes that lead to transitions between them. &#x20;
 
@@ -84,9 +84,11 @@ Notation must be consistent between these sections.&#x20;
 
 ### Specifying compartmental model transitions (`seir::transitions`)
 
+The way we specify transitions between compartments in the model is a bit more complicated than how the compartments, but allows users to specify complex stratified infectious disease models with minimal code. This makes checking, sharing, and updating models more efficient and less error-prone.&#x20;
 
+We specify one or more _transition globs_, each of which corresponds to one or more transitions. Since transition globs are shorthand for collections of transitions, we will explain how to specify a single transition before discussing transition globs.&#x20;
 
-The way we specify transitions is a bit more complicated than compartments. We specify one or more transition globs, each of which corresponds to one or more transitions. Since transition globs are shorthand for collections of transitions, we describe a single transition before discussing transition globs. A transition has 5 pieces associated of information
+A transition has 5 pieces associated of information that a user can specify
 
 * source
 * destination
@@ -94,57 +96,85 @@ The way we specify transitions is a bit more complicated than compartments. We s
 * proportional\_to
 * proportion\_exponent
 
+For more details on the mathematical forms possible for transitions in our models, read the [Model Description section](../../model-description.md#generalized-compartmental-infection-model).
+
+We first consider a simple example of an SI model where individuals may either be vaccinated or unvaccinated, but the vaccine does not change the susceptibility to infection nor the infectiousness of infected individuals.&#x20;
+
 #### Source
 
-The compartment the transition moves people out of as an array
+The compartment the transition moves individuals _out of_ (e.g., the _source_ compartment) as an array. For example, to describe a transition that moves unvaccinated susceptible individuals to another state, we would write
 
 ```
 [S,unvaccinated]
 ```
 
+which corresponds to the compartment `S_unvaccinated`
+
 #### Destination
 
-The compartment the transition moves people into as an array
+The compartment the transition moves individuals _into_ (e.g. the _destination_ compartment) as an array. For example, to describe a transition that moves individuals into the unvaccinated but infected state, we would write
 
 ```
 [I,unvaccinated]
 ```
 
+which corresponds to the compartment `I_unvaccinated`
+
 #### Rate
 
-[Joseph Lemaitre](https://app.gitbook.com/u/vgUi3iqQciVpkdEPuV1EGMpOcIr1 "mention")I'm bad at explaining what rate is
+The rate constant specifying the probability per time that an individual in the source compartment changes state and moves to the destination compartment. For example, to describe a transition that occurs with rate 0.3/time, we would write
 
 ```
 0.3
 ```
 
+instead, we could describe the rate using a parameter `beta`, which can be given a numeric value later:
+
+```
+beta
+```
+
+The interpretation and unit of the rate constant depend on the model details, as the rate may potentially also be per number (or proportion) of individuals in other compartments (see below).
+
 #### Proportional To
 
-A vector of groups of compartments (each of which is an array) corresponding to which compartments the number of people moving is proportional to. Each group of compartments are combined before multiplying to obtain the proportion.
+A vector of groups of compartments (each of which is an array) that modify the overall rate of transition between the source and destination compartment. Each separate group of compartments in the vector are first summed, and then all entries of the vector are multiplied to get the rate modifier. For example, to specify that the transition rate depends on the product of the  number of unvaccinated susceptible individuals and the total infected individuals (vaccinated and unvaccinated), we would write:
 
 ```
 [[[S,unvaccinated]], [[I,unvaccinated],[I, vaccinated]]]
 ```
 
-This one is a bit complicated, so let's unpack what it says. First, let's write compartment names as strings instead of as lists:
+To understand this term, consider the compartments written out as strings
 
 ```
 [[S_unvaccinated], [I_unvaccinated, I_vaccinated]]
 ```
 
-From here, we can say that the transition we are describing is proportional to `S_unvaccinated` and `I_unvaccinated + I_vaccinated`.
+and then sum the terms in each group
+
+```
+[S_unvaccinated, I_unvaccinated + I_vaccinated]
+```
+
+From here, we can say that the transition we are describing is proportional to `S_unvaccinated` and `I_unvaccinated + I_vaccinated,` i.e. the rate depends on the product `S_unvaccinated * (I_unvaccinated + I_vaccinated)`.
 
 #### Proportion Exponent
 
-An exponent for each group of compartments in the proportional to section.
+This is an exponent modifying each group of compartments that contribute to the rate. It is equivalent to the "order" term in chemical kinetics. For example, if the reaction rate for the model above depends linearly on the number of unvaccinated susceptible individuals but on the total infected individuals sub-linearly, for example to a power 0.9, we would write
 
 ```
 [1, 0.9]
 ```
 
+or a power parameter `alpha`, which can be given a numeric value later:
+
+```
+[1, alpha]
+```
+
 #### Summary
 
-Putting it all together, the transition
+Putting it all together, the model transition is specified as
 
 ```
 source: [S, unvaccinated]
@@ -157,11 +187,11 @@ proportion_exponent: [1,0.9]
 corresponds to the following math
 
 $$
-\frac{\delta (\text{S},\text{unvaccinated})}{\delta t} = - 0.3 \times(\text{S},\text{unvaccinated})^1 \times ((\text{I},\text{unvaccinated}) +(\text{I},\text{vaccinated}))^{0.9}
+\frac{\delta \text{S}_\text{unvaccinated}}{\delta t} = - \beta \text{S}_\text{unvaccinated}^1  (\text{I}_\text{unvaccinated}+\text{I}_\text{vaccinated})^{\alpha}
 $$
 
 $$
-\frac{\delta (\text{I},\text{unvaccinated})}{\delta t} = +0.3 \times(\text{S},\text{unvaccinated})^1 \times ((\text{I},\text{unvaccinated}) +(\text{I},\text{vaccinated}))^{0.9}
+\frac{\delta \text{I}_\text{unvaccinated}}{\delta t} = \beta \text{S}_\text{unvaccinated}^1 (\text{I}_\text{unvaccinated}+\text{I}_\text{vaccinated})^{\alpha}
 $$
 
 ### Transition Globs
@@ -294,3 +324,5 @@ corresponds to the following transitions
 #### Warning
 
 We warn the user that it is possible to specify quite large models with not that many lines of config. The more compartments and transitions you specify, the longer the model will take to run, and the more memory it will require.
+
+## Specifying compartmental model parameters

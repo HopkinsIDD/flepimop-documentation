@@ -6,7 +6,7 @@ This section of the configuration file is where users can input the information 
 
 ## Items and options
 
-ALH:This needs to be updated, meanings of some of these unclear and many likely deprecated. Add default values. All variables need to be connected to how they're described in the Model Description section
+
 
 | Config Item            | Required?                                                                        | Type/Format                                                        | Description                                |
 | ---------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------ |
@@ -46,7 +46,7 @@ geoid,population,include_in_report
 
 ### `mobility` file
 
-The `mobility` file is a .csv file (it has to contain .csv as extension) with long form comma separated values. Columns have to be named `ori`, `dest`, `amount,` with amount being the average number individuals moving from place `ori` to place `dest` on any given day. Unassigned relations are assumed to be zero. The location entries in the `ori` and `dest` columns should match exactly the `nodenames` column in `geodata.csv`
+The `mobility` file is a .csv file (it has to contain .csv as extension) with long form comma separated values. Columns have to be named `ori`, `dest`, `amount,` with amount being the average number individuals moving from place `ori` to place `dest` on any given day. Details on the mathematics of this model of contact are explained in the [Model Description section](../model-description.md#mixing-between-subpopulations). Unassigned relations are assumed to be zero. The location entries in the `ori` and `dest` columns should match exactly the `nodenames` column in `geodata.csv`
 
 #### Example mobility file format
 
