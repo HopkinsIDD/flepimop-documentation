@@ -86,7 +86,7 @@ Notation must be consistent between these sections.&#x20;
 
 The way we specify transitions between compartments in the model is a bit more complicated than how the compartments, but allows users to specify complex stratified infectious disease models with minimal code. This makes checking, sharing, and updating models more efficient and less error-prone.&#x20;
 
-We specify one or more _transition globs_, each of which corresponds to one or more transitions. Since transition globs are shorthand for collections of transitions, we will explain how to specify a single transition before discussing transition globs.&#x20;
+We specify one or more _transition globs_, each of which corresponds to one or more transitions. Since transition globs are shorthand for collections of transitions, we will first explain how to **specify a single transition** before discussing transition globs.&#x20;
 
 A transition has 5 pieces associated of information that a user can specify
 
@@ -98,7 +98,13 @@ A transition has 5 pieces associated of information that a user can specify
 
 For more details on the mathematical forms possible for transitions in our models, read the [Model Description section](../../model-description.md#generalized-compartmental-infection-model).
 
-We first consider a simple example of an SI model where individuals may either be vaccinated or unvaccinated, but the vaccine does not change the susceptibility to infection nor the infectiousness of infected individuals.&#x20;
+We first consider a simple example of an SI model where individuals may either be vaccinated (_v_) or unvaccinated (_u_), but the vaccine does not change the susceptibility to infection nor the infectiousness of infected individuals.&#x20;
+
+<figure><img src="../../../.gitbook/assets/simple_model_for_transitions.png" alt=""><figcaption></figcaption></figure>
+
+We will focus on describing the first transition of this model, the rate at which unvaccinated individuals move from the susceptible to infected state.
+
+### Specifying a single transition
 
 #### Source
 
@@ -122,10 +128,10 @@ which corresponds to the compartment `I_unvaccinated`
 
 #### Rate
 
-The rate constant specifying the probability per time that an individual in the source compartment changes state and moves to the destination compartment. For example, to describe a transition that occurs with rate 0.3/time, we would write
+The rate constant specifying the probability per time that an individual in the source compartment changes state and moves to the destination compartment. For example, to describe a transition that occurs with rate 5/time, we would write
 
 ```
-0.3
+5
 ```
 
 instead, we could describe the rate using a parameter `beta`, which can be given a numeric value later:
@@ -180,7 +186,7 @@ Putting it all together, the model transition is specified as
 source: [S, unvaccinated]
 destination: [I, unvaccinated]
 proportional_to: [[[S,unvaccinated]], [[I,unvaccinated],[I,vaccinated]]]
-rate: [0.3]
+rate: [5]
 proportion_exponent: [1,0.9]
 ```
 
@@ -194,15 +200,21 @@ $$
 \frac{\delta \text{I}_\text{unvaccinated}}{\delta t} = \beta \text{S}_\text{unvaccinated}^1 (\text{I}_\text{unvaccinated}+\text{I}_\text{vaccinated})^{\alpha}
 $$
 
+with parameter and parameter (we will describe how to use parameter symbols in the transitions and specify their numeric values separately in the section [Specifying compartmental model parameters](./#specifying-compartmental-model-parameters)).&#x20;
+
 ### Transition Globs
 
-The basic idea for a transition is to take each compartment component, and allow one or more components to be specified instead. It creates transitions by broadcasting across components. To assist in this, we allow multiple rate values to be specified across different components, and then reduce to a single rate by multiplication. Again, let's go through an example.
+We now explain a shorthand we have developed for specifying multiple transitions that have similar forms all at once, via _transition globs_. The basic idea is that for each component of the single transitions described above where a term corresponded to a single model compartment, we can instead specify one _or more_ compartment. Similarly, multiple rate values can be specified at once, for each involved compartment. From one transition glob, multiple individual transitions are created, by _broadcasting_ across the specified compartments.&#x20;
 
 For transition globs, any time you could specify multiple arguments as a list, you may instead specify one argument as a non-list, which will be used for every broadcast. So \[1,1,1] is equivalent to 1 if the dimension of that broadcast is 3.
 
+We continue with the same SI model example, where individuals are stratified by vaccination status:
+
+<figure><img src="../../../.gitbook/assets/simple_model_for_transitions_v2.png" alt=""><figcaption></figcaption></figure>
+
 #### Source
 
-We allow one or more arguments to be specified for each compartment. So to specify both susceptible compartments we would use
+We allow one or more arguments to be specified for each compartment. So to specify the transitions out of both susceptible compartments (`S_unvaccinated` and `S_unvaccinated`), we would use
 
 ```
 [[S],[unvaccinated,vaccinated]]
@@ -210,7 +222,7 @@ We allow one or more arguments to be specified for each compartment. So to speci
 
 #### Destination
 
-The destination should be the same shape as the source, and in the same relative order. So to specify a transition from (S,unvaccinated) to (I,unvaccinated) and (S,vaccinated) to (I,vaccinated), we would write
+The destination variable should be the same shape as the `source`, and in the same relative order. So to specify a transition from `S_unvaccinated` to I`_unvaccinated` and `S_vaccinated` to I`_vaccinated`, we would write the `destination` as
 
 ```
 [[I],[unvaccinated,vaccinated]]
@@ -222,29 +234,29 @@ If instead we wrote:
 [[I],[vaccinated,unvaccinated]]
 ```
 
-we would have a transition from (S,unvaccinated) to (I,vaccinated) and (S,vaccinated) to (I,unvaccinated).
+we would have a transition from `S_unvaccinated` to I`_vaccinated` and `S_vaccinated` to I`_unvaccinated`.
 
 #### Rate
 
 Since there are two changes to x a time. The first change we make, is to allow specifying a rate for each component, which are multiplied together. So,
 
 ```
-[0.1, 3]
+[3, 0.6]
 ```
 
 would correspond to an rate of
 
 ```
-[0.1 * 3]
+[3 * 0.6]
 ```
 
 By itself, this is useless, but we also allow broadcasting of each component:
 
 ```
-[[0.1], [3,0.5]]
+[[3], [0.6,0.5]]
 ```
 
-This would mean our transition from (S,unvaccinated) to (I,unvaccinated) would have a rate of `0.1 * 3` while our transition from (S,vaccinated) to (I,vaccinated) would have a rate of `0.1 * 0.5`.
+This would mean our transition from `S_unvaccinated` to I`_unvaccinated` would have a rate of `3 * 0.6` while our transition from `S_vaccinated` to I`_vaccinated` would have a rate of `3 * 0.5`.
 
 #### Proportional To
 
@@ -272,9 +284,9 @@ into those groups
 ]
 ```
 
-From here, we can say that we are describing two transitions. Both are proportional to the same compartments (S,unvaccinated) and all of I.
+From here, we can say that we are describing two transitions. Both occur proportionally to the same compartments: `S_unvaccinated` and the total number of infections (I`_unvaccinated+`I`_vaccinated`).
 
-If, for example, we would not expect contact between unvaccinated infected and vaccinated susceptibles, we would instead write:
+If, for example, we want to model a situation where vaccinated susceptibles cannot be infected by unvaccinated individuals, we would instead write:
 
 ```
 [
@@ -296,33 +308,94 @@ Similarly to rate and proportional to, we provide an exponent for component and 
 Putting it all together, the transition glob
 
 ```
-source: [[S],[unvaccinated,vaccinated]]
-destination: [[I],[unvaccinated,vaccinated]]
-proportional_to: [
-                   [[S,unvaccinated], [S,vaccinated]],
-                   [[I,unvaccinated],[I, vaccinated]], [[I, vaccinated]]
-                 ]
-rate: [[0.1], [3,0.5]]
-proportion_exponent: [[1,1], [0.9,0.8]]
+seir:
+  transitions:
+    source: [[S],[unvaccinated,vaccinated]]
+    destination: [[I],[unvaccinated,vaccinated]]
+    proportional_to: [
+                       [[S,unvaccinated], [S,vaccinated]],
+                       [[I,unvaccinated],[I, vaccinated]], [[I, vaccinated]]
+                     ]
+    rate: [[3], [0.6,0.5]]
+    proportion_exponent: [[1,1], [0.9,0.8]]
 ```
 
-corresponds to the following transitions
+is equivalent to the following transitions
 
 ```
-- source: [S,unvaccinated]
-  destination: [I,unvaccinated]
-  proportional_to: [[[S,unvaccinated]], [[I,unvaccinated],[I, vaccinated]]]
-  proportion_exponent: [1 * 0.9]
-  rate: [0.1*3]
-- source: [S,vaccinated]
-  destination: [I,vaccinated]
-  proportional_to: [[[S,vaccinated]], [[I, vaccinated]]]
-  proportion_exponent: [1 * 0.8]
-  rate: [0.1*0.5]
+seir:
+  transitions:
+    - source: [S,unvaccinated]
+      destination: [I,unvaccinated]
+      proportional_to: [[[S,unvaccinated]], [[I,unvaccinated],[I, vaccinated]]]
+      proportion_exponent: [1 * 0.9]
+      rate: [3*0.6]
+    - source: [S,vaccinated]
+      destination: [I,vaccinated]
+      proportional_to: [[[S,vaccinated]], [[I, vaccinated]]]
+      proportion_exponent: [1 * 0.8]
+      rate: [3*0.5]
 ```
 
 #### Warning
 
-We warn the user that it is possible to specify quite large models with not that many lines of config. The more compartments and transitions you specify, the longer the model will take to run, and the more memory it will require.
+We warn the user that it with this shorthand, it is possible to specify large models with few lines of code in the configuration file. The more compartments and transitions you specify, the longer the model will take to run, and the more memory it will require.
 
-## Specifying compartmental model parameters
+## Specifying compartmental model parameters (`seir::parameters`)
+
+When the transitions of the compartmental model are specified as described above, they can either be entered as numeric values (e.g., `0.1`) or as strings which can be assigned numeric values later (e.g., `beta`). We recommend the later method for all but the simplest models, since parameters may recur in multiple transitions and so that parameter values may be edited without risk of editing the model structure itself. It also improves readability of the configuration files.&#x20;
+
+Parameters can be assigned values by simply stating their numeric value after their name. For example, in a config describing a simple SIR model with transmission rate $$\beta$$(`beta`)= 0.1/day and recovery rate $$\gamma$$ (`gamma`) = 0.2/day. This could be specified as&#x20;
+
+```
+seir:
+  parameters:
+    beta: 0.1
+    gamma: 0.2
+```
+
+The full model section of the config could then read
+
+```
+compartments:
+  infection_state: ["S", "I", "R"]
+  
+seir:
+  transitions:
+    # infection
+    - source: [S]
+      destination: [I]
+      proportional_to: [[S], [I]]
+      rate: [beta]
+      proportion_exponent: 1
+    # recovery
+    - source: [I]
+      destination: [R]
+      proportional_to: [[I]]
+      rate: [gamma]
+      proportion_exponent: 1
+  parameters:
+    beta: 0.1
+    gamma: 0.2
+```
+
+If there are no parameter values that need to be specified (all rates given numeric values when defining model transitions), the `seir::parameters` section of the config can be left blank or omitted.&#x20;
+
+Parameter values can also be specified as random values drawn from a distribution. In this case, every time the model is run (NOTE slot vs iteration), a new random values of the parameter is drawn. For example, to choose the same value of beta = 0.1 each time the model is run but to choose a random values of gamma with mean on a log scale of $$e^{-1.6} = 0.2$$ and standard deviation  on a log scale of $$e^{0.2} = 1.2$$ (e.g., 1.2-fold variation).&#x20;
+
+```
+seir:
+  parameters:
+    beta: 
+      value:
+        distribution: fixed
+        value: 0.1
+    gamma: 
+      values:
+        distribution: lognorm
+        logmean: -1.6
+        logsd: 0.2
+```
+
+Details on the possible distributions that are currently available, and how to specify their parameters, is provided in the [Introduction to configuration files section](../introduction-to-configuration-files.md#distributions).
+
