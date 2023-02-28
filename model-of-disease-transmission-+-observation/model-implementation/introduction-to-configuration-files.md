@@ -55,21 +55,20 @@ Parameters and other options specified in the configuration files can take on a 
 
 These global configuration options typically sit at the top of the configuration file.
 
-| Item                     | Required?                                   | Type/Format  | Description                                                                                    |
-| ------------------------ | ------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------- |
-| file\_is\_unedited       | **required** to not be there                | Remove it!   |                                                                                                |
-| name                     | **required**                                | string       | typically named after the region/location you are modeling                                     |
-| setup\_name              | **required**                                | string       | ??                                                                                             |
-| start\_date              | **required**                                | date         | model simulation start date                                                                    |
-| end\_date                | **required**                                | date         | model simulation end date                                                                      |
-| data\_path               | **required? optional?**                     | folder path  | base path to folder where ground truth data files are stored                                   |
-| start\_date\_groundtruth | **required?**                               | date         | model simulation start date                                                                    |
-| end\_date\_groundtruth   | **required? optional?**                     | date         | model simulation end date                                                                      |
-| nsimulations             | **required**                                | int          | number of simulations to run \[ALH This needs more clarity, is this repeats, what changes etc] |
-| ~~dt~~                   | **required. MOVED NOW in SEIR:Integration** | float        | simulation time step in days \[ALH clarify, integration time step]                             |
-| dynfilter\_path          | optional                                    | path to file | path to filtering text file \[ALH: deprecated??]                                               |
-| smh\_round               | optional                                    | string       | ALH? What is point of this?                                                                    |
-| report\_location\_name   | optional                                    | string       | ALH: deprecated??                                                                              |
+| Item                     | Required?                    | Type/Format  | Description                                                                                    |
+| ------------------------ | ---------------------------- | ------------ | ---------------------------------------------------------------------------------------------- |
+| file\_is\_unedited       | **required** to not be there | Remove it!   |                                                                                                |
+| name                     | **required**                 | string       | typically named after the region/location you are modeling                                     |
+| setup\_name              | **required**                 | string       | ??                                                                                             |
+| start\_date              | **required**                 | date         | model simulation start date                                                                    |
+| end\_date                | **required**                 | date         | model simulation end date                                                                      |
+| data\_path               | **required? optional?**      | folder path  | base path to folder where ground truth data files are stored                                   |
+| start\_date\_groundtruth | **required?**                | date         | model simulation start date                                                                    |
+| end\_date\_groundtruth   | **required? optional?**      | date         | model simulation end date                                                                      |
+| nsimulations             | **required**                 | int          | number of simulations to run \[ALH This needs more clarity, is this repeats, what changes etc] |
+| dynfilter\_path          | optional                     | path to file | path to filtering text file \[ALH: deprecated??]                                               |
+| smh\_round               | optional                     | string       | ALH? What is point of this?                                                                    |
+| report\_location\_name   | optional                     | string       | ALH: deprecated??                                                                              |
 
 For example, to simulate ...
 
@@ -84,7 +83,7 @@ report_location_name: Hawaii
 
 ### `spatial_setup` section
 
-This section specifies the population structure on which the model will be simulated, including the names and sizes of each subpopulation and the connectivity between them. More details [here](specifying-compartmental-model-parameters.md).
+This section specifies the population structure on which the model will be simulated, including the names and sizes of each subpopulation and the connectivity between them. More details [here](broken-reference).
 
 ### `compartments` section
 

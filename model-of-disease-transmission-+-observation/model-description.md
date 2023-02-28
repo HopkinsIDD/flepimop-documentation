@@ -26,7 +26,7 @@ $$
 \frac{dX}{dt} = b X Z^a.
 $$
 
-Details on the numerical integration procedure for simulating such an equation is given in the Advanced section.
+Details on the numerical integration procedure for simulating such an equation is given in the [Advanced](../more/advanced/) section.
 
 Alternatively, the model can be simulated as a **discrete time stochastic process**, where the number of individuals transitioning between states $$X$$ and $$Y$$ at time $$t$$ is a binomial random variable
 
@@ -34,7 +34,7 @@ $$
 N_{X\rightarrow Y}(t) = \textrm{Binom}(X,1-e^{-\Delta{t} \cdot bZ(t)^a}),
 $$
 
-where the timestep $$\Delta{t}$$ is a chosen parameter that must be small for equivalence between continuous and discrete time versions of the model.
+where the second term is the expected fraction of individuals in the $$X$$ state at time $$t$$ who would transition to $$Y$$ by time $$t+\Delta t$$ if there were no other changes to $$X$$ in this time, and timestep $$\Delta{t}$$ is a chosen parameter that must be small for equivalence between continuous and discrete time versions of the model.
 
 #### SEIR Model
 

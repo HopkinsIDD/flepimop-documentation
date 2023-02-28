@@ -82,7 +82,7 @@ These compartments are referenced in multiple different subsequent sections of t
 
 Notation must be consistent between these sections.&#x20;
 
-### Specifying compartmental model transitions (`seir::transitions`)
+## Specifying compartmental model transitions (`seir::transitions`)
 
 The way we specify transitions between compartments in the model is a bit more complicated than how the compartments, but allows users to specify complex stratified infectious disease models with minimal code. This makes checking, sharing, and updating models more efficient and less error-prone.&#x20;
 
@@ -190,7 +190,7 @@ rate: [5]
 proportion_exponent: [1,0.9]
 ```
 
-corresponds to the following math
+would correspond to the following model if expressed as an ordinary differential equation
 
 $$
 \frac{\delta \text{S}_\text{unvaccinated}}{\delta t} = - \beta \text{S}_\text{unvaccinated}^1  (\text{I}_\text{unvaccinated}+\text{I}_\text{vaccinated})^{\alpha}
@@ -208,9 +208,9 @@ We now explain a shorthand we have developed for specifying multiple transitions
 
 For transition globs, any time you could specify multiple arguments as a list, you may instead specify one argument as a non-list, which will be used for every broadcast. So \[1,1,1] is equivalent to 1 if the dimension of that broadcast is 3.
 
-We continue with the same SI model example, where individuals are stratified by vaccination status:
+We continue with the same SI model example, where individuals are stratified by vaccination status, but expand it to allow infection to occur at different rates in vaccinated and unvaccinated individuals:
 
-<figure><img src="../../../.gitbook/assets/simple_model_for_transitions_v2.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../../.gitbook/assets/simple_model_for_transitions_v2.png" alt=""><figcaption><p>A stratified SI model including vaccination</p></figcaption></figure>
 
 #### Source
 
@@ -345,6 +345,14 @@ We warn the user that it with this shorthand, it is possible to specify large mo
 
 When the transitions of the compartmental model are specified as described above, they can either be entered as numeric values (e.g., `0.1`) or as strings which can be assigned numeric values later (e.g., `beta`). We recommend the later method for all but the simplest models, since parameters may recur in multiple transitions and so that parameter values may be edited without risk of editing the model structure itself. It also improves readability of the configuration files.&#x20;
 
+Parameters can take on three types of values
+
+* Fixed values
+* Value drawn from distributions
+* Values read from timeseries specified in a data file
+
+### Specifying fixed parameter values
+
 Parameters can be assigned values by simply stating their numeric value after their name. For example, in a config describing a simple SIR model with transmission rate $$\beta$$(`beta`)= 0.1/day and recovery rate $$\gamma$$ (`gamma`) = 0.2/day. This could be specified as&#x20;
 
 ```
@@ -379,7 +387,34 @@ seir:
     gamma: 0.2
 ```
 
+For the stratified SI model described [above](./#transition-globs), this portion of the config would read
+
+```
+compartments:
+  infection_state: ["S", "I", "R"]
+  vaccination_status: ["unvaccinated", "vaccinated"]
+  
+seir:
+  transitions:
+    source: [[S],[unvaccinated,vaccinated]]
+    destination: [[I],[unvaccinated,vaccinated]]
+    proportional_to: [
+                       [[S,unvaccinated], [S,vaccinated]],
+                       [[I,unvaccinated],[I, vaccinated]], [[I, vaccinated]]
+                     ]
+    rate: [[beta], [theta_u,theta_v]]
+    proportion_exponent: [[1,1], [alpha_u,alpha_v]]
+  parameters:
+    beta: 0.1
+    theta_u: 0.6
+    theta_v: 0.5
+    alpha_u: 0.9
+    alpha_v: 0.8
+```
+
 If there are no parameter values that need to be specified (all rates given numeric values when defining model transitions), the `seir::parameters` section of the config can be left blank or omitted.&#x20;
+
+### Specifying parameters values from distributions
 
 Parameter values can also be specified as random values drawn from a distribution. In this case, every time the model is run (NOTE slot vs iteration), a new random values of the parameter is drawn. For example, to choose the same value of beta = 0.1 each time the model is run but to choose a random values of gamma with mean on a log scale of $$e^{-1.6} = 0.2$$ and standard deviation  on a log scale of $$e^{0.2} = 1.2$$ (e.g., 1.2-fold variation).&#x20;
 
@@ -399,3 +434,90 @@ seir:
 
 Details on the possible distributions that are currently available, and how to specify their parameters, is provided in the [Introduction to configuration files section](../introduction-to-configuration-files.md#distributions).
 
+Note that understanding when a new parameter values from this distribution is drawn becomes more complicated when the model is run in [Inference](../../../model-inference/inference-description.md) mode. In Inference mode, we distinguish model runs as occurring in different "slots" - ie completely independent model instances that could be run on different processing cores in a parallel computing environment - and different "iterations" of the model that occur sequentially when the model is being fit to data and update fitted parameters each time based on the fit quality in the previous found. A new parameter values is only drawn from the above distribution **once per slot**. Within a slot, at each iteration during an inference run, the parameter is only changed if it is being fit and the inference algorithm decides to perturb it to test a possible improved fit. Otherwise, it would maintain the same values no matter how many times the model was run within a slot.
+
+### Specifying parameter values as timeseries from data files
+
+Sometimes, we want to be able to specify model parameters that have different values at different timepoints. For example, the relative transmissibility may vary throughout the year based on the weather conditions, or the rate at which individuals are vaccinated may vary as vaccine programs are rolled out. One way to do this is to instead specify the parameter values as a timeseries.&#x20;
+
+This can be done by providing a data file in .csv format that has a list of values of the parameter for a corresponding timepoint and subpopulation name. One column should be `date` and the others should be the `geoid` names of each subpopulation.   For time periods in between those specified in the file, the model will linearly interpolate between parameter values.&#x20;
+
+For example, for an SIR model simple [two-province population structure](../specifying-population-structure.md#example-1) where the relative transmissibility peaks on January 1 then decreases linearly to a minimal value on June 1 then increases linearly again, but varies more in the small province than the large province, the `theta` parameter could be constructed from the file **seasonal\_transmission.csv** with contents
+
+```
+date,        small_province,    large_province
+2022-01-01,  1.5,               1.3
+2022-05-01,  0.5,               0.7 
+2022-12-31,  1.5,               1.3
+```
+
+as a part of a configuration file with the model sections:
+
+```
+compartments:
+  infection_state: ["S", "I", "R"]
+
+seir:
+  transitions:
+    # infection
+    - source: [S]
+      destination: [I]
+      proportional_to: [[S], [I]]
+      rate: [beta*theta]
+      proportion_exponent: 1
+    # recovery
+    - source: [I]
+      destination: [R]
+      proportional_to: [[I]]
+      rate: [gamma]
+      proportion_exponent: 1
+  parameters:
+    beta: 0.1
+    gamma: 0.2
+    theta:
+       timeseries: data/model_input/seasonal_transmission.csv
+```
+
+The first and last date in the `date` column should correspond to the start\_date and end\_date for the simulation specified in the header of the config.
+
+Note that there is an alternative way to specify time dependent in parameter values that is described in the [Specifying interventions](../specifying-interventions/intervention-templates.md) section. That method allows the user to define intervention parameters that apply specific additive or multiplicative shifts to other parameter values for a defined time interval. Interventions are useful if the parameter doesn't vary frequently and if the values of the shift is unknown and it is desired to either sample over uncertainty in it or try to estimate its value by fitting the model to data. If the parameter varies frequently and its value or relative value over time is known, specifying it as a timeseries is more efficient.&#x20;
+
+## Specifying model simulation method `(seir::integration)`
+
+A compartmental model defined using the notation in the previous sections describes rules for classifying individuals in the population based on infection state dynamically, but does not uniquely specify the mathematical framework that should be used to simulate the model.&#x20;
+
+Our framework allows for two major methods for implementing compartmental models of disease transmission:
+
+* &#x20;ordinary differential equations, which are completely deterministic, operate in continuous time (consider infinitesimally small timesteps), and allow for arbitrary fractions of the population (ie not just discrete individuals) to move between model compartments.&#x20;
+* discrete time stochastic process, which tracks discrete individuals and produces random variation in the number of individuals transitioning between states for any given rate, and which allows transitions between states only to occur at discrete time intervals
+
+The mathematics behind each implementation is described in the [Model Description](../../model-description.md) section
+
+| Config item                   | Required? | Type/Format              | Description                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------- | --------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ? unknown name. `stochastic`? | ?         | boolean                  | `FALSE` to run the model deterministically, `TRUE` to run stochastically                                                                                                                                                                                                                                                                                                |
+| `method`                      | optional  | string                   | The algorithm used to numerically integrate the system of differential equations, if `stochastic`=`FALSE`. Current possible values are `rk4`, which uses a 4th order Runge-Kutta algorithm,  or `legacy`(Default) which uses the transition rates for the stochastic model but always chooses the average rate.  If stochastic = TRUE then the method cannot be `rk4`.  |
+| `dt`                          | ?         | Any positive real number | The timestep used for the numerical integration or discrete time stochastic update                                                                                                                                                                                                                                                                                      |
+
+**``**
+
+For example, to simulate a model deterministically using the 4th order Runge-Kutta algorithm for numerical integration with a timestep of 1 day:
+
+```
+seir:
+  integration:
+     stochastic: FALSE
+     method: rk4
+     dt: 1.00
+```
+
+Alternatively, to simulate a model stochastically with a timestep of 0.1 days
+
+```
+seir:
+  integration:
+     stochastic: TRUE
+     dt: 0.1
+```
+
+For any method, the results of the model will be more accurate when the timestep is smaller (i.e., output will more precisely match the mathematics of the model description and be invariant to the choice of timestep). However, the computing time required to simulate the model for a certain time range of interest increases with the number of timesteps required (i.e., with smaller timesteps). In our experience, the 4th order Runge-Kutta algorithm (for details see [Advanced](../../../more/advanced/) section) is a very accurate method of numerically integrating such models and can handle timesteps as large as roughly a day for models with the maximum per capita transition rates in this same order of magnitude. However, the discrete time stochastic model or the legacy method for integrating the model in deterministic mode require smaller timesteps to be accurate (around 0.1 for COVID-19-like dynamics in our experience.&#x20;
