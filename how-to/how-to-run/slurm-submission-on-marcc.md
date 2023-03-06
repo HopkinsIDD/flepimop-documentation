@@ -255,7 +255,19 @@ rm -r model_output
 
 ### Launch your inference batch job
 
-Type the following command to launch:&#x20;
+When an inference batch job is launched, a few post processing scripts are called to run automatically `postprocessing-scripts.sh.` You can manually change what you want to run by editing this script. To run this as is, you first need to define which pathogen you are working with:
+
+```bash
+# for COVID
+export PATHOGEN=covid19
+
+# for Flu
+export PATHOGEN=flu
+```
+
+Now you're fully set to go 🎉
+
+To launch the whole inference batch job, type  the following command:
 
 ```bash
 python $COVID_PATH/batch/inference_job.py --slurm 2>&1 | tee $COVID_RUN_INDEX_submission.log
