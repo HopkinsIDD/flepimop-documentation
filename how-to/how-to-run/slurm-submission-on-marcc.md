@@ -310,7 +310,16 @@ Two types of logfiles: in \`$DATA\_PATH\`: slurm-JOBID\_SLOTID.out and and filte
 
 
 
-###
+### Helpful commands
+
+When approching the file number quota, type
+
+```bash
+find . -maxdepth 1 -type d | while read -r dir
+ do printf "%s:\t" "$dir"; find "$dir" -type f | wc -l; done 
+```
+
+to find which subfolders contains how many files
 
 ## Common errors
 
