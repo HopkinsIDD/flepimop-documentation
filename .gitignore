@@ -1,0 +1,10 @@
+.DS_Store
+Tex/__pycache__/
+Tex/*.aux
+Tex/*.bbl
+Tex/*.blg
+Tex/*.log
+Tex/*.out
+Tex/*.pdf
+Tex/*.synctex.gz
+Tex/*.toc
