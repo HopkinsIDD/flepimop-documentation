@@ -184,6 +184,7 @@ Now flepiMoP is ready 🎉. Now you need to set $DATA\_PATH to your data folder.
 ```bash
 cd /data/struelo1/flepimop-code/$USER
 export DATA_PATH=$(pwd)/COVID19_USA
+export GT_DATA_SOURCE="csse_case, nchs_death, hhs_hosp"
 ```
 
 for Flu do:&#x20;
