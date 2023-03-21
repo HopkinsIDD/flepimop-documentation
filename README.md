@@ -8,10 +8,10 @@ It was initially designed in early 2020 and was routinely used to provide projec
 
 However, the pipeline is much more general and can be used to simulate the dynamics of any infection that can be expressed as a [compartmental epidemic model](https://en.wikipedia.org/wiki/Compartmental\_models\_in\_epidemiology). These include applications in chemical reaction kinetics, pharmacokinetics, within-host disease dynamics, or applications in the social sciences.
 
-In addition to producing forward simulations given a specified model and parameter values, the pipeline can also attempt to optimize unknown parameters (e.g. transmission rate, case detection rate, intervention  efficacy) to fit the model to datasets the user provides (e.g. hospitalizations due to severe di sease) using a Bayesian inference framework. This feature allows the pipeline to be utilized for short-term forecasting or longer-term scenario projections for ongoing epidemics, since it can simultaneously be fit to data for dates in the past and then use best-fit parameters to make projections into the future.&#x20;
+In addition to producing forward simulations given a specified model and parameter values, the pipeline can also attempt to optimize unknown parameters (e.g. transmission rate, case detection rate, intervention  efficacy) to fit the model to datasets the user provides (e.g. hospitalizations due to severe disease) using a Bayesian inference framework. This feature allows the pipeline to be utilized for short-term forecasting or longer-term scenario projections for ongoing epidemics, since it can simultaneously be fit to data for dates in the past and then use best-fit parameters to make projections into the future.&#x20;
 
 {% hint style="warning" %}
-* The current COVIDScenarioPipeline branch for run is: `main`
+* The current flepiMoP branch for run is: `main`
 * The current docker version is: `latest-dev`
 * The current COVID19\_USA branch is: `main`
 {% endhint %}
