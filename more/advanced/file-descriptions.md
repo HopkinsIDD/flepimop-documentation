@@ -1,28 +1,69 @@
 # File descriptions
 
-## COVIDScenarioPipeline
+## FlepiMoP
 
-[https://github.com/HopkinsIDD/COVIDScenarioPipeline](https://github.com/HopkinsIDD/COVIDScenarioPipeline)
+[https://github.com/HopkinsIDD/flepiMoP](https://github.com/HopkinsIDD/flepiMoP)
 
 Current branch: `main`
 
 This repository contains all the code underlying the mathematical model and the data fitting procedure, as well as ...
 
-To actually run the model, this repository folder must be located inside a location folder (e.g. `COVID19_USA`) which contains additional files describing the specifics of the model to be run (i.e. the config file), all the necessary data/parameters, and ... and
+To actually run the model, this repository folder must be located inside a location folder (e.g. `COVID19_USA`) which contains additional files describing the specifics of the model to be run (i.e. the config file), all the necessary input data (i.e. the population structure), and any data to which the model will be fit (i.e. cases and death counts each day)
+
+### **/gempyor\_pkg**
+
+This directory contains the core Python code that creates and simulates generic compartmental models and additionally simulates observed variables. This code is called `gempyor` for **General Epidemics Modeling Pipeline with Yterventions and Outcome Reporting.** The code in gempyor is called from R scripts (see **/main\_scripts** and **/R** sections below) that read the config, run the model simulation via gempyor as required, read in data, and run the model inference algorithms.&#x20;
+
+* pyproject.toml - TBA
+* setup.cfg
+
+#### **/gempyor\_pkg/src/gempyor/**
+
+* seir.py - Contains the core code for simulating the mathematical model. Takes in the model definition and parameters from the config, and outputs a file with a timeseries of the value of each state variable (# of individuals in each compartment)
+* simulate\_seir.py -&#x20;
+* steps\_rk.py -&#x20;
+* steps\_source.py -&#x20;
+* outcomes.py - Contains the core code for generating the outcome variables. Takes in the output of the mathematical model and parameters from the config, and outputs a file with a timeseries of the value of each outcome (observed) variable
+* simulate\_outcomes.py -&#x20;
+* setup.py
+* file\_paths.py -&#x20;
+* compartments.py
+* parameters.py
+* results.py
+* seeding\_ic.py
+* /NPI/
+  * base.py -&#x20;
+  * Reduce.py -&#x20;
+  * ReduceR0.py -&#x20;
+  * MultiTimeReduce.py -&#x20;
+  * ReduceInterven.py -&#x20;
+* /dev - contains functions that are still in development
+* /data - ?
+
+#### **/gempyor\_pkg/docs**
+
+Contains notebooks with some `gempyor`-specific documentation and examples
+
+* Rinterface.Rmd - And R notebook that provides some background on `gempyor` and describes how to run it as a standalone package in python, without the R wrapper scripts or the Docker.&#x20;
+* Rinterface.html - HTML output of Rinterface.Rmd
+
+
 
 ### **/R**
 
-#### **/R/scripts**
+### **/main\_scripts**
 
-* filter\_MC.R
-* full\_filter.R
-* build\_US\_setup.R
-* build\_nonUS\_setup.R
-*
+This directory contains the R scripts that takes the specifications in the configuration file and sets up the model simulation, reads the data, and performs inference.&#x20;
 
-#### **/R/pkgs**
+* inference\_main.R - This is the master R script used to run the model. It distributes the model runs across computer cores, setting up runs for all the scenarios specified in the config, and for each model iteration used in the parameter inference. Note that despite the name "inference" in this file, this script must be used to run the model even if no parameter inference is conducted
+* inference\_slot.R - This script contains the main code of the inference algorithm.&#x20;
+* create\_seeding.R -&#x20;
 
-*   **covidcommon**
+### **/R\_packages**
+
+This directory contains the core R code - organized into functions within packages - that handle the model setup, data pulling and processing, conducting parameter inference for the model, and manipulating model output.
+
+*   **flepicommon**
 
     * config.R
     * DataUtils.R
@@ -31,16 +72,15 @@ To actually run the model, this repository folder must be located inside a locat
     * compartments.R
 
 
-*   **hospitalization**
+*   **inference** - contains code to&#x20;
 
-    * hospdeath.R
-
-
-*   **inference**
-
-    * groundtruth.R
-    * functions.R
-    * filter\_MC\_runner\_funcs.R
+    * groundtruth.R - contains functions for pulling ground truth data from various sources. Calls functions in the `flepicommon` package
+    * functions.R - contains many functions used in running the inference algorithm
+    * inference\_slot\_runner\_funcs.R - contains many functions used in running the inference algorithm
+    * inference\_to\_forecast.R -&#x20;
+    * documentation.Rmd - Summarizes the documentation relevant to the inference package, including the configuration file options relevant to model fitting
+    * InferenceTest.R -&#x20;
+    * /tests/ -&#x20;
 
 
 *   **config.writer**
@@ -56,25 +96,9 @@ To actually run the model, this repository folder must be located inside a locat
   * ReportLoadData.R
   * setup\_testing\_environment.R
 
-### /renv
+#### ****
 
-### **/gempyor\_pkg**
-
-#### **/gempyor\_pkg/src/gempyor/**
-
-* seir.py - Contains the core code for simulating the mathematical model. Takes in the model definition and parameters from the config, and outputs a file with a timeseries of the value of each state variable (# of individuals in each compartment)
-* steps\_rk.py -&#x20;
-* steps\_source.py -&#x20;
-* outcomes.py - Contains the core code for generating the outcome variables. Takes in the output of the mathematical model and parameters from the config, and outputs a file with a timeseries of the value of each outcome (observed) variable
-* setup.py
-* compartments.py
-* parameters.py
-* /NPI/
-
-#### **/gempyor\_pkg/docs**
-
-* Rinterface.Rmd
-* interface.ipynb
+#### ****
 
 ### /test
 
