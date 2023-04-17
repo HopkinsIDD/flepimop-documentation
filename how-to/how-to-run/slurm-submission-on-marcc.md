@@ -94,7 +94,7 @@ git clone https://github.com/HopkinsIDD/COVID19_USA.git
 
 ### Setup your AWS credentials (allows to copy runs to s3)
 
-This can be done in a second step --  but is necessary in order to push and pull to s3. Setup your AWS credentials by:
+This can be done in a second step -- but is necessary in order to push and pull to s3. Setup your AWS credentials by:
 
 <pre class="language-bash"><code class="lang-bash">cd ~ # go in your home directory
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -103,7 +103,7 @@ unzip awscliv2.zip
 <strong>./aws-cli/bin/aws --version
 </strong></code></pre>
 
-Then run `./aws-cli/bin/aws configure`  and use the following :
+Then run `./aws-cli/bin/aws configure` and use the following :
 
 ```
 # AWS Access Key ID [None]: YOUR ID
@@ -146,7 +146,7 @@ export FLEPI_PATH=/scratch4/struelo1/flepimop-code/$USER/flepiMoP
 # And then it asks you some questions to setup some enviroment variables
 ```
 
-and the it does some prompts to fix the following 3 enviroment variables. You can skip this part and do it later manually.&#x20;
+and the it does some prompts to fix the following 3 enviroment variables. You can skip this part and do it later manually.
 
 ```bash
 export VALIDATION_DATE="2023-01-29"
@@ -160,7 +160,7 @@ export FLEPI_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
 Check that the conda environment is activated: you should see`(flepimop-env)` on the left of your command-line prompt.
 {% endhint %}
 
-Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date) then you can skip these steps&#x20;
+Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date) then you can skip these steps
 
 ```bash
 cd /scratch4/struelo1/flepimop-code/$USER
@@ -187,7 +187,7 @@ export DATA_PATH=$(pwd)/COVID19_USA
 export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
 ```
 
-for Flu do:&#x20;
+for Flu do:
 
 ```bash
 cd /scratch4/struelo1/flepimop-code/$USER
@@ -211,7 +211,7 @@ Do some clean-up before your run. The fast way is to restore the `$DATA_PATH` gi
 
 <summary>I want more control over what is deleted</summary>
 
-&#x20;if you prefer to have more control, delete the files you like, e.g
+if you prefer to have more control, delete the files you like, e.g
 
 If you still want to use git to clean the repo but want finer control or to understand how dangerous is the command, [read this](https://stackoverflow.com/questions/1090309/git-undo-all-working-dir-changes-including-new-files).
 
@@ -242,7 +242,7 @@ Rscript $FLEPI_PATH/datasetup/build_covid_data.R
 Rscript $FLEPI_PATH/datasetup/build_flu_data.R
 ```
 
-Now you may want to test that it works :&#x20;
+Now you may want to test that it works :
 
 ```bash
 Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R -c $CONFIG_PATH -j 1 -n 1 -k 1 
@@ -260,7 +260,7 @@ When an inference batch job is launched, a few post processing scripts are calle
 
 Now you're fully set to go 🎉
 
-To launch the whole inference batch job, type  the following command:
+To launch the whole inference batch job, type the following command:
 
 ```bash
 python $FLEPI_PATH/batch/inference_job_launcher.py --slurm 2>&1 | tee $FLEPI_RUN_INDEX_submission.log
@@ -286,10 +286,11 @@ If you'd like to have more control, you can specify the arguments manually:
 </strong>git commit -m"scenario run initial" 
 branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 git push --set-upstream origin $branch
-
-git checkout main
-git pull
 </code></pre>
+
+but DO NOT finish up by git checking main like the aws instructions, as the run will use data in the current folder.
+
+
 
 ### Monitor your run
 
@@ -314,10 +315,8 @@ to find which subfolders contains how many files
 
 ## Common errors
 
-* Check that the python comes from conda with `which python` if some weird package missing errors arrive. Sometime conda magically disappears.&#x20;
+* Check that the python comes from conda with `which python` if some weird package missing errors arrive. Sometime conda magically disappears.
 * Don't use `ipython` as it breaks click's flags
-
-
 
 cleanup:
 
@@ -352,13 +351,13 @@ scancel JOB_ID
 
 ### Running an interactive session
 
-To check your code prior to submitting a large batch job, it's often helpful to run an interactive session to debug your code and check everything works as you want. On 🪨🐠 this can be done using `interact` like the below line, which requests an interactive session with 4 cores, 24GB of memory, for 12 hours.&#x20;
+To check your code prior to submitting a large batch job, it's often helpful to run an interactive session to debug your code and check everything works as you want. On 🪨🐠 this can be done using `interact` like the below line, which requests an interactive session with 4 cores, 24GB of memory, for 12 hours.
 
 ```
 interact -p defq -n 4 -m 24G -t 12:00:00
 ```
 
-The options here are `[-n tasks or cores]`, `[-t walltime]`, `[-p partition]` and `[-m memory]`, though other options can also be included or modified to your requirements. More details can be found on the [ARCH User Guide](https://marcc.readthedocs.io/Slurm.html#request-interactive-jobs).&#x20;
+The options here are `[-n tasks or cores]`, `[-t walltime]`, `[-p partition]` and `[-m memory]`, though other options can also be included or modified to your requirements. More details can be found on the [ARCH User Guide](https://marcc.readthedocs.io/Slurm.html#request-interactive-jobs).
 
 ### Moving files to your local computer
 
@@ -427,4 +426,3 @@ echo "DONE. if no error please manually set export CONFIG_PATH=YOURCONFIGPATH.ym
 echo "(in case of error, override manually some variables or rerun this script)"
 
 ```
-
