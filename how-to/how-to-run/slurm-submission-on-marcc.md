@@ -6,20 +6,20 @@ description: or any HPC using the slurm workload manager
 
 ## 🗂️ Files and folder organization
 
-Rockfish administrators provided [several partitions](https://www.arch.jhu.edu/support/storage-and-filesystems/) with different properties. For our needs (storage intensive and shared environment), we work in the `/data/struelo1/` partition, where we have 20T of space. Our folders are organized as:
+Rockfish administrators provided [several partitions](https://www.arch.jhu.edu/support/storage-and-filesystems/) with different properties. For our needs (storage intensive and shared environment), we work in the `/scratch4/struelo1/` partition, where we have 20T of space. Our folders are organized as:
 
-* **code-folder:** `/data/struelo1/flepimop-code/` where each user has its own subfolder, from where the repos are cloned and the runs are launched. e.g for user chadi, we'll find:
-  * `/data/struelo1/flepimop-code/chadi/covidsp/Flu_USA`
-  * `/data/struelo1/flepimop-code/chadi/COVID19_USA`
-  * `/data/struelo1/flepimop-code/chadi/flepiMoP`
+* **code-folder:** `/scratch4/struelo1/flepimop-code/` where each user has its own subfolder, from where the repos are cloned and the runs are launched. e.g for user chadi, we'll find:
+  * `/scratch4/struelo1/flepimop-code/chadi/covidsp/Flu_USA`
+  * `/scratch4/struelo1/flepimop-code/chadi/COVID19_USA`
+  * `/scratch4/struelo1/flepimop-code/chadi/flepiMoP`
   * ...
-  * (we keep separated repositories by users so that different versions of the pipeline are not mixed where we run several runs in parallel. Don't hesitate to create other subfolders in the code folder (`/data/struelo1/flepimop-code/chadi-flusight`, ...) if you need them.
+  * (we keep separated repositories by users so that different versions of the pipeline are not mixed where we run several runs in parallel. Don't hesitate to create other subfolders in the code folder (`/scratch4/struelo1/flepimop-code/chadi-flusight`, ...) if you need them.
 
 {% hint style="warning" %}
 Note that the repository is cloned **flat,** i.e the `flepiMoP` repository is at the same level as the data repository, not inside it!
 {% endhint %}
 
-* **output folder:**`/data/struelo1/flepimop-runs` stores the run outputs. After an inference run finishes, it's output and the logs files are copied from the `$DATA_PATH/model_output` to `/data/struelo1/flepimop-runs/THISRUNJOBNAME` where the jobname is usually of the form `USA-DATE.`
+* **output folder:**`/scratch4/struelo1/flepimop-runs` stores the run outputs. After an inference run finishes, it's output and the logs files are copied from the `$DATA_PATH/model_output` to `/scratch4/struelo1/flepimop-runs/THISRUNJOBNAME` where the jobname is usually of the form `USA-DATE.`
 
 ## Login on rockfish
 
@@ -83,7 +83,7 @@ conda install -c conda-forge r-readr r-sf r-lubridate r-tigris r-tidyverse r-gri
 
 type the following commands. $USER is a variable that contains your username.
 
-<pre class="language-bash"><code class="lang-bash"><strong>cd /data/struelo1/flepimop-code/
+<pre class="language-bash"><code class="lang-bash"><strong>cd /scratch4/struelo1/flepimop-code/
 </strong><strong>mkdir $USER
 </strong><strong>cd $USER
 </strong>git clone https://github.com/HopkinsIDD/flepiMoP.git
@@ -116,7 +116,7 @@ Then run `./aws-cli/bin/aws configure`  and use the following :
 
 log-in to rockfish via ssh, then type:
 
-`source /data/struelo1/flepimop-code/flepimop_init.sh`
+`source /scratch4/struelo1/flepimop-code/flepimop_init.sh`
 
 which will prepare the environment and setup variables for the validation date, the resume location and the run index for this run. If you don't want to set a variable, just hit enter.
 
@@ -141,7 +141,7 @@ conda activate flepimop-env
 export CENSUS_API_KEY={A CENSUS API KEY}
 export FLEPI_STOCHASTIC_RUN=false
 export FLEPI_RESET_CHIMERICS=TRUE
-export FLEPI_PATH=/data/struelo1/flepimop-code/$USER/flepiMoP
+export FLEPI_PATH=/scratch4/struelo1/flepimop-code/$USER/flepiMoP
 
 # And then it asks you some questions to setup some enviroment variables
 ```
@@ -163,7 +163,7 @@ Check that the conda environment is activated: you should see`(flepimop-env)` on
 Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date) then you can skip these steps&#x20;
 
 ```bash
-cd /data/struelo1/flepimop-code/$USER
+cd /scratch4/struelo1/flepimop-code/$USER
 export FLEPI_PATH=$(pwd)/flepiMoP
 cd $FLEPI_PATH
 git checkout main
@@ -182,7 +182,7 @@ pip install --no-deps -e flepimop/gempyor_pkg/
 Now flepiMoP is ready 🎉. Now you need to set $DATA\_PATH to your data folder. For a COVID-19 run, do:
 
 ```bash
-cd /data/struelo1/flepimop-code/$USER
+cd /scratch4/struelo1/flepimop-code/$USER
 export DATA_PATH=$(pwd)/COVID19_USA
 export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
 ```
@@ -190,7 +190,7 @@ export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
 for Flu do:&#x20;
 
 ```bash
-cd /data/struelo1/flepimop-code/$USER
+cd /scratch4/struelo1/flepimop-code/$USER
 export DATA_PATH=$(pwd)/Flu_USA
 ```
 
@@ -276,7 +276,7 @@ If you'd like to have more control, you can specify the arguments manually:
 </strong><strong>                    --data-path $DATA_PATH \
 </strong><strong>                    --upload-to-s3 True \
 </strong><strong>                    --id $FLEPI_RUN_INDEX \
-</strong><strong>                    --fs-folder /data/struelo1/flepimop-runs \
+</strong><strong>                    --fs-folder /scratch4/struelo1/flepimop-runs \
 </strong><strong>                    --restart-from-location $RESUME_LOCATION
 </strong></code></pre>
 
@@ -297,7 +297,7 @@ TODO JPSEH WRITE UP TO HERE
 
 Two types of logfiles: in \`$DATA\_PATH\`: slurm-JOBID\_SLOTID.out and and filter\_MC logs:
 
-\`\`\`tail -f /data/struelo1/flepimop-runs/USA-20230130T163847/log\_FCH\_R16\_lowBoo\_modVar\_ContRes\_blk4\_Jan29\_tsvacc\_100.txt
+\`\`\`tail -f /scratch4/struelo1/flepimop-runs/USA-20230130T163847/log\_FCH\_R16\_lowBoo\_modVar\_ContRes\_blk4\_Jan29\_tsvacc\_100.txt
 
 \`\`\`
 
@@ -322,7 +322,7 @@ to find which subfolders contains how many files
 cleanup:
 
 ```
-rm -r /data/struelo1/flepimop-runs/
+rm -r /scratch4/struelo1/flepimop-runs/
 rm -r model_output
 cd $COVID_PATH;git pull;cd $DATA_PATH
 rm *.out
@@ -375,7 +375,7 @@ These steps are already done an affects all users, but might be interesting in c
 So our 🤖-friend can send us some notifications once a run is done.
 
 ```
-cd /data/struelo1/flepimop-code/
+cd /scratch4/struelo1/flepimop-code/
 nano slack_credentials.sh
 # and fill the file:
 export SLACK_WEBHOOK="{THE SLACK WEBHOOK FOR CSP_PRODUCTION}"
@@ -384,7 +384,7 @@ export SLACK_TOKEN="{THE SLACK TOKEN}"
 
 ### The helper script
 
-in `/data/struelo1/flepimop-code/flepimop_init.sh`
+in `/scratch4/struelo1/flepimop-code/flepimop_init.sh`
 
 ```bash
 echo ">>> running some useful commands  ^= ^v, please wait"
@@ -399,7 +399,7 @@ export CENSUS_API_KEY={AN API KEY}  # joseph's key
 
 export FLEPI_STOCHASTIC_RUN=false
 export FLEPI_RESET_CHIMERICS=TRUE
-export FLEPI_PATH=/data/struelo1/flepimop-code/$USER/flepiMoP
+export FLEPI_PATH=/scratch4/struelo1/flepimop-code/$USER/flepiMoP
 
 echo "done  ^|^e"
 
