@@ -8,7 +8,7 @@ description: or any HPC using the slurm workload manager
 
 Rockfish administrators provided [several partitions](https://www.arch.jhu.edu/support/storage-and-filesystems/) with different properties. For our needs (storage intensive and shared environment), we work in the `/data/struelo1/` partition, where we have 20T of space. Our folders are organized as:
 
-* **code-folder: ``**` ``/data/struelo1/flepimop-code/` where each user has its own subfolder, from where the repos are cloned and the runs are launched. e.g for user chadi, we'll find:
+* **code-folder:** `/data/struelo1/flepimop-code/` where each user has its own subfolder, from where the repos are cloned and the runs are launched. e.g for user chadi, we'll find:
   * `/data/struelo1/flepimop-code/chadi/covidsp/Flu_USA`
   * `/data/struelo1/flepimop-code/chadi/COVID19_USA`
   * `/data/struelo1/flepimop-code/chadi/flepiMoP`
@@ -184,7 +184,7 @@ Now flepiMoP is ready 🎉. Now you need to set $DATA\_PATH to your data folder.
 ```bash
 cd /data/struelo1/flepimop-code/$USER
 export DATA_PATH=$(pwd)/COVID19_USA
-export GT_DATA_SOURCE="csse_case, nchs_death, hhs_hosp"
+export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
 ```
 
 for Flu do:&#x20;
