@@ -270,7 +270,7 @@ This command infers everything from you environment variables, if there is a res
 
 If you'd like to have more control, you can specify the arguments manually:
 
-<pre class="language-bash"><code class="lang-bash"><strong>python $COVID_PATH/batch/inference_job_launcher..py --slurm \
+<pre class="language-bash"><code class="lang-bash"><strong>python $COVID_PATH/batch/inference_job_launcher.py --slurm \
 </strong><strong>                    -c $CONFIG_PATH \
 </strong><strong>                    --pipepath $FLEPI_PATH \
 </strong><strong>                    --data-path $DATA_PATH \
