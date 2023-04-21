@@ -41,7 +41,7 @@ Parameters and other options specified in the configuration files can take on a 
 |              | `high`     | Any real number greater than `low`         |                                                                                                                                                                                  |
 | `poisson`    | `lam`      | Any positive real number                   | Draws all values randomly from a Poisson distribution with rate parameter  (mean) `lam` (lambda)                                                                                 |
 | `binomial`   | `size`     | Any non-negative integer                   | Draws all values randomly from a binomial distribution with number of trials (n) = `size` and probability of success on each trial (p) = `prob`                                  |
-| ``           | `prob`     | Any number in \[0,1]                       |                                                                                                                                                                                  |
+|              | `prob`     | Any number in \[0,1]                       |                                                                                                                                                                                  |
 | `lognormal`  | `meanlog`  | Any real number                            | Draws all values randomly from a lognormal distribution (natural log, base _e_) with mean on a log scale of `meanlog` and standard deviation on a log scale of `sdlog`           |
 |              | `sdlog`    | Any non-negative real number               |                                                                                                                                                                                  |
 | `truncnorm`  | `mean`     | Any real number                            | Draws all values randomly from a truncated normal distribution with mean `mean` and standard deviation `sd`, truncated to have a maximum value of `a` and a minimum value of `b` |
@@ -55,30 +55,29 @@ Parameters and other options specified in the configuration files can take on a 
 
 These global configuration options typically sit at the top of the configuration file.
 
-| Item                     | Required?                    | Type/Format  | Description                                                                                    |
-| ------------------------ | ---------------------------- | ------------ | ---------------------------------------------------------------------------------------------- |
-| file\_is\_unedited       | **required** to not be there | Remove it!   |                                                                                                |
-| name                     | **required**                 | string       | typically named after the region/location you are modeling                                     |
-| setup\_name              | **required**                 | string       | ??                                                                                             |
-| start\_date              | **required**                 | date         | model simulation start date                                                                    |
-| end\_date                | **required**                 | date         | model simulation end date                                                                      |
-| data\_path               | **required? optional?**      | folder path  | base path to folder where ground truth data files are stored                                   |
-| start\_date\_groundtruth | **required?**                | date         | model simulation start date                                                                    |
-| end\_date\_groundtruth   | **required? optional?**      | date         | model simulation end date                                                                      |
-| nsimulations             | **required**                 | int          | number of simulations to run \[ALH This needs more clarity, is this repeats, what changes etc] |
-| dynfilter\_path          | optional                     | path to file | path to filtering text file \[ALH: deprecated??]                                               |
-| smh\_round               | optional                     | string       | ALH? What is point of this?                                                                    |
-| report\_location\_name   | optional                     | string       | ALH: deprecated??                                                                              |
+| Item                     | Required?                                                        | Type/Format | Description                                                                                            |
+| ------------------------ | ---------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
+| name                     | **required**                                                     | string      | Name of this configuration. Will be used in file names created to store model output.                  |
+| start\_date              | **required**                                                     | date        | model simulation start date                                                                            |
+| end\_date                | **required**                                                     | date        | model simulation end date                                                                              |
+| data\_path               | **required**                                                     | folder path | base path to folder where population data (size, mobility, etc) and ground truth data files are stored |
+| start\_date\_groundtruth | **optional for non-inference runs, required for inference runs** | date        | start date for comparing model to data                                                                 |
+| end\_date\_groundtruth   | **optional for non-inference runs, required for inference runs** | date        | end date for comparing model to data                                                                   |
+| nslots                   | **required**                                                     | int         | number of independent simulations to run                                                               |
+| setup\_name              | **??**                                                           | string      | ??                                                                                                     |
+| smh\_round               | optional                                                         | string      | ALH? What is point of this?                                                                            |
 
-For example, to simulate ...
+For example, for a configuration file to simulate the spread of COVID-19 in the US during 2020 and compare to data from March 1 onwards, with 1000 independent simulations, the header of the config might read:
 
 ```
-name: Hawaii 
-start_date: 2020-01-31 
-end_date: 2020-12-31 
-nsimulations: 1000
-dt: 0.25
-report_location_name: Hawaii
+name: USA_covid19_2020
+data_path: data
+model_output_dirname: model_output
+start_date: 2020-01-01
+end_date: 2020-12-31
+start_date_groundtruth: 2020-03-01
+end_date_groundtruth: 2020-12-31
+nslots: 1000
 ```
 
 ### `spatial_setup` section
