@@ -242,6 +242,13 @@ Rscript $FLEPI_PATH/datasetup/build_covid_data.R
 Rscript $FLEPI_PATH/datasetup/build_flu_data.R
 ```
 
+If you want to profile how the model is using your memory resources during the run:
+
+```
+export FLEPI_MEM_PROFILE=TRUE
+export FLEPI_MEM_PROF_ITERS=50
+```
+
 Now you may want to test that it works :
 
 ```bash
