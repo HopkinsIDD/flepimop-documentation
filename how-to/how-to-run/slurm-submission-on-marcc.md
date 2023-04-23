@@ -279,7 +279,7 @@ If you'd like to have more control, you can specify the arguments manually:
 
 <pre class="language-bash"><code class="lang-bash"><strong>python $FLEPI_PATH/batch/inference_job_launcher.py --slurm \
 </strong><strong>                    -c $CONFIG_PATH \
-</strong><strong>                    --pipepath $FLEPI_PATH \
+</strong><strong>                    -p $FLEPI_PATH \
 </strong><strong>                    --data-path $DATA_PATH \
 </strong><strong>                    --upload-to-s3 True \
 </strong><strong>                    --id $FLEPI_RUN_INDEX \
