@@ -93,13 +93,13 @@ export CENSUS_API_KEY={A CENSUS API KEY}
 export FLEPI_STOCHASTIC_RUN=false
 export FLEPI_RESET_CHIMERICS=TRUE
 export FLEPI_PATH=$(pwd)/flepiMoP
+export COMPUTE_QUEUE="Compartment-JQ-1588569574"
 
 export VALIDATION_DATE="2023-01-29"
 export RESUME_LOCATION=s3://idd-inference-runs/USA-20230122T145824
 export FLEPI_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
-export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml
 
-export COMPUTE_QUEUE="Compartment-JQ-1588569574"
+export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml
 ```
 
 Additionally, if you want to profile how the model is using your memory resources during the run, run the following commands
@@ -123,9 +123,9 @@ git config --global credential.helper 'cache --timeout 300000'
 # (or if you know R well enough to fix that 😊)
 
 Rscript build/local_install.R # warnings are ok; there should be no error.
-   python -m pip install --upgrade pip &#x26;&#x26;
-   pip install -e flepimop/gempyor_pkg/ &#x26;&#x26; 
-   pip install boto3 &#x26;&#x26; 
+   python -m pip install --upgrade pip &
+   pip install -e flepimop/gempyor_pkg/ &
+   pip install boto3 &
    cd ..
 
 ```
@@ -222,15 +222,17 @@ Now you're fully set to go 🎉
 
 To launch the whole inference batch job, type the following command:
 
+{% code overflow="wrap" %}
 ```bash
 python $FLEPI_PATH/batch/inference_job_launcher.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic 
 ```
+{% endcode %}
 
-This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc., and the default is to carry seeding if it is a resume.
+This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc., and the default is to carry seeding if it is a resume (see below for alternative options).
 
 If you'd like to have more control, you can specify the arguments manually:
 
-<pre class="language-bash"><code class="lang-bash"><strong>python $FLEPI_PATH/batch/inference_job_launcher.py --slurm \ ## FIX THIS TO REFLECT AWS OPTIONS
+<pre class="language-bash"><code class="lang-bash"><strong>python $FLEPI_PATH/batch/inference_job_launcher.py --aws \ ## FIX THIS TO REFLECT AWS OPTIONS
 </strong><strong>                    -c $CONFIG_PATH \
 </strong><strong>                    -p $FLEPI_PATH \
 </strong><strong>                    --data-path $DATA_PATH \
@@ -239,63 +241,57 @@ If you'd like to have more control, you can specify the arguments manually:
 </strong><strong>                    --restart-from-location $RESUME_LOCATION
 </strong></code></pre>
 
-Some typical uses are as follows.
+We allow for a number of different jobs, with different setups, e.g., you may _not_ want to carry seeding. Some examples of appropriate setups are given below. No modification of these code chunks should be required.&#x20;
 
 {% tabs %}
 {% tab title="Standard" %}
-<pre><code><strong>export CONFIG_PATH=$CONFIG_NAME &#x26;&#x26;
-</strong><strong>cd $DATA_PATH &#x26;&#x26;
-</strong>$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic &#x26;&#x26;
-printenv CONFIG_NAME
+<pre class="language-bash" data-overflow="wrap"><code class="lang-bash"><strong>cd $DATA_PATH 
+</strong><strong>
+</strong>$FLEPI_PATH/batch/inference_job_launcher.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic
 </code></pre>
 {% endtab %}
 
 {% tab title="Non-inference" %}
+{% code overflow="wrap" %}
+```bash
+cd $DATA_PATH 
+
+$FLEPI_PATH/batch/inference_job_launcher.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic -j 1 -k 1
 ```
-export CONFIG_PATH=$CONFIG_NAME &&
-cd $DATA_PATH &&
-$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic -j 1 -k 1 &&
-printenv CONFIG_NAME
-```
+{% endcode %}
 {% endtab %}
 
 {% tab title="Resume" %}
-> NOTE: _Resume_ and _Continuation Resume_ runs are currently submitted the same way,  resuming from an S3 that was generated manually. Typically we will also submit any _Continuation Resume_ run specifying `--resume-carry-seeding` as starting seeding conditions will be manually constructed and put in the S3.
+> NOTE: _Resume_ and _Continuation Resume_ runs are currently submitted the same way, resuming from an S3 that was generated manually. Typically we will also submit any _Continuation Resume_ run specifying `--resume-carry-seeding` as starting seeding conditions will be manually constructed and put in the S3.
 
+**Carrying seeding** (_do this to use seeding fits from resumed run_):
 
-
-**Carrying seeding**  (_do this to use seeding fits from resumed run_):
-
-<pre><code>export CONFIG_PATH=$CONFIG_NAME &#x26;&#x26;
-<strong>cd $DATA_PATH &#x26;&#x26;
-</strong>$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-carry-seeding --restart-from-location=s3://idd-inference-runs/$RESUME_S3 --restart-from-run-id=$RESUME_ID &#x26;&#x26;
-printenv CONFIG_NAME
+<pre class="language-bash" data-overflow="wrap"><code class="lang-bash"><strong>cd $DATA_PATH 
+</strong><strong>
+</strong>$FLEPI_PATH/batch/inference_job_launcher.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-carry-seeding --restart-from-location $RESUME_LOCATION
 </code></pre>
 
+**Discarding seeding** (_do this to refit seeding again_)_:_
 
+{% code overflow="wrap" %}
+```bash
+cd $DATA_PATH 
 
-**Discarding seeding**  (_do this to refit seeding again_)_:_
-
+$COVID_PATH/batch/inference_job_launcher.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-discard-seeding --restart-from-location $RESUME_LOCATION
 ```
-export CONFIG_PATH=$CONFIG_NAME &&  
-cd $DATA_PATH &&
-$COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-discard-seeding --restart-from-location=s3://idd-inference-runs/$RESUME_S3 --restart-from-run-id=$RESUME_ID &&
-printenv CONFIG_NAME
+{% endcode %}
+
+**Single Iteration + Carry seeding** (_do this to produce additional scenarios where no fitting is required_)_:_
+
+{% code overflow="wrap" %}
+```bash
+cd $DATA_PATH 
+
+$COVID_PATH/batch/inference_job_launcher.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-carry-seeding --restart-from-location $RESUME_LOCATION
 ```
-
-
-
-**Single Iteration + Carry seeding**  (_do this to produce additional scenarios where no fitting is required_)_:_
-
-```
-export CONFIG_PATH=$CONFIG_NAME &&
-cd $DATA_PATH &&
-$COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-carry-seeding --restart-from-location=s3://idd-inference-runs/$RESUME_S3 --restart-from-run-id=$RESUME_ID -j 1 -k 1 &&
-printenv CONFIG_NAME
-```
+{% endcode %}
 {% endtab %}
 {% endtabs %}
-
 
 ### Document the submission
 
