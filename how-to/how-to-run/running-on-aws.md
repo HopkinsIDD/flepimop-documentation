@@ -32,11 +32,14 @@ Type the following commands:
 git clone https://github.com/HopkinsIDD/flepiMoP.git
 git clone https://github.com/HopkinsIDD/Flu_USA.git
 git clone https://github.com/HopkinsIDD/COVID19_USA.git
+cd COVID19_USA
+git clone https://github.com/HopkinsIDD/flepiMoP.git
+cd ..
 # or any other data directories
 ```
 
 {% hint style="warning" %}
-Note that the repository is cloned **??,** i.e the `flepiMoP` repository is at the same level as the data repository, not inside it!
+Note that the repository is cloned **nested,** i.e the `flepiMoP` repository is _INSIDE_ the data repository.
 {% endhint %}
 
 Have your Github ssh key passphrase handy so you can paste it when prompted (possibly multiple times) with the git pull command. _Alternatively, you can add your github key to your batch box so you don't have to enter your token 6 times per day._
@@ -92,7 +95,6 @@ cd ~/drp
 export CENSUS_API_KEY={A CENSUS API KEY}
 export FLEPI_STOCHASTIC_RUN=false
 export FLEPI_RESET_CHIMERICS=TRUE
-export FLEPI_PATH=$(pwd)/flepiMoP
 export COMPUTE_QUEUE="Compartment-JQ-1588569574"
 
 export VALIDATION_DATE="2023-01-29"
@@ -111,7 +113,26 @@ export FLEPI_MEM_PROF_ITERS=50
 
 Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date).
 
+For a COVID-19 run, do:
+
 ```bash
+cd ~/drp
+export DATA_PATH=$(pwd)/COVID19_USA
+export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
+```
+
+for Flu do:
+
+```bash
+cd ~/drp
+export DATA_PATH=$(pwd)/Flu_USA
+```
+
+Now for any type of run:
+
+```bash
+cd $DATA_PATH
+export FLEPI_PATH=$(pwd)/flepiMoP
 cd $FLEPI_PATH
 git checkout main
 git pull
@@ -131,21 +152,6 @@ Rscript build/local_install.R # warnings are ok; there should be no error.
 ```
 
 Now flepiMoP is ready 🎉. Now you need to set $DATA\_PATH to your data folder. For a COVID-19 run, do:
-
-```bash
-cd ~/drp
-export DATA_PATH=$(pwd)/COVID19_USA
-export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
-```
-
-for Flu do:
-
-```bash
-cd ~/drp
-export DATA_PATH=$(pwd)/Flu_USA
-```
-
-Now for any type of run:
 
 ```bash
 cd $DATA_PATH
