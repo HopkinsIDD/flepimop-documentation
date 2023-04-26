@@ -223,10 +223,10 @@ Now you're fully set to go 🎉
 To launch the whole inference batch job, type the following command:
 
 ```bash
-python $FLEPI_PATH/batch/inference_job.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic 
+python $FLEPI_PATH/batch/inference_job_launcher.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic 
 ```
 
-This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc.
+This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc., and the default is to carry seeding if it is a resume.
 
 If you'd like to have more control, you can specify the arguments manually:
 
@@ -238,6 +238,64 @@ If you'd like to have more control, you can specify the arguments manually:
 </strong><strong>                    --id $FLEPI_RUN_INDEX \
 </strong><strong>                    --restart-from-location $RESUME_LOCATION
 </strong></code></pre>
+
+Some typical uses are as follows.
+
+{% tabs %}
+{% tab title="Standard" %}
+<pre><code><strong>export CONFIG_PATH=$CONFIG_NAME &#x26;&#x26;
+</strong><strong>cd $DATA_PATH &#x26;&#x26;
+</strong>$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic &#x26;&#x26;
+printenv CONFIG_NAME
+</code></pre>
+{% endtab %}
+
+{% tab title="Non-inference" %}
+```
+export CONFIG_PATH=$CONFIG_NAME &&
+cd $DATA_PATH &&
+$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic -j 1 -k 1 &&
+printenv CONFIG_NAME
+```
+{% endtab %}
+
+{% tab title="Resume" %}
+> NOTE: _Resume_ and _Continuation Resume_ runs are currently submitted the same way,  resuming from an S3 that was generated manually. Typically we will also submit any _Continuation Resume_ run specifying `--resume-carry-seeding` as starting seeding conditions will be manually constructed and put in the S3.
+
+
+
+**Carrying seeding**  (_do this to use seeding fits from resumed run_):
+
+<pre><code>export CONFIG_PATH=$CONFIG_NAME &#x26;&#x26;
+<strong>cd $DATA_PATH &#x26;&#x26;
+</strong>$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-carry-seeding --restart-from-location=s3://idd-inference-runs/$RESUME_S3 --restart-from-run-id=$RESUME_ID &#x26;&#x26;
+printenv CONFIG_NAME
+</code></pre>
+
+
+
+**Discarding seeding**  (_do this to refit seeding again_)_:_
+
+```
+export CONFIG_PATH=$CONFIG_NAME &&  
+cd $DATA_PATH &&
+$COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-discard-seeding --restart-from-location=s3://idd-inference-runs/$RESUME_S3 --restart-from-run-id=$RESUME_ID &&
+printenv CONFIG_NAME
+```
+
+
+
+**Single Iteration + Carry seeding**  (_do this to produce additional scenarios where no fitting is required_)_:_
+
+```
+export CONFIG_PATH=$CONFIG_NAME &&
+cd $DATA_PATH &&
+$COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-carry-seeding --restart-from-location=s3://idd-inference-runs/$RESUME_S3 --restart-from-run-id=$RESUME_ID -j 1 -k 1 &&
+printenv CONFIG_NAME
+```
+{% endtab %}
+{% endtabs %}
+
 
 ### Document the submission
 
