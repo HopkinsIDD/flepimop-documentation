@@ -46,10 +46,10 @@ cd ..
 
 <pre data-overflow="wrap"><code>sudo docker pull hopkinsidd/flepimop:latest-dev
 sudo docker run -it \
-  -v /home/ec2-user/flepiMoP:/home/app/drp \
-  -v /home/ec2-user/flepiMoP/COVIDScenarioPipeline:/home/app/drp/flepiMoP \
+  -v /home/ec2-user/COVID19_USA:/home/app/drp/COVID19_USA \
+  -v /home/ec2-user/flepiMoP:/home/app/drp/flepiMoP \
   -v /home/ec2-user/.ssh:/home/app/.ssh \
-hopkinsidd/covidscenariopipeline:latest-dev  
+hopkinsidd/flepimop:latest-dev  
     
 cd ~/drp 
 <strong>git config credential.helper store 
