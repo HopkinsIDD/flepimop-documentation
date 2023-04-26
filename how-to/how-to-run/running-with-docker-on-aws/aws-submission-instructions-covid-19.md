@@ -51,7 +51,7 @@ sudo docker run -it \
   -v /home/ec2-user/.ssh:/home/app/.ssh \
 hopkinsidd/flepimop:latest-dev  
     
-cd ~/drp 
+cd ~/drp/COVID19_USA
 <strong>git config credential.helper store 
 </strong>git pull 
 git checkout main
