@@ -47,7 +47,7 @@ cd ..
 <pre data-overflow="wrap"><code>sudo docker pull hopkinsidd/flepimop:latest-dev
 sudo docker run -it \
   -v /home/ec2-user/flepiMoP:/home/app/drp \
-  -v /home/ec2-user/COVID19_USA/COVIDScenarioPipeline:/home/app/drp/COVIDScenarioPipeline \
+  -v /home/ec2-user/flepiMoP/COVIDScenarioPipeline:/home/app/drp/flepiMoP \
   -v /home/ec2-user/.ssh:/home/app/.ssh \
 hopkinsidd/covidscenariopipeline:latest-dev  
     
@@ -58,14 +58,14 @@ git checkout main
 git pull
 git config --global credential.helper 'cache --timeout 300000'
 
-<strong>cd ~/drp/COVIDScenarioPipeline 
+<strong>cd ~/drp/flepiMoP 
 </strong>git pull 
 git checkout main
 git pull 
 
-Rscript local_install.R &#x26;&#x26; 
+Rscript build/local_install.R &#x26;&#x26; 
    python -m pip install --upgrade pip &#x26;&#x26;
-   pip install -e gempyor_pkg/ &#x26;&#x26; 
+   pip install -e flepimop/gempyor_pkg/ &#x26;&#x26; 
    pip install boto3 &#x26;&#x26; 
    cd ..
 </code></pre>
@@ -81,12 +81,12 @@ To run the via AWS, we first run a setup run locally (in docker on the submissio
 If not resuming off previous run:
 
 ```
-export SCENARIO=FCH_R16_lowBoo_modVar_ContRes_blk4_FCH_Dec11_tsvacc && 
+export FLEPI_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_FCH_Dec11_tsvacc && 
    export VALIDATION_DATE="2022-12-11" && 
    export COVID_MAX_STACK_SIZE=1000 && 
    export COMPUTE_QUEUE="Compartment-JQ-1588569574" &&
    export CENSUS_API_KEY=c235e1b5620232fab506af060c5f8580604d89c1 && 
-   export COVID_RESET_CHIMERICS=TRUE &&
+   export FLEPI_RESET_CHIMERICS=TRUE &&
    rm -rf model_output data/us_data.csv data-truth &&
    rm -rf data/mobility_territories.csv data/geodata_territories.csv &&
    rm -rf data/seeding_territories.csv && 
@@ -102,12 +102,12 @@ If resuming from a previous run, there are an additional couple variables to set
 
 
 
-<pre><code>export SCENARIO=FCH_R16_lowBoo_modVar_ContRes_blk4_Dec18_tsvacc &#x26;&#x26; 
+<pre><code>export FLEPI_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Dec18_tsvacc &#x26;&#x26; 
    export VALIDATION_DATE="2022-12-18" &#x26;&#x26; 
    export COVID_MAX_STACK_SIZE=1000 &#x26;&#x26; 
    export COMPUTE_QUEUE="Compartment-JQ-1588569574" &#x26;&#x26;
    export CENSUS_API_KEY=c235e1b5620232fab506af060c5f8580604d89c1 &#x26;&#x26; 
-   export COVID_RESET_CHIMERICS=TRUE &#x26;&#x26;
+   export FLEPI_RESET_CHIMERICS=TRUE &#x26;&#x26;
    rm -rf model_output data/us_data.csv data-truth &#x26;&#x26;
    rm -rf data/mobility_territories.csv data/geodata_territories.csv &#x26;&#x26;
    rm -rf data/seeding_territories.csv &#x26;&#x26; 
