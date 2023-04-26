@@ -141,7 +141,7 @@ export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
 for Flu do:
 
 ```bash
-cd /scratch4/struelo1/flepimop-code/$USER
+cd ~/drp
 export DATA_PATH=$(pwd)/Flu_USA
 ```
 
