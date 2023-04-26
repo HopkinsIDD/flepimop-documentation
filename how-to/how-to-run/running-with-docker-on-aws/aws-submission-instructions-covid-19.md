@@ -34,7 +34,7 @@ git pull
 git checkout main
 git pull
 
-cd COVIDScenarioPipeline
+cd flepiMoP
 git pull	
 git checkout main
 git pull
@@ -44,9 +44,9 @@ cd ..
 
 **Initiate the docker.** Start up and log into the docker container, pull the repos from Github, and run setup scripts to setup the environment. This setup code links the docker directories to the existing directories on your box. As this is the case, you should not run job submission simultaneously using this setup, as one job submission might modify the data for another job submission.
 
-<pre data-overflow="wrap"><code>sudo docker pull hopkinsidd/covidscenariopipeline:latest-dev
+<pre data-overflow="wrap"><code>sudo docker pull hopkinsidd/flepimop:latest-dev
 sudo docker run -it \
-  -v /home/ec2-user/COVID19_USA:/home/app/drp \
+  -v /home/ec2-user/flepiMoP:/home/app/drp \
   -v /home/ec2-user/COVID19_USA/COVIDScenarioPipeline:/home/app/drp/COVIDScenarioPipeline \
   -v /home/ec2-user/.ssh:/home/app/.ssh \
 hopkinsidd/covidscenariopipeline:latest-dev  
@@ -198,7 +198,7 @@ $COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stoch
 printenv CONFIG_NAME
 ```
 
-****
+
 
 **Single Iteration + Carry seeding**  (_do this to produce additional scenarios where no fitting is required_)_:_
 
