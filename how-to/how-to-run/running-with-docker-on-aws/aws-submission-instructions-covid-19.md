@@ -124,9 +124,9 @@ export RESUME_LOCATION=s3://idd-inference-runs/USA-20230423T235232
 {% code overflow="wrap" %}
 ```
 export CONFIG_NAME=config_$SCENARIO.yml && 
-   export CONFIG_PATH=/home/app/drp/$CONFIG_NAME && 
-   export FLEPI_PATH=/home/app/drp/COVIDScenarioPipeline && 
-   export DATA_PATH=/home/app/drp && 
+   export CONFIG_PATH=/home/app/drp/COVID19_USA/$CONFIG_NAME && 
+   export FLEPI_PATH=/home/app/drp/flepiMoP && 
+   export DATA_PATH=/home/app/drp/COVID19_USA && 
    export INTERVENTION_NAME="med" && 
    export FLEPI_STOCHASTIC=FALSE && 
    rm -rf $DATA_PATH/model_output DATA_PATH/us_data.csv && 
