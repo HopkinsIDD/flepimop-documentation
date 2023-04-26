@@ -111,9 +111,7 @@ export FLEPI_MEM_PROFILE=TRUE
 export FLEPI_MEM_PROF_ITERS=50
 ```
 
-Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date).
-
-For a COVID-19 run, do:
+Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date). You need to set $DATA\_PATH to your data folder. For a COVID-19 run, do:
 
 ```bash
 cd ~/drp
@@ -151,7 +149,7 @@ Rscript build/local_install.R # warnings are ok; there should be no error.
 
 ```
 
-Now flepiMoP is ready 🎉. Now you need to set $DATA\_PATH to your data folder. For a COVID-19 run, do:
+Now flepiMoP is ready 🎉.&#x20;
 
 ```bash
 cd $DATA_PATH
