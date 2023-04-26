@@ -2,7 +2,7 @@
 description: using Docker container
 ---
 
-# Running on AWS 
+# Running on AWS
 
 ## 🖥 Start and access AWS submission box
 
@@ -20,21 +20,20 @@ notepad .ssh/config
 ssh staging
 ```
 
-## 🧱 Setup 
+## 🧱 Setup
 
 Now you should be logged onto the AWS submission box. If you haven't yet, set up your directory structure.
-
 
 ### 🗂 Create the directory structure (ONCE PER USER)
 
 Type the following commands:
 
-<pre class="language-bash"><code class="lang-bash">git clone https://github.com/HopkinsIDD/flepiMoP.git
+```bash
+git clone https://github.com/HopkinsIDD/flepiMoP.git
 git clone https://github.com/HopkinsIDD/Flu_USA.git
 git clone https://github.com/HopkinsIDD/COVID19_USA.git
-git clone https://github.com/HopkinsIDD/flepiMoP.git
 # or any other data directories
-</code></pre>
+```
 
 {% hint style="warning" %}
 Note that the repository is cloned **??,** i.e the `flepiMoP` repository is at the same level as the data repository, not inside it!
@@ -65,26 +64,28 @@ cd ..
 ```
 {% endcode %}
 
-
 ## 🚀 Run inference using AWS (do everytime)
 
 ### 🛳 Initiate the Docker
+
 Start up and log into the docker container, and run setup scripts to setup the environment. This setup code links the docker directories to the existing directories on your box. As this is the case, you should not run job submission simultaneously using this setup, as one job submission might modify the data for another job submission.
 
-<pre data-overflow="wrap"><code>sudo docker pull hopkinsidd/flepimop:latest-dev
+{% code overflow="wrap" %}
+```
+sudo docker pull hopkinsidd/flepimop:latest-dev
 sudo docker run -it \
   -v /home/ec2-user/COVID19_USA:/home/app/drp/COVID19_USA \
   -v /home/ec2-user/flepiMoP:/home/app/drp/flepiMoP \
   -v /home/ec2-user/.ssh:/home/app/.ssh \
 hopkinsidd/flepimop:latest-dev  
-</code></pre>
+```
+{% endcode %}
 
-
-### Setup environment 
+### Setup environment
 
 To set up the environment for your run, run the following commands. These are specific to _your run_, i.e., change `VALIDATION_DATE`, `FLEPI_RUN_INDEX` and `RESUME_LOCATION` as required. If submitting multiple jobs, it is recommended to split jobs between 2 queues: `Compartment-JQ-1588569569` and `Compartment-JQ-1588569574`.
 
-NOTE: If you are not running a _resume run_, DO NOT export the environmental variable `RESUME_LOCATION`. 
+NOTE: If you are not running a _resume run_, DO NOT export the environmental variable `RESUME_LOCATION`.
 
 ```bash
 cd ~/drp
@@ -102,6 +103,7 @@ export COMPUTE_QUEUE="Compartment-JQ-1588569574"
 ```
 
 Additionally, if you want to profile how the model is using your memory resources during the run, run the following commands
+
 ```bash
 export FLEPI_MEM_PROFILE=TRUE
 export FLEPI_MEM_PROF_ITERS=50
@@ -189,7 +191,6 @@ Rscript $FLEPI_PATH/datasetup/build_covid_data.R
 Rscript $FLEPI_PATH/datasetup/build_flu_data.R
 ```
 
-
 Now you may want to test that it works :
 
 ```bash
@@ -204,13 +205,13 @@ rm -r model_output
 
 ### Launch your inference batch job on AWS
 
-Assuming that the initial test simulation finishes successfully, you will now enter credentials and submit your job onto AWS batch. Enter the following command into the terminal:&#x20;
+Assuming that the initial test simulation finishes successfully, you will now enter credentials and submit your job onto AWS batch. Enter the following command into the terminal:
 
 ```
 aws configure
 ```
 
-You will be prompted to enter the following items. These can be found in a file you received from Shaun called `new_user_credentials.csv`.&#x20;
+You will be prompted to enter the following items. These can be found in a file you received from Shaun called `new_user_credentials.csv`.
 
 * Access key ID when prompted
 * Secret access key when prompted
@@ -225,20 +226,18 @@ To launch the whole inference batch job, type the following command:
 python $FLEPI_PATH/batch/inference_job.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic 
 ```
 
-This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc. 
+This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc.
 
 If you'd like to have more control, you can specify the arguments manually:
 
-<pre class="language-bash"><code class="lang-bash"><strong>python $FLEPI_PATH/batch/inference_job_launcher.py --slurm \
+<pre class="language-bash"><code class="lang-bash"><strong>python $FLEPI_PATH/batch/inference_job_launcher.py --slurm \ ## FIX THIS TO REFLECT AWS OPTIONS
 </strong><strong>                    -c $CONFIG_PATH \
 </strong><strong>                    -p $FLEPI_PATH \
 </strong><strong>                    --data-path $DATA_PATH \
 </strong><strong>                    --upload-to-s3 True \
 </strong><strong>                    --id $FLEPI_RUN_INDEX \
-</strong><strong>                    --fs-folder /scratch4/struelo1/flepimop-runs \
 </strong><strong>                    --restart-from-location $RESUME_LOCATION
 </strong></code></pre>
-
 
 ### Document the submission
 
@@ -256,6 +255,7 @@ git pull
 </code></pre>
 
 Send the submission information to slack so we can identify the job later. Example output:
+
 ```
 Launching USA-20230426T135628_inference_med on aws...
  >> Job array: 300 slot(s) X 5 block(s) of 55 simulation(s) each.
@@ -265,5 +265,3 @@ Launching USA-20230426T135628_inference_med on aws...
  >> FLEPIMOP branch is main with hash 3773ed8a20186e82accd6914bfaf907fd9c52002
  >> DATA branch is R17 with hash 6f060fefa9784d3f98d88a313af6ce433b1ac913
 ```
-
-
