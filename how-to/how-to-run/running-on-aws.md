@@ -1,49 +1,46 @@
 ---
-description: or any HPC using the slurm workload manager
+description: using Docker container
 ---
 
 # Running on AWS 
 
-## 🗂️ Files and folder organization
+## 🖥 Start and access AWS submission box
 
-Rockfish administrators provided [several partitions](https://www.arch.jhu.edu/support/storage-and-filesystems/) with different properties. For our needs (storage intensive and shared environment), we work in the `/scratch4/struelo1/` partition, where we have 20T of space. Our folders are organized as:
+**Spin up an Ubuntu submission box if not already running**. To do this, log onto AWS Console and start the EC2 instance.
 
-* **code-folder:** `/scratch4/struelo1/flepimop-code/` where each user has its own subfolder, from where the repos are cloned and the runs are launched. e.g for user chadi, we'll find:
-  * `/scratch4/struelo1/flepimop-code/chadi/covidsp/Flu_USA`
-  * `/scratch4/struelo1/flepimop-code/chadi/COVID19_USA`
-  * `/scratch4/struelo1/flepimop-code/chadi/flepiMoP`
-  * ...
-  * (we keep separated repositories by users so that different versions of the pipeline are not mixed where we run several runs in parallel. Don't hesitate to create other subfolders in the code folder (`/scratch4/struelo1/flepimop-code/chadi-flusight`, ...) if you need them.
+**Update IP address in .ssh/config file.** To do this, open a terminal and type the command below. This will open your config file where you can change the IP to the IP4 assigned to the AWS EC2 instance (see AWS Console for this):
+
+```
+notepad .ssh/config
+```
+
+**SSH into the box.** In the terminal, SSH into your box. Typically we name these instances "staging", so usually the command is:
+
+```
+ssh staging
+```
+
+## 🧱 Setup 
+
+Now you should be logged onto the AWS submission box. If you haven't yet, set up your directory structure.
+
+
+### 🗂 Create the directory structure (ONCE PER USER)
+
+Type the following commands:
+
+<pre class="language-bash"><code class="lang-bash">git clone https://github.com/HopkinsIDD/flepiMoP.git
+git clone https://github.com/HopkinsIDD/Flu_USA.git
+git clone https://github.com/HopkinsIDD/COVID19_USA.git
+git clone https://github.com/HopkinsIDD/flepiMoP.git
+# or any other data directories
+</code></pre>
 
 {% hint style="warning" %}
-Note that the repository is cloned **flat,** i.e the `flepiMoP` repository is at the same level as the data repository, not inside it!
+Note that the repository is cloned **??,** i.e the `flepiMoP` repository is at the same level as the data repository, not inside it!
 {% endhint %}
 
-* **output folder:**`/scratch4/struelo1/flepimop-runs` stores the run outputs. After an inference run finishes, it's output and the logs files are copied from the `$DATA_PATH/model_output` to `/scratch4/struelo1/flepimop-runs/THISRUNJOBNAME` where the jobname is usually of the form `USA-DATE.`
-
-## Login on rockfish
-
-Using ssh from your terminal, type in:
-
-```
-ssh {YOUR ROCKFISH USERNAME}@login.rockfish.jhu.edu
-```
-
-and enter your password when prompted. You'll be into rockfish's login node, which is a remote computer whose only purpose is to prepare and launch computations on so-called compute nodes.
-
-## 🧱 Setup (to be done only once per USER )
-
-Load the right modules for the setup:
-
-```bash
-module purge
-module load gcc/9.3.0
-module load anaconda3/2022.05  # very important to pin this version as other are buggy
-module load git                # needed for git
-module load git-lfs            # git-lfs (do we still need it?)
-```
-
-Now, type the following line so git remembers your credential and you don't have to enter your token 6 times per day:
+Have your Github ssh key passphrase handy so you can paste it when prompted (possibly multiple times) with the git pull command. _Alternatively, you can add your github key to your batch box so you don't have to enter your token 6 times per day._
 
 ```bash
 git config --global credential.helper store
@@ -52,137 +49,89 @@ git config --global user.email YOUREMAIL@EMAIL.COM
 git config --global pull.rebase false # so you use merge as the default reconciliation method
 ```
 
-Now you need to create the conda environment. This command is quite long you'll have the time to brew some nice coffee ☕️:
-
 {% code overflow="wrap" %}
-```bash
-conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot r-ggraph r-tidygraph
+```
+cd COVID19_USA
+git config --global credential.helper cache
+git pull 
+git checkout main
+git pull
+
+cd flepiMoP
+git pull	
+git checkout main
+git pull
+cd .. 
 ```
 {% endcode %}
 
-<details>
 
-<summary>Expand if the conda does not work for no particular reason (just interrupted)</summary>
+## 🚀 Run inference using AWS (do everytime)
 
-If the dependencies are hard to satisfy, the above line might take so long that it's killed by the watchdog of rockfish. In this case, only, you can create the environment in two shorter commands:
+### 🛳 Initiate the Docker
+Start up and log into the docker container, and run setup scripts to setup the environment. This setup code links the docker directories to the existing directories on your box. As this is the case, you should not run job submission simultaneously using this setup, as one job submission might modify the data for another job submission.
 
-{% code overflow="wrap" %}
-```bash
-# install all python stuff first
-conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk
-
-# activate the enviromnment and install the R stuff
-conda activate flepimop-env
-conda install -c conda-forge r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot 
-```
-{% endcode %}
-
-</details>
-
-### Create the directory structure
-
-type the following commands. $USER is a variable that contains your username.
-
-<pre class="language-bash"><code class="lang-bash"><strong>cd /scratch4/struelo1/flepimop-code/
-</strong><strong>mkdir $USER
-</strong><strong>cd $USER
-</strong>git clone https://github.com/HopkinsIDD/flepiMoP.git
-git clone https://github.com/HopkinsIDD/Flu_USA.git
-git clone https://github.com/HopkinsIDD/COVID19_USA.git
-# or any other data directories
+<pre data-overflow="wrap"><code>sudo docker pull hopkinsidd/flepimop:latest-dev
+sudo docker run -it \
+  -v /home/ec2-user/COVID19_USA:/home/app/drp/COVID19_USA \
+  -v /home/ec2-user/flepiMoP:/home/app/drp/flepiMoP \
+  -v /home/ec2-user/.ssh:/home/app/.ssh \
+hopkinsidd/flepimop:latest-dev  
 </code></pre>
 
-### Setup your AWS credentials (allows to copy runs to s3)
 
-This can be done in a second step -- but is necessary in order to push and pull to s3. Setup your AWS credentials by:
+### Setup environment 
 
-<pre class="language-bash"><code class="lang-bash">cd ~ # go in your home directory
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-./aws/install -i ~/aws-cli -b ~/aws-cli/bin
-<strong>./aws-cli/bin/aws --version
-</strong></code></pre>
+To set up the environment for your run, run the following commands. These are specific to _your run_, i.e., change `VALIDATION_DATE`, `FLEPI_RUN_INDEX` and `RESUME_LOCATION` as required. If submitting multiple jobs, it is recommended to split jobs between 2 queues: `Compartment-JQ-1588569569` and `Compartment-JQ-1588569574`.
 
-Then run `./aws-cli/bin/aws configure` and use the following :
-
-```
-# AWS Access Key ID [None]: YOUR ID
-# AWS Secret Access Key [None]: YOUR SECRET ID
-# Default region name [None]: us-west-2
-# Default output format [None]: json
-```
-
-## 🚀 Run inference using slurm (do everytime)
-
-log-in to rockfish via ssh, then type:
-
-`source /scratch4/struelo1/flepimop-code/flepimop_init.sh`
-
-which will prepare the environment and setup variables for the validation date, the resume location and the run index for this run. If you don't want to set a variable, just hit enter.
-
-{% hint style="success" %}
-Note that now the run-id of the run we resume from is automatically inferred by the batch script :)
-{% endhint %}
-
-<details>
-
-<summary>what does this do || it returns an error</summary>
-
-This script runs the following commands to setup up the environment, which you can run individually as well.
+NOTE: If you are not running a _resume run_, DO NOT export the environmental variable `RESUME_LOCATION`. 
 
 ```bash
-module purge
-module load gcc/9.3.0
-module load git
-module load git-lfs
-module load slurm
-module load anaconda3/2022.05
-conda activate flepimop-env
+cd ~/drp
 export CENSUS_API_KEY={A CENSUS API KEY}
 export FLEPI_STOCHASTIC_RUN=false
 export FLEPI_RESET_CHIMERICS=TRUE
-export FLEPI_PATH=/scratch4/struelo1/flepimop-code/$USER/flepiMoP
+export FLEPI_PATH=$(pwd)/flepiMoP
 
-# And then it asks you some questions to setup some enviroment variables
-```
-
-and the it does some prompts to fix the following 3 enviroment variables. You can skip this part and do it later manually.
-
-```bash
 export VALIDATION_DATE="2023-01-29"
 export RESUME_LOCATION=s3://idd-inference-runs/USA-20230122T145824
 export FLEPI_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc
+export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml
+
+export COMPUTE_QUEUE="Compartment-JQ-1588569574"
 ```
 
-</details>
+Additionally, if you want to profile how the model is using your memory resources during the run, run the following commands
+```bash
+export FLEPI_MEM_PROFILE=TRUE
+export FLEPI_MEM_PROF_ITERS=50
+```
 
-{% hint style="warning" %}
-Check that the conda environment is activated: you should see`(flepimop-env)` on the left of your command-line prompt.
-{% endhint %}
-
-Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date) then you can skip these steps
+Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date).
 
 ```bash
-cd /scratch4/struelo1/flepimop-code/$USER
-export FLEPI_PATH=$(pwd)/flepiMoP
 cd $FLEPI_PATH
 git checkout main
 git pull
-conda activate flepimop-env # normally already done, but in case.
+git config --global credential.helper 'cache --timeout 300000'
 
-#install gempyor and the R module. There should be no error, please report if not.
+#install gempyor and the R modules. There should be no error, please report if not.
 # Sometimes you might need to run the next line two times because inference depends
-# on report.generation, which is installed later because of alphabetical order.
+# on report.generation, which is installed later, in alphabetical order.
 # (or if you know R well enough to fix that 😊)
 
 Rscript build/local_install.R # warnings are ok; there should be no error.
-pip install --no-deps -e flepimop/gempyor_pkg/
+   python -m pip install --upgrade pip &#x26;&#x26;
+   pip install -e flepimop/gempyor_pkg/ &#x26;&#x26; 
+   pip install boto3 &#x26;&#x26; 
+   cd ..
+
 ```
 
 Now flepiMoP is ready 🎉. Now you need to set $DATA\_PATH to your data folder. For a COVID-19 run, do:
 
 ```bash
-cd /scratch4/struelo1/flepimop-code/$USER
+cd ~/drp
 export DATA_PATH=$(pwd)/COVID19_USA
 export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
 ```
@@ -223,16 +172,14 @@ rm -rf model_output data/us_data.csv data-truth &&
 
 # don't delete model_output if you have another run in //
 rm -rf $DATA_PATH/model_output
-# delete log files from previous runs
-rm *.out
 ```
 
 </details>
 
-Then run the preparatory script and you are good
+Then run the preparatory data building scripts and you are good
 
 ```bash
-export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml
+export CONFIG_PATH=config_FCH_R16_lowBoo_modVar_ContRes_blk4_Jan29_tsvacc.yml # if you haven't already done this
 Rscript $FLEPI_PATH/datasetup/build_US_setup.R
 
 # For covid do
@@ -242,12 +189,6 @@ Rscript $FLEPI_PATH/datasetup/build_covid_data.R
 Rscript $FLEPI_PATH/datasetup/build_flu_data.R
 ```
 
-If you want to profile how the model is using your memory resources during the run:
-
-```
-export FLEPI_MEM_PROFILE=TRUE
-export FLEPI_MEM_PROF_ITERS=50
-```
 
 Now you may want to test that it works :
 
@@ -261,19 +202,30 @@ If this fails, you may want to investigate this error. In case this succeeds, th
 rm -r model_output
 ```
 
-### Launch your inference batch job
+### Launch your inference batch job on AWS
 
-When an inference batch job is launched, a few post processing scripts are called to run automatically `postprocessing-scripts.sh.` You can manually change what you want to run by editing this script.
+Assuming that the initial test simulation finishes successfully, you will now enter credentials and submit your job onto AWS batch. Enter the following command into the terminal:&#x20;
+
+```
+aws configure
+```
+
+You will be prompted to enter the following items. These can be found in a file you received from Shaun called `new_user_credentials.csv`.&#x20;
+
+* Access key ID when prompted
+* Secret access key when prompted
+* Default region name: us-west-2
+* Default output: Leave blank when this is prompted and press enter (The Access Key ID and Secret Access Key will be given to you once in a file)
 
 Now you're fully set to go 🎉
 
 To launch the whole inference batch job, type the following command:
 
 ```bash
-python $FLEPI_PATH/batch/inference_job_launcher.py --slurm 2>&1 | tee $FLEPI_RUN_INDEX_submission.log
+python $FLEPI_PATH/batch/inference_job.py --aws -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic 
 ```
 
-This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc. The part after the "2" makes sure this file output is redirected to a script for logging, but has no impact on your submission.
+This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc. 
 
 If you'd like to have more control, you can specify the arguments manually:
 
@@ -287,151 +239,31 @@ If you'd like to have more control, you can specify the arguments manually:
 </strong><strong>                    --restart-from-location $RESUME_LOCATION
 </strong></code></pre>
 
-If you want to send any post-processing outputs to `#flepibot-test` instead of `csp-production`, add the flag `--slack-channel debug`
 
-**Commit files to Github.** After the job is successfully submitted, you will now be in a new branch of the data repo. Commit the ground truth data files to the branch on github and then return to the main branch:
+### Document the submission
 
-<pre><code><strong>git add data/ 
-</strong>git commit -m"scenario run initial" 
+After the job is successfully submitted, you will now be in a new branch of the data repo. Commit the ground truth data files to the branch on github and then return to the main branch:
+
+<pre><code>git add data/ 
+git config --global user.email "[email]" 
+git config --global user.name "[github username]" 
+git commit -m"scenario run initial" 
 branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-git push --set-upstream origin $branch
+<strong>git push --set-upstream origin $branch
+</strong>
+git checkout main
+git pull
 </code></pre>
 
-but DO NOT finish up by git checking main like the aws instructions, as the run will use data in the current folder.
-
-
-
-### Monitor your run
-
-TODO JPSEH WRITE UP TO HERE
-
-Two types of logfiles: in \`$DATA\_PATH\`: slurm-JOBID\_SLOTID.out and and filter\_MC logs:
-
-\`\`\`tail -f /scratch4/struelo1/flepimop-runs/USA-20230130T163847/log\_FCH\_R16\_lowBoo\_modVar\_ContRes\_blk4\_Jan29\_tsvacc\_100.txt
-
-\`\`\`
-
-### Helpful commands
-
-When approching the file number quota, type
-
-```bash
-find . -maxdepth 1 -type d | while read -r dir
- do printf "%s:\t" "$dir"; find "$dir" -type f | wc -l; done 
+Send the submission information to slack so we can identify the job later. Example output:
+```
+Launching USA-20230426T135628_inference_med on aws...
+ >> Job array: 300 slot(s) X 5 block(s) of 55 simulation(s) each.
+ >> Final output will be: s3://idd-inference-runs/USA-20230426T135628/model_output/
+ >> Run id is SMH_R17_noBoo_lowIE_phase1_blk1
+ >> config is config_SMH_R17_noBoo_lowIE_phase1_blk1.yml
+ >> FLEPIMOP branch is main with hash 3773ed8a20186e82accd6914bfaf907fd9c52002
+ >> DATA branch is R17 with hash 6f060fefa9784d3f98d88a313af6ce433b1ac913
 ```
 
-to find which subfolders contains how many files
 
-## Common errors
-
-* Check that the python comes from conda with `which python` if some weird package missing errors arrive. Sometime conda magically disappears.
-* Don't use `ipython` as it breaks click's flags
-
-cleanup:
-
-```
-rm -r /scratch4/struelo1/flepimop-runs/
-rm -r model_output
-cd $COVID_PATH;git pull;cd $DATA_PATH
-rm *.out
-```
-
-### Get a notification on your phone/mail when a run is done
-
-We use [ntfy.sh](https://ntfy.sh) for notification. Install ntfy on your Iphone or Android device. Then subscribe to the channel `ntfy.sh/flepimop_alerts` where you'll receive notifications when runs are done.
-
-* End of job notifications goes as urgent priority.
-
-## How to use slurm
-
-Check your running jobs:
-
-```
-squeue -u $USER
-```
-
-where job\_id has your full array job\_id and each slot after the under-score. You can see their status (R: running, P: pending), how long they have been running and soo on.
-
-To cancel a job
-
-```
-scancel JOB_ID
-```
-
-### Running an interactive session
-
-To check your code prior to submitting a large batch job, it's often helpful to run an interactive session to debug your code and check everything works as you want. On 🪨🐠 this can be done using `interact` like the below line, which requests an interactive session with 4 cores, 24GB of memory, for 12 hours.
-
-```
-interact -p defq -n 4 -m 24G -t 12:00:00
-```
-
-The options here are `[-n tasks or cores]`, `[-t walltime]`, `[-p partition]` and `[-m memory]`, though other options can also be included or modified to your requirements. More details can be found on the [ARCH User Guide](https://marcc.readthedocs.io/Slurm.html#request-interactive-jobs).
-
-### Moving files to your local computer
-
-Often you'll need to move files back and forth between Rockfish and your local computer. To do this, you can use Open-On-Demand, or any other command line tool.
-
-`scp -r <user>@rfdtn1.rockfish.jhu.edu:"<file path of what you want>" <where you want to put it in your local>`
-
-## Installation notes
-
-These steps are already done an affects all users, but might be interesting in case you'd like to run on another cluster
-
-#### Install slack integration
-
-So our 🤖-friend can send us some notifications once a run is done.
-
-```
-cd /scratch4/struelo1/flepimop-code/
-nano slack_credentials.sh
-# and fill the file:
-export SLACK_WEBHOOK="{THE SLACK WEBHOOK FOR CSP_PRODUCTION}"
-export SLACK_TOKEN="{THE SLACK TOKEN}"
-```
-
-### The helper script
-
-in `/scratch4/struelo1/flepimop-code/flepimop_init.sh`
-
-```bash
-echo ">>> running some useful commands  ^= ^v, please wait"
-module purge
-module load gcc/9.3.0
-module load git
-module load git-lfs
-module load slurm
-module load anaconda3/2022.05
-conda activate flepimop-env
-export CENSUS_API_KEY={AN API KEY}  # joseph's key
-
-export FLEPI_STOCHASTIC_RUN=false
-export FLEPI_RESET_CHIMERICS=TRUE
-export FLEPI_PATH=/scratch4/struelo1/flepimop-code/$USER/flepiMoP
-
-echo "done  ^|^e"
-
-echo "Doing some inference_run setup, hit enter to skip a question if not relevant or you're not planning on doing a run"
-
-export TODAY=`date --rfc-3339='date'`
-echo "Let's set up a flepiMoP run. Today is the $TODAY"
-
-echo "(1/3) Please input the validation date:"
-read input
-export VALIDATION_DATE="$input"
-echo -e ">>> set VALIDATION DATE to $VALIDATION_DATE \n"
-
-echo "(2/3) Please input the resume location (empty if no resume, or a s3:// url or a local folder):"
-read input
-export RESUME_LOCATION="$input"
-echo -e ">>> set RESUME_LOCATION to $RESUME_LOCATION \n"
-
-echo "(3/3) Please provide the Run Index for the current run:"
-read input
-export FLEPI_RUN_INDEX="$input"
-echo -e ">>> set  FLEPI_RUN_INDEX to $FLEPI_RUN_INDEX \n"
-
-echo "DONE. if no error please manually set export CONFIG_PATH=YOURCONFIGPATH.yml"
-echo "(in case of error, override manually some variables or rerun this script)"
-
-```
