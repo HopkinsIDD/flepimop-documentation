@@ -149,6 +149,8 @@ Rscript build/local_install.R # warnings are ok; there should be no error.
 
 ```
 
+For now, just in case: update the `arrow` package from 8.0.0 in the docker to 11.0.3.&#x20;
+
 Now flepiMoP is ready 🎉.&#x20;
 
 ```bash
