@@ -51,6 +51,7 @@
     * [AWS Submission Instructions: Influenza](how-to/how-to-run/running-with-docker-on-aws/aws-submission-instructions-influenza.md)
     * [AWS Submission Instructions: COVID-19](how-to/how-to-run/running-with-docker-on-aws/aws-submission-instructions-covid-19.md)
   * [Running with RStudio Server on AWS EC2](how-to/how-to-run/running-with-rstudio-server-on-aws-ec2.md)
+  * [Running with AWS](how-to/how-to-run/running-on-aws.md)
 * [Create a post-processing script](how-to/create-a-post-processing-script.md)
 
 ## 🗜 Development
