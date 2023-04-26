@@ -2,7 +2,7 @@
 description: or any HPC using the slurm workload manager
 ---
 
-# Running on Rockfish/MARCC 🪨🐠
+# Running on AWS 
 
 ## 🗂️ Files and folder organization
 
