@@ -416,7 +416,7 @@ If there are no parameter values that need to be specified (all rates given nume
 
 ### Specifying parameters values from distributions
 
-Parameter values can also be specified as random values drawn from a distribution. In this case, every time the model is run (NOTE slot vs iteration), a new random values of the parameter is drawn. For example, to choose the same value of beta = 0.1 each time the model is run but to choose a random values of gamma with mean on a log scale of $$e^{-1.6} = 0.2$$ and standard deviation  on a log scale of $$e^{0.2} = 1.2$$ (e.g., 1.2-fold variation).&#x20;
+Parameter values can also be specified as random values drawn from a distribution. In this case, every time the model is run independently, a new random value of the parameter is drawn. For example, to choose the same value of beta = 0.1 each time the model is run but to choose a random values of gamma with mean on a log scale of $$e^{-1.6} = 0.2$$ and standard deviation  on a log scale of $$e^{0.2} = 1.2$$ (e.g., 1.2-fold variation).&#x20;
 
 ```
 seir:
@@ -493,10 +493,10 @@ Our framework allows for two major methods for implementing compartmental models
 
 The mathematics behind each implementation is described in the [Model Description](../../model-description.md) section
 
-| Config item | Required? | Type/Format              | Description                                                                                                                                                                                                                                                                                                                                                             |
-| ----------- | --------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `method`    | optional  | string                   | The algorithm used to numerically integrate the system of differential equations, if `stochastic`=`FALSE`. Current possible values are `rk4`, which uses a 4th order Runge-Kutta algorithm,  or `legacy`(Default) which uses the transition rates for the stochastic model but always chooses the average rate.  If stochastic = TRUE then the method cannot be `rk4`.  |
-| `dt`        | optional  | Any positive real number | The timestep used for the numerical integration or discrete time stochastic update. Default is `dt = 2`                                                                                                                                                                                                                                                                 |
+| Config item | Required? | Type/Format                              | Description                                                                                                                                                                                                                                                                                                                                                                                           |
+| ----------- | --------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `method`    | optional  | string:  `stochastic`,`rk4`, or `legacy` | The algorithm used to simulate the mode equations. If `stochastic`, uses a discrete time stochastic process with a rate-saturation correction. If`rk4`, model is simulated deterministically by numerical integration using a 4th order Runge-Kutta algorithm.  If `legacy`(Default), uses the transition rates for the stochastic model but always chooses the average rate (an Euler style update)  |
+| `dt`        | optional  | Any positive real number                 | The timestep used for the numerical integration or discrete time stochastic update. Default is `dt = 2`                                                                                                                                                                                                                                                                                               |
 
 
 
@@ -505,7 +505,6 @@ For example, to simulate a model deterministically using the 4th order Runge-Kut
 ```
 seir:
   integration:
-     stochastic: FALSE
      method: rk4
      dt: 1.00
 ```
@@ -515,7 +514,7 @@ Alternatively, to simulate a model stochastically with a timestep of 0.1 days
 ```
 seir:
   integration:
-     stochastic: TRUE
+     methd: stochastic
      dt: 0.1
 ```
 
