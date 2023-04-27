@@ -75,12 +75,12 @@ Start up and log into the docker container, and run setup scripts to setup the e
 
 {% code overflow="wrap" %}
 ```
-sudo docker pull hopkinsidd/flepimop:latest-dev
+sudo docker pull hopkinsidd/flepimop:latest
 sudo docker run -it \
   -v /home/ec2-user/COVID19_USA:/home/app/drp/COVID19_USA \
   -v /home/ec2-user/flepiMoP:/home/app/drp/flepiMoP \
   -v /home/ec2-user/.ssh:/home/app/.ssh \
-hopkinsidd/flepimop:latest-dev  
+hopkinsidd/flepimop:latest 
 ```
 {% endcode %}
 
