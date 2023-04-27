@@ -25,7 +25,7 @@ Features:
 * Portable using docker or anaconda
 * Open-source software
 
-<figure><img src=".gitbook/assets/CSP Overview (1).png" alt=""><figcaption><p>Overview of the pipeline organization</p></figcaption></figure>
+<figure><img src=".gitbook/assets/CSP Overview.png" alt=""><figcaption><p>Overview of the pipeline organization</p></figcaption></figure>
 
 The mathematical model within the pipeline is a _compartmental epidemic model_ embedded within a _well-mixed metapopulation_. A compartmental epidemic model is a model that divides all individuals in a population into a discrete set of states (e.g. “infected”, “recovered”) and tracks - over time - the number of individuals in each state and the rates at which individuals transition between these states. The well-known SIR model is a classic example of such a model, and much more complex versions of this model type have been simulated with this framework (for example, an SEIR-style model in which individuals are further subdivided into multiple age groups and vaccination statuses).&#x20;
 

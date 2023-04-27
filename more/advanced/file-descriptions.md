@@ -96,9 +96,9 @@ This directory contains the core R code - organized into functions within packag
   * ReportLoadData.R
   * setup\_testing\_environment.R
 
-#### ****
+####
 
-#### ****
+####
 
 ### /test
 

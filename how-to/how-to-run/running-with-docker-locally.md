@@ -2,14 +2,14 @@
 description: Short internal tutorial on running locally using a "Docker" container.
 ---
 
-# Running with docker locally
+# Running with docker locally 🛳
 
 ### Setup
 
 **Run Docker Image**
 
 {% hint style="info" %}
-Current Docker image: `/hopkinsidd/covidscenariopipeline`
+Current Docker image: `/hopkinsidd/flepimop:latest-dev`
 {% endhint %}
 
 Docker is a software platform that allows you to build, test, and deploy applications quickly. Docker packages software into standardized units called **containers** that have everything the software needs to run including libraries, system tools, code, and runtime. This means you can run and install software without installing the dependencies in the system.
@@ -19,25 +19,25 @@ A docker container is an environment which is isolated from the rest of the oper
 For flepiMoP, we have a docker container that will help you get running quickly!&#x20;
 
 ```
-docker pull hopkinsidd/covidscenariopipeline:latest-dev
+docker pull hopkinsidd/flepimop:latest-dev
 docker run -it \
-  -v <dir1>\:/home/app/csp \
+  -v <dir1>\:/home/app/flepimop \
   -v <dir2>:/home/app/drp \
-hopkinsidd/covidscenariopipeline:latest-dev  
+hopkinsidd/flepimop:latest-dev  
 ```
 
-In this command we run the docker image `hopkinsidd/covidscenariopipeline`. The `-v` command is used to allocate space from Docker and mount it at the given location.&#x20;
+In this command we run the docker image `hopkinsidd/flepimop`. The `-v` command is used to allocate space from Docker and mount it at the given location.&#x20;
 
-This mounts the data folder `<dir1>` to a path called `drp` within the docker environment, and the COVIDScenarioPipeline `<dir2>` in `csp`.&#x20;
+This mounts the data folder `<dir1>` to a path called `drp` within the docker environment, and the COVIDScenarioPipeline `<dir2>` in `flepimop`.&#x20;
 
-### How to run inference
+## 🚀 Run inference
 
 #### Fill the environment variables (do this every time)
 
 First, populate the folder name variables:
 
 ```bash
-export COVID_PATH=/home/app/csp/
+export FLEPI_PATH=/home/app/csp/
 export DATA_PATH=/home/app/drp/
 ```
 
@@ -45,8 +45,8 @@ Then, export variables for some flags and the census API key (you can use your o
 
 {% code overflow="wrap" %}
 ```bash
-export COVID_STOCHASTIC=false
-export COVID_RESET_CHIMERICS=TRUE
+export FLEPI_STOCHASTIC_RUN=false
+export FLEPI_RESET_CHIMERICS=TRUE
 export CENSUS_API_KEY="6a98b751a5a7a6fc365d14fa8e825d5785138935"
 ```
 {% endcode %}
@@ -65,14 +65,12 @@ _Note: Do not enter the API Key in quotes, copy the key as it is._
 
 Go into the Pipeline repo (making sure it is up to date on your favorite branch) and do the installation required of the repository:
 
-```bash
-cd $COVID_PATH   # it'll move to the COVIDScenarioPipeline/ directory
-Rscript local_install.R               # Install the R stuff, will fail
-Rscript local_install.R               # Install the R stuff, will sucedd
-pip install --no-deps -e gempyor_pkg/ # install gempyor
-git lfs install
+<pre class="language-bash"><code class="lang-bash">cd $FLEPI_PATH   # it'll move to the flepiMoP/ directory
+Rscript local_install.R               # Install the R stuff
+<strong>pip install --no-deps -e gempyor_pkg/ # install gempyor
+</strong>git lfs install
 git lfs pull
-```
+</code></pre>
 
 {% hint style="info" %}
 Note: These installations take place in the docker container and not the Operating System. They must be made once while starting the container and need not be done for every time you are running tests, provided they have been installed once.
@@ -93,9 +91,9 @@ Stay in `$DATA_PATH`, select a config, and build the setup. The setup creates th
 
 ```bash
 export CONFIG_PATH=config_SMH_R1_lowVac_optImm_2022.yml
-Rscript $COVID_PATH/R/scripts/build_US_setup.R -c $CONFIG_PATH
-Rscript $COVID_PATH/R/scripts/build_flu_data.R
-Rscript $COVID_PATH/R/scripts/full_filter.R -c $CONFIG_PATH -j 1 -n 1 -k 1
+Rscript $FLEPI_PATH/datasetup/build_US_setup.R
+Rscript $FLEPI_PATH/datasetup/build_flu_data.R
+Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R.R -j 1 -n 1 -k 1
 ```
 
 where:

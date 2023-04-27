@@ -187,7 +187,7 @@ $COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stoch
 printenv CONFIG_NAME
 ```
 
-****
+
 
 **Single Iteration + Carry seeding**  (_do this to produce additional scenarios where no fitting is required_)_:_
 
@@ -200,7 +200,7 @@ printenv CONFIG_NAME
 {% endtab %}
 {% endtabs %}
 
-> NOTE: A __ Resume and Continuation Resume are currently submitted the same way, but with `--resume-carry-seeding` specified and resuming from an S3 that was generated manually.
+> NOTE: A Resume and Continuation Resume are currently submitted the same way, but with `--resume-carry-seeding` specified and resuming from an S3 that was generated manually.
 
 
 

@@ -2,9 +2,9 @@
 description: Short internal tutorial on running locally using an "Anaconda" environment.
 ---
 
-# Running with conda locally
+# Running with conda locally 🐍
 
-### Setup (do this once)
+### 🧱 Setup (do this once)
 
 #### Installing the `conda` environment
 
@@ -15,13 +15,13 @@ The simplest way to get everything to work is to build an Anaconda environment. 
 conda update conda # makes sure you have a recent conda instatllation
 
 # be sure to copy the whole thing as a single line ! copy it to your text editor
-conda create -c conda-forge -n covidSP numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus
+conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus
 ```
 {% endcode %}
 
 Anaconda will take some time, to come up with a proposal that works will all dependencies.&#x20;
 
-This creates a `conda` environment named `covidSP` that has all the necessary packages. &#x20;
+This creates a `conda` environment named `flepimop-env` that has all the necessary packages. &#x20;
 
 If you'd like you can install `rstudio` as a package as well, but I think your Rstudio should be able to find your conda R without problems.
 
@@ -35,7 +35,7 @@ Anaconda is the most reproducible way to run our model. However, you can still p
 
 </details>
 
-### How to run inference
+## 🚀 Run inference
 
 #### Fill the environment variables (do this every time)
 
@@ -44,7 +44,7 @@ First, you'll need to fill in some variables that are used by the model. This ca
 First, in `myparentfolder` populate the folder name variables:
 
 ```bash
-export COVID_PATH=$(pwd)/COVIDScenarioPipeline
+export FLEPI_PATH=$(pwd)/flepiMoP
 export DATA_PATH=$(pwd)/Flu_USA
 ```
 
@@ -54,26 +54,25 @@ Then, export variables for some flags and the census API key (you can use your o
 
 {% code overflow="wrap" %}
 ```bash
-export COVID_STOCHASTIC=false
-export COVID_RESET_CHIMERICS=TRUE
+export FLEPI_STOCHASTIC_RUN=false
+export FLEPI_RESET_CHIMERICS=TRUE
 export CENSUS_API_KEY="6a98b751a5a7a6fc365d14fa8e825d5785138935"
 ```
 {% endcode %}
 
-#### Install the packages (do this every time the COVIDScenarioPipeline repository has changed)
+#### Install the packages (do this every time the flepiMoP repository has changed)
 
 Activate your conda environment, if you have one.
 
 ```bash
-conda activate covidSP
+conda activate flepimop-env
 ```
 
-In this conda environment, commands with R and python will uses this environment's R and python. Go into the Pipeline repo (making sure it is up to date on your favorite branch) and do the installation required of the repository:
+In this conda environment, commands with R and python will uses this environment's R and python. Go into the flepiMoP repo (making sure it is up to date on your favorite branch) and do the installation required of the repository:
 
 ```bash
-cd $COVID_PATH   # it'll move to the COVIDScenarioPipeline/ directory
-Rscript local_install.R               # Install the R stuff, will fail
-Rscript local_install.R               # Install the R stuff, will sucedd
+cd $FLEPI_PATH   # it'll move to the flepiMoP/ directory
+Rscript build/local_install.R               # Install the R stuff, will fail
 pip install --no-deps -e gempyor_pkg/ # install gempyor
 git lfs install
 git lfs pull
@@ -125,10 +124,18 @@ rm -r model_output/ # delete the outputs of past run if there are
 Stay in `$DATA_PATH`, select a config, activate the conda enviroment (if not already done) and build the setup. Then, run inference:
 
 ```bash
-conda activate covidSP
+conda activate flepimop-env
 export CONFIG_PATH=config_SMH_R1_lowVac_optImm_2022.yml
-Rscript $COVID_PATH/R/scripts/build_US_setup.R
-Rscript $COVID_PATH/R/scripts/full_filter.R -j 1 -n 1 -k 3
+
+Rscript $FLEPI_PATH/datasetup/build_US_setup.R
+
+# For covid do
+Rscript $FLEPI_PATH/datasetup/build_covid_data.R
+
+# For Flu do
+Rscript $FLEPI_PATH/datasetup/build_flu_data.R
+
+Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R.R -j 1 -n 1 -k 3
 ```
 
 where:
@@ -139,18 +146,19 @@ where:
 
 It should run successfully and create a lot of files in `model_output/`.&#x20;
 
-Okay, I'll make a part 2 on how to plot and debug what happened. You can also try to knit the Rmd file in `COVIDScenarioPipeline/gempyor_pkg/docs` which will show you how to analyze these files.
+Okay, I'll make a part 2 on how to plot and debug what happened. You can also try to knit the Rmd file in `flepiMoP/flepimop/gempyor_pkg/docs` which will show you how to analyze these files.
 
 ### Do it all with a script
 
 The following script does all the above commands in an easy script. Save it in `myparentfolder` as `quick_setup_flu.sh`. Then, just go to `myparentfolder` and type `source quick_setup_flu.sh` and it'll do everything for you!
 
-<pre class="language-bash" data-title="quick_setup_flu.sh" data-line-numbers><code class="lang-bash">export COVID_PATH=$(pwd)/COVIDScenarioPipeline
+<pre class="language-bash" data-title="quick_setup_flu.sh" data-line-numbers><code class="lang-bash">export FLEPI_PATH=$(pwd)/flepiMoP
 export DATA_PATH=$(pwd)/Flu_USA
-export COVID_STOCHASTIC=false
-export COVID_RESET_CHIMERICS=TRUE
+export FLEPI_STOCHASTIC_RUN=false
+export FLEPI_RESET_CHIMERICS=TRUE
+
 cd $COVID_PATH
-Rscript local_install.R
+Rscript build/local_install.R
 pip install --no-deps -e gempyor_pkg/ # before: python setup.py develop --no-deps
 git lfs install
 git lfs pull
@@ -159,9 +167,9 @@ cd $DATA_PATH
 <strong>git restore data/
 </strong>rm -rf data/mobility_territories.csv data/geodata_territories.csv data/us_data.csv
 export CONFIG_PATH=config_SMH_R1_lowVac_optImm_2022.yml
-Rscript $COVID_PATH/R/scripts/build_US_setup.R
+Rscript $FLEPI_PATH/datasetup/build_US_setup.R
 echo "might want to rm -R model_output"
-echo "now you can type: Rscript \$COVID_PATH/R/scripts/full_filter.R -j 1 -n 1 -k 1"
+echo "now you can type: Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R.R -j 1 -n 1 -k 1"
 </code></pre>
 
 

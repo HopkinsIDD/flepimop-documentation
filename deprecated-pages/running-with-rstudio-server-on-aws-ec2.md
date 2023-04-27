@@ -39,11 +39,11 @@ By default RStudio Server runs on port 8787 and accepts connections from all rem
 
 Then the authentication dialog will be shown, try to log in by inputting your username and password which are already registered in the box and pushing the "Sign In " button:
 
-<figure><img src="../../.gitbook/assets/スクリーンショット 2023-01-10 午後12.22.33.png" alt=""><figcaption><p>Authentication dialog</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/スクリーンショット 2023-01-10 午後12.22.33.png" alt=""><figcaption><p>Authentication dialog</p></figcaption></figure>
 
 RStudio view can be appeared as below:
 
-<figure><img src="../../.gitbook/assets/スクリーンショット 2023-01-10 午後12.27.24.png" alt=""><figcaption><p>RStudio view</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/スクリーンショット 2023-01-10 午後12.27.24.png" alt=""><figcaption><p>RStudio view</p></figcaption></figure>
 
 ## Accessing the Linux server(Ubuntu) using RDP
 
@@ -103,7 +103,7 @@ From Finder you can access the shared space using SMB.
 2. When a dialog appears, fill username and password out as a registered user,&#x20;
 3. After pushing "connect" button, the designated area will be shown in Finder if no errors happen.&#x20;
 
-<figure><img src="../../.gitbook/assets/スクリーンショット 2023-01-09 午後2.06.45.png" alt=""><figcaption><p>Dialog window (in Japanese form; this will be changed according to yours OS's locale)</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/スクリーンショット 2023-01-09 午後2.06.45 (1).png" alt=""><figcaption><p>Dialog window (in Japanese form; this will be changed according to yours OS's locale)</p></figcaption></figure>
 
 
 

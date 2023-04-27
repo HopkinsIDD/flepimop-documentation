@@ -16,8 +16,8 @@ This section provides instructions for installation and how to run on each platf
 [slurm-submission-on-marcc.md](slurm-submission-on-marcc.md)
 {% endcontent-ref %}
 
-{% content-ref url="running-with-docker-on-aws/" %}
-[running-with-docker-on-aws](running-with-docker-on-aws/)
+{% content-ref url="../../deprecated-pages/running-with-docker-on-aws/" %}
+[running-with-docker-on-aws](../../deprecated-pages/running-with-docker-on-aws/)
 {% endcontent-ref %}
 
 ## Setup requirements
@@ -41,7 +41,7 @@ In your preferred folder, clone the `COVIDScenarioPipeline` and relevant data (`
 In `COVIDScenarioPipeline`, do `git checkout main` to make sure you are on the `main` branch. You can also use the GitHub App to clone and checkout if you prefer.
 
 {% hint style="warning" %}
-In general **** repositories are cloned **flat,** i.e `COVIDScenarioPipeline` is at the same level as the data repository, not inside it!
+In general repositories are cloned **flat,** i.e `COVIDScenarioPipeline` is at the same level as the data repository, not inside it!
 
 _**FOR AWS,**_ `COVIDScenarioPipeline` must be nested **within** data repositories.&#x20;
 {% endhint %}
@@ -107,7 +107,7 @@ In the docker we have to update pip before:
 pip install -e gempyor_pkg/
 ```
 
-****
+
 
 **Test your installation:**
 
