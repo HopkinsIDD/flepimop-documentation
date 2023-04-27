@@ -18,6 +18,45 @@ Variables should not be included as outcomes if they influence the infection tra
 
 The `outcomes` section is not required in the config. However, it is highly recommended to include it, even if the only outcome variable is set to be equivalent to one of the infection model variables. If the model is being fit to data, then the `outcomes` section is required, as only outcome variables can be compared to data.&#x20;
 
+As an example, imagine we are simulating an SIR-style model and want to compare it to real epidemic data in which cases of infection and death from infection are reported. Our model doesn't explicitly include death, but supposed we know that 1% of all infections eventually lead to death, and that death occurs on average 3 weeks after infection. We know that not all infections are reported as cases, but aren't sure of the case detection rate, and so consider two possibilities: that 90% of infections are detected, and that only 50% are detected. Assume we know that cases are reported 2 days after infection begins. The `outcomes` section of the config for these outcomes would be
+
+<pre><code>compartments:
+  infection_state: ["S", "I", "R"]
+  
+seir:
+  transitions:
+    # infection
+    - source: [S]
+      destination: [I]
+      proportional_to: [[S], [I]]
+      rate: [beta]
+      proportion_exponent: 1
+    # recovery
+    - source: [I]
+      destination: [R]
+      proportional_to: [[I]]
+      rate: [gamma]
+      proportion_exponent: 1
+  parameters:
+    beta: 0.1
+    gamma: 0.2
+<strong>
+</strong><strong>outcomes:
+</strong>  method:
+  scenarios:
+  settings:
+      high_case_detection_scenario:
+        incidC:
+          source:
+          probability:
+          delay:
+      low_case_detection_scenario:
+</code></pre>
+
+
+
+in the following sections we describe in more detail how this specification works
+
 ## Specifying `outcomes` in the configuration file
 
 ### outcomes::method
@@ -25,6 +64,8 @@ The `outcomes` section is not required in the config. However, it is highly reco
 ### outcomes::paths
 
 ### outcomes::scenarios
+
+
 
 ### outcomes::settings
 

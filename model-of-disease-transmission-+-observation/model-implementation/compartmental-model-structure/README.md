@@ -426,7 +426,7 @@ seir:
         distribution: fixed
         value: 0.1
     gamma: 
-      values:
+      value:
         distribution: lognorm
         logmean: -1.6
         logsd: 0.2
@@ -514,7 +514,7 @@ Alternatively, to simulate a model stochastically with a timestep of 0.1 days
 ```
 seir:
   integration:
-     methd: stochastic
+     method: stochastic
      dt: 0.1
 ```
 
