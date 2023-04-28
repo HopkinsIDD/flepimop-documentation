@@ -1,8 +1,31 @@
+---
+description: >-
+  This page describes how users specify the names, sizes, and connectivities of
+  the different subpopulations comprising the total population to be modeled
+---
+
 # Specifying population structure
 
 ## Overview
 
-This section of the configuration file is where users can input the information required to define a population structure on which to simulate the model. The options allow the user to determine the population size of each subpopulation that makes up the overall population, and to specify the amount of mixing that occurs between each pair of subpopulations.&#x20;
+The `spatial_setup` section of the configuration file is where users can input the information required to define a population structure on which to simulate the model. The options allow the user to determine the population size of each subpopulation that makes up the overall population, and to specify the amount of mixing that occurs between each pair of subpopulations.&#x20;
+
+An example configuration file with the global header and the spatial\_setup section is below
+
+```
+name: test_simulation
+data_path: data
+model_output_dirname: model_output
+start_date: 2020-01-01
+end_date: 2020-12-31
+nslots: 100
+
+spatial_setup:
+  geodata: geodata.csv
+  mobility: mobility.csv
+  popnodes: population
+  nodenames: geoid
+```
 
 ## Items and options
 
@@ -79,4 +102,6 @@ large_province, small_province, 100
 small_province, large_province, 50
 ```
 
-####
+#### Example 2
+
+(Give example with US states)

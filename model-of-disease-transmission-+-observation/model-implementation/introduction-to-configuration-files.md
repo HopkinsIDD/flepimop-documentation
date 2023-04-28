@@ -94,7 +94,7 @@ This section is used to specify how infections are "seeded" into the compartment
 
 ### `seir` section
 
-This section is where users can specify the details of the infectious disease transmission model they wish to simulate (e.g., SEIR). This model describes the allowed transitions (`seir::transitions`) between the compartments that were specified in the `compartments` section, the values of the parameters involved in these transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`). The initial conditions of the model - the time and location where infection is first introduced - are specified in a separate `seeding` section (see below). More details HERE
+This section is where users can specify the details of the infectious disease transmission model they wish to simulate (e.g., SEIR). This model describes the allowed transitions (`seir::transitions`) between the compartments that were specified in the `compartments` section, the values of the parameters involved in these transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`). The initial conditions of the model - the time and location where infection is first introduced - are specified in a separate `seeding` section (see below). More details [here](compartmental-model-structure/).
 
 ### `outcomes` section
 

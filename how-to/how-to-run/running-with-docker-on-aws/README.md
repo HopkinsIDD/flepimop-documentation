@@ -1,4 +1,4 @@
-# Running with docker on AWS
+# Running with docker on AWS - OLD probably outdated
 
 For large simulations, running the model on a cluster or cloud computing is required. AWS provides a good solution for this, if funding or credits are available (AWS can get very expensive).
 

@@ -1,12 +1,48 @@
+---
+description: >-
+  This section describes how to specify the compartmental model of infectious
+  disease transmission
+---
+
 # Specifying compartmental model
 
-We want to allow users to work with a wide variety of infectious diseases or, in our case, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental differential equations model via the configuration file.
+We want to allow users to work with a wide variety of infectious diseases or, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental model of disease dynamics via the configuration file.
 
-We originally considered asking users to specify each compartment and transition manually. However, we quickly found that created long confusing configuration files, and created a shorthand to more tersely specify both compartments and transitions between them.
+We originally considered asking users to specify each compartment and transition manually. However, we quickly found that created long confusing configuration files, and created a shorthand to more tersely specify both compartments and transitions between them. This works especially well for models where individuals are stratified by other properties (like age, vaccination status, etc) in addition to their infection status.&#x20;
+
+The model is specified in two separate sections of the configuration file. In the `compartments` section, users define the possible states individuals can be categorized into. Then in the `seir` section, users define the possible transitions between states, the values of parameters that govern the rates of these transitions, and the numerical method used to simulate the model.&#x20;
+
+An example section of a configuration file defining a simple SIR model is below.&#x20;
+
+```
+compartments:
+  infection_state: ["S", "I", "R"]
+  
+seir:
+  transitions:
+    # infection
+    - source: [S]
+      destination: [I]
+      proportional_to: [[S], [I]]
+      rate: [beta]
+      proportion_exponent: 1
+    # recovery
+    - source: [I]
+      destination: [R]
+      proportional_to: [[I]]
+      rate: [gamma]
+      proportion_exponent: 1
+  parameters:
+    beta: 0.1
+    gamma: 0.2
+  integration:
+     method: rk4
+     dt: 1.00
+```
 
 ## Specifying model compartments (`compartments`)
 
-The first stage of specifying the model is to define the infection states (variables) that the model will track. These "compartments" are defined first in the `compartments` section of the config file, before describing the processes that lead to transitions between them. &#x20;
+The first stage of specifying the model is to define the infection states (variables) that the model will track. These "compartments" are defined first in the `compartments` section of the config file, before describing the processes that lead to transitions between them.  The compartments are defined separately from the rest of the model because they are also used by the `seeding` section that defines initial conditions and importations.&#x20;
 
 For simple disease models, the compartments can simply be listed with whatever notation the user chooses. For example, for a simple SIR model, the compartments could be `["S", "I", "R"]`. The config also requires that there be a variable name for the property of the individual that these compartments describe, which for example in this case could be `infection_state`
 

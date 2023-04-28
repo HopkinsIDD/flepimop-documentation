@@ -16,8 +16,8 @@ This section provides instructions for installation and how to run on each platf
 [slurm-submission-on-marcc.md](slurm-submission-on-marcc.md)
 {% endcontent-ref %}
 
-{% content-ref url="../../deprecated-pages/running-with-docker-on-aws/" %}
-[running-with-docker-on-aws](../../deprecated-pages/running-with-docker-on-aws/)
+{% content-ref url="running-with-docker-on-aws/" %}
+[running-with-docker-on-aws](running-with-docker-on-aws/)
 {% endcontent-ref %}
 
 ## Setup requirements
