@@ -240,6 +240,9 @@ Rscript $FLEPI_PATH/datasetup/build_covid_data.R
 
 # For Flu do
 Rscript $FLEPI_PATH/datasetup/build_flu_data.R
+
+# build seeding
+Rscript $FLEPI_PATH/datasetup/build_initial_seeding.R
 ```
 
 If you want to profile how the model is using your memory resources during the run:
