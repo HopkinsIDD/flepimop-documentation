@@ -4,7 +4,13 @@ description: Short internal tutorial on running locally using an "Anaconda" envi
 
 # Running with conda locally 🐍
 
-### 🧱 Setup (do this once)
+
+
+{% hint style="warning" %}
+:warning: This is not currently working. Problem with package conflicts, so conda environment is not building on all platforms
+{% endhint %}
+
+### 🧱Setup (do this once)
 
 #### Installing the `conda` environment
 
@@ -15,7 +21,7 @@ The simplest way to get everything to work is to build an Anaconda environment. 
 conda update conda # makes sure you have a recent conda instatllation
 
 # be sure to copy the whole thing as a single line ! copy it to your text editor
-conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus
+conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot r-ggraph r-tidygraph
 ```
 {% endcode %}
 
