@@ -9,11 +9,12 @@
   * [Introduction to configuration files](model-of-disease-transmission-+-observation/model-implementation/introduction-to-configuration-files.md)
   * [Specifying population structure](model-of-disease-transmission-+-observation/model-implementation/specifying-population-structure.md)
   * [Specifying compartmental model](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure/README.md)
+  * [Specifying initial conditions and seeding](model-of-disease-transmission-+-observation/model-implementation/specifying-initial-conditions-and-seeding.md)
   * [Specifying observational model](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model/outcomes-module/outcomes-for-compartments.md)
   * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions/intervention-templates.md)
   * [Other configuration options](model-of-disease-transmission-+-observation/model-implementation/other-configuration-options.md)
-  * [Code structure](model-of-disease-transmission-+-observation/model-implementation/code-structure.md)
   * [Output files](model-of-disease-transmission-+-observation/model-implementation/output-files.md)
+  * [Code structure](model-of-disease-transmission-+-observation/model-implementation/code-structure.md)
 
 ## 📈 Model Inference
 
