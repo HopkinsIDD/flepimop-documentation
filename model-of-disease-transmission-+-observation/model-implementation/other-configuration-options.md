@@ -2,11 +2,11 @@
 
 ## Command line inputs
 
-FlepiMoP allows some input parameters/options to be specified at the command line at the time of model submission, in addition to or instead of in the configuration file. This can be helpful for users who want to quickly run different versions of the model - typically a different number of simulations or a different intervention scenario from among all those specified in the config - without having to edit or create a new configuration file every time. In addition, some arguments can only be specified via the command line.&#x20;
+FlepiMoP allows some input parameters/options to be specified at the command line at the time of model submission, in addition to or instead of in the configuration file. This can be helpful for users who want to quickly run different versions of the model - typically a different number of simulations or a different intervention scenario from among all those specified in the config - without having to edit or create a new configuration file every time. In addition, some arguments can only be specified via the command line. &#x20;
 
 In addition to the configuration file and the command line, the inputs described below can also be specified as environmental variables.&#x20;
 
-In all cases, command line arguments override configuration file entries which override environmental variables.
+In all cases, command line arguments override configuration file entries which override environmental variables. The order of command line arguments does not matter.&#x20;
 
 Details on how to run the model, including how to add command line arguments or environmental variables, are in the section [How to Run](../../how-to/how-to-run/).
 
@@ -19,6 +19,95 @@ Details on how to run the model, including how to add command line arguments or 
 
 
 <table><thead><tr><th width="131">Argument</th><th width="126">Config item</th><th width="130">Env. Variable</th><th width="117">Value type</th><th width="331">Description</th><th width="108">Required?</th><th>Default</th></tr></thead><tbody><tr><td><code>-s</code> or <code>--npi_scenario</code></td><td><code>interventions: scenarios</code></td><td><code>FLEPI_NPI_SCENARIOS</code></td><td>list of strings</td><td>Names of the intervention scenarios described in the config file that will be run. Must be a subset of scenarios defined. </td><td>No</td><td>All scenarios described in config</td></tr><tr><td><code>-n</code> or <code>--nslots</code></td><td><code>nslots</code></td><td><code>FLEPI_NUM_SLOTS</code></td><td>integar <span class="math">\geq</span>1</td><td>Number of independent simulations of the model to be run</td><td>No</td><td>Config value</td></tr><tr><td><code>--stochastic</code> or <code>--non-stochastic</code></td><td><code>seir: integration: method</code></td><td><code>FLEPI_STOCHASTIC_RUN</code></td><td>choose either option</td><td>Whether the model will be run stochastically or non-stochastically (deterministic numerical integration of equations using RK4 algorithm). </td><td>No</td><td>Config value</td></tr><tr><td><code>--in-id</code></td><td></td><td><code>FLEPI_RUN_INDEX</code></td><td>string</td><td>Unique ID given to the model runs. If the same config is run multiple times, you can avoid the output being overwritten by using unique model run IDs. </td><td>No</td><td>Constructed from current date and time as YYYY.MM.DD.HH/MM/SS</td></tr><tr><td><code>--out-id</code></td><td></td><td><code>FLEPI_RUN_INDEX</code></td><td>string</td><td>Unique ID given to the model runs. If the same config is run multiple times, you can avoid the output being overwritten by using unique model run IDs. </td><td>No</td><td>Constructed from current date and time as YYYY.MM.DD.HH/MM/SS</td></tr></tbody></table>
+
+#### Example
+
+As an example, consider running the following configuration file:
+
+```
+name: sir
+setup_name: minimal
+start_date: 2020-01-31
+end_date: 2020-05-31
+data_path: data
+nslots: 1
+
+spatial_setup:
+  geodata: geodata_sample_1pop.csv
+  mobility: mobility_sample_1pop.csv
+  popnodes: population
+  nodenames: name
+
+seeding:
+  method: FromFile
+  seeding_file: data/seeding_1pop.csv
+
+compartments:
+  infection_stage: ["S", "I", "R"]
+
+seir:
+  integration:
+    method: stochastic
+    dt: 1 / 10
+  parameters:
+    gamma:
+      value:
+        distribution: fixed
+        value: 1 / 5
+    Ro:
+      value:
+        distribution: uniform
+        low: 2
+        high: 3
+  transitions:
+    - source: ["S"]
+      destination: ["I"]
+      rate: ["Ro * gamma"]
+      proportional_to: [["S"],["I"]]
+      proportion_exponent: ["1","1"]
+    - source: ["I"]
+      destination: ["R"]
+      rate: ["gamma"]
+      proportional_to: ["I"]
+      proportion_exponent: ["1"]
+
+interventions:
+  scenarios:
+    - None
+    - Lockdown
+  settings:
+    None:
+      template: Reduce
+      parameter: r0
+      period_start_date: 2020-04-01
+      period_end_date: 2020-05-15
+      value:
+        distribution: fixed
+        value: 0
+        settings:
+    Lockdown:
+      template: Reduce
+      parameter: r0
+      period_start_date: 2020-04-01
+      period_end_date: 2020-05-15
+      value:
+        distribution: fixed
+        value: 0.7
+```
+
+To run this model directly in Python (it can alternatively be run from R, for all details see section [How to Run](../../how-to/how-to-run/)), we could use the command line entry:
+
+```
+> gempyor-seir -c sir_control.yml
+```
+
+Alternatively, to run 100 simulations using only 4 of the available processors on our computer, but only running the "" scenario with a deterministic model, and to save the files as .csv (since the model is relatively simple), we could call the model using the command line entry:
+
+```
+/> gempyor-seir -c sir_control.yml -n 100 -j 4 -npi_scenario None --non_stochastic --write_csv
+```
+
+
 
 ## Environmental variables
 
