@@ -101,12 +101,7 @@ The hierarchical settings specified here are used to group the inference of cert
 
 It is now possible to specify prior values for inferred parameters. This will have the effect of speeding up model convergence.
 
-| Item          | Required? | Type/Format                                                |
-| ------------- | --------- | ---------------------------------------------------------- |
-| scenario name | required  | name of prior scenario, user defined                       |
-| name          | required  | name of NPI scenario or parameter that will have the prior |
-| module        | required  | name of the module where this parameter is estimated       |
-| likelihood    | required  | specifies the distribution of the prior                    |
+<table><thead><tr><th width="164">Item</th><th width="40">Required?</th><th>Type/Format</th></tr></thead><tbody><tr><td>scenario name</td><td>required</td><td>name of prior scenario, user defined</td></tr><tr><td>name</td><td>required</td><td>name of NPI scenario or parameter that will have the prior</td></tr><tr><td>module</td><td>required</td><td>name of the module where this parameter is estimated</td></tr><tr><td>likelihood</td><td>required</td><td>specifies the distribution of the prior</td></tr></tbody></table>
 
 ## Ground truth data
 

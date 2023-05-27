@@ -13,8 +13,8 @@
   * [Specifying observational model](model-of-disease-transmission-+-observation/model-implementation/specifying-observational-model/outcomes-module/outcomes-for-compartments.md)
   * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions/intervention-templates.md)
   * [Other configuration options](model-of-disease-transmission-+-observation/model-implementation/other-configuration-options.md)
-  * [Output files](model-of-disease-transmission-+-observation/model-implementation/output-files.md)
   * [Code structure](model-of-disease-transmission-+-observation/model-implementation/code-structure.md)
+* [Model Output](model-of-disease-transmission-+-observation/output-files.md)
 
 ## 📈 Model Inference
 
@@ -24,6 +24,7 @@
   * [Example](model-inference/inference-implementation/example.md)
   * [Code structure](model-inference/inference-implementation/code-structure.md)
 * [(OLD) Configuration setup](model-inference/old-configuration-setup.md)
+* [Inference Model Output](model-inference/inference-model-output.md)
 
 ## 🖥 More
 
