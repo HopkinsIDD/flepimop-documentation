@@ -14,7 +14,7 @@
   * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/specifying-interventions/intervention-templates.md)
   * [Other configuration options](model-of-disease-transmission-+-observation/model-implementation/other-configuration-options.md)
   * [Code structure](model-of-disease-transmission-+-observation/model-implementation/code-structure.md)
-* [Model Output](model-of-disease-transmission-+-observation/output-files.md)
+* [Model Output](model-of-disease-transmission-+-observation/model-implementation/output-files.md)
 
 ## 📈 Model Inference
 

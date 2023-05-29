@@ -6,7 +6,7 @@ description: >-
 
 # Model Output
 
-The model will output 2-6 different types of files depending on whether the configuration file contains optional sections (such [interventions](model-implementation/specifying-interventions/intervention-templates.md), [outcomes](model-implementation/specifying-observational-model/outcomes-module/outcomes-for-compartments.md), and outcomes interventions) and whether [model inference](broken-reference) is conducted. These files contain the values of the variables for both the infection and (if included) observational model at each point in time and for each subpopulation. A new file of the same type is produced for each independent simulation and each intervention scenario. Other files report the values of the initial conditions, seeding, and model parameters for each subpopulation and independent simulation (since parameters may be chosen to vary randomly between simulations). When [model inference](broken-reference) is run, there are also file types reporting the model likelihood (relative to the provided data) and files for each iteration of the inference algorithm.&#x20;
+The model will output 2-6 different types of files depending on whether the configuration file contains optional sections (such [interventions](specifying-interventions/intervention-templates.md), [outcomes](specifying-observational-model/outcomes-module/outcomes-for-compartments.md), and outcomes interventions) and whether [model inference](broken-reference) is conducted. These files contain the values of the variables for both the infection and (if included) observational model at each point in time and for each subpopulation. A new file of the same type is produced for each independent simulation and each intervention scenario. Other files report the values of the initial conditions, seeding, and model parameters for each subpopulation and independent simulation (since parameters may be chosen to vary randomly between simulations). When [model inference](broken-reference) is run, there are also file types reporting the model likelihood (relative to the provided data) and files for each iteration of the inference algorithm.&#x20;
 
 Within the `model_output` directory in the project's directory, the files will be organized into folders named for the file types: seir, spar, snpi, hpar, hnpi, seed, llik (see descriptions below). Within each file type folder, files will further be organized by the simulation name (name in config), the intervention scenario names (specified with interventions:scenarios in config), and the run\_id (the date and time of the simulation, by default). For example:
 
@@ -22,7 +22,7 @@ Within the `model_output` directory in the project's directory, the files will b
 
 The name of each individual file contains (in order) the .... Describe filing naming conventions
 
-Each file is a data table that is by default saved as a [parquet files](https://parquet.apache.org/) (a compressed representation that can be opened and manipulated with minimal memory) but can alternatively be saved as a .csv. See options for specifying output type in [Other Configuration Options.](model-implementation/other-configuration-options.md)&#x20;
+Each file is a data table that is by default saved as a [parquet files](https://parquet.apache.org/) (a compressed representation that can be opened and manipulated with minimal memory) but can alternatively be saved as a .csv. See options for specifying output type in [Other Configuration Options.](other-configuration-options.md)&#x20;
 
 The example files outputs we show were generated with the following configuration file
 
@@ -50,7 +50,7 @@ The meanings of the columns are:
 
 `geoid_1`, `geoid_2`, etc: one column for each different subpopulation, containing the value of the number of individuals in the described compartment in that subpopulation at the given date
 
-`date`:  The calendar date in the simulation.&#x20;
+`date`:  The calendar date in the simulation, in YYYY-MM-DD format
 
 There will be a separate seir file output for each slot (independent simulation) and for each iteration of the simulation if [Model Inference](broken-reference) is conducted.&#x20;
 
@@ -66,7 +66,7 @@ There will be a separate seir file output for each slot (independent simulation)
 
 ## Inference runs only
 
-During inference runs, an additional file type, `llik`, is created, which is described in the [Inference Model Output](../model-inference/inference-model-output.md) section
+During inference runs, an additional file type, `llik`, is created, which is described in the [Inference Model Output](../../model-inference/inference-model-output.md) section
 
 
 
