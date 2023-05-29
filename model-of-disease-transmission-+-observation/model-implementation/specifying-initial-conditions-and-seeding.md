@@ -41,6 +41,26 @@ IC - prevalence or incidence??
 
 ## Specifying model seeding
 
+```
+seeding:
+  method: FromFile
+  seeding_file: data/seeding_2pop.csv
+```
+
+### seeding::method
+
+FromFile
+
+PoissonDistributed
+
+NegativeBinomialDistributed
+
+FolderDraw
+
+### seeding::seeding\_file
+
+### seeding::lambda\_file
+
 
 
 
