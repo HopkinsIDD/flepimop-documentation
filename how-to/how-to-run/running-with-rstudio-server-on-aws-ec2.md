@@ -103,7 +103,7 @@ From Finder you can access the shared space using SMB.
 2. When a dialog appears, fill username and password out as a registered user,&#x20;
 3. After pushing "connect" button, the designated area will be shown in Finder if no errors happen.&#x20;
 
-<figure><img src="../../.gitbook/assets/スクリーンショット 2023-01-09 午後2.06.45.png" alt=""><figcaption><p>Dialog window (in Japanese form; this will be changed according to yours OS's locale)</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/スクリーンショット 2023-01-09 午後2.06.45 (1).png" alt=""><figcaption><p>Dialog window (in Japanese form; this will be changed according to yours OS's locale)</p></figcaption></figure>
 
 
 

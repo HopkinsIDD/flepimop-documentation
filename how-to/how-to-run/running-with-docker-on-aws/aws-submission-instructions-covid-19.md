@@ -34,7 +34,7 @@ git pull
 git checkout main
 git pull
 
-cd COVIDScenarioPipeline
+cd flepiMoP
 git pull	
 git checkout main
 git pull
@@ -44,28 +44,28 @@ cd ..
 
 **Initiate the docker.** Start up and log into the docker container, pull the repos from Github, and run setup scripts to setup the environment. This setup code links the docker directories to the existing directories on your box. As this is the case, you should not run job submission simultaneously using this setup, as one job submission might modify the data for another job submission.
 
-<pre data-overflow="wrap"><code>sudo docker pull hopkinsidd/covidscenariopipeline:latest-dev
+<pre data-overflow="wrap"><code>sudo docker pull hopkinsidd/flepimop:latest-dev
 sudo docker run -it \
-  -v /home/ec2-user/COVID19_USA:/home/app/drp \
-  -v /home/ec2-user/COVID19_USA/COVIDScenarioPipeline:/home/app/drp/COVIDScenarioPipeline \
+  -v /home/ec2-user/COVID19_USA:/home/app/drp/COVID19_USA \
+  -v /home/ec2-user/flepiMoP:/home/app/drp/flepiMoP \
   -v /home/ec2-user/.ssh:/home/app/.ssh \
-hopkinsidd/covidscenariopipeline:latest-dev  
+hopkinsidd/flepimop:latest-dev  
     
-cd ~/drp 
+cd ~/drp/COVID19_USA
 <strong>git config credential.helper store 
 </strong>git pull 
 git checkout main
 git pull
 git config --global credential.helper 'cache --timeout 300000'
 
-<strong>cd ~/drp/COVIDScenarioPipeline 
+<strong>cd ~/drp/flepiMoP 
 </strong>git pull 
 git checkout main
 git pull 
 
-Rscript local_install.R &#x26;&#x26; 
+Rscript build/local_install.R &#x26;&#x26; 
    python -m pip install --upgrade pip &#x26;&#x26;
-   pip install -e gempyor_pkg/ &#x26;&#x26; 
+   pip install -e flepimop/gempyor_pkg/ &#x26;&#x26; 
    pip install boto3 &#x26;&#x26; 
    cd ..
 </code></pre>
@@ -81,12 +81,12 @@ To run the via AWS, we first run a setup run locally (in docker on the submissio
 If not resuming off previous run:
 
 ```
-export SCENARIO=FCH_R16_lowBoo_modVar_ContRes_blk4_FCH_Dec11_tsvacc && 
+export FLEPI_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_FCH_Dec11_tsvacc && 
    export VALIDATION_DATE="2022-12-11" && 
    export COVID_MAX_STACK_SIZE=1000 && 
    export COMPUTE_QUEUE="Compartment-JQ-1588569574" &&
    export CENSUS_API_KEY=c235e1b5620232fab506af060c5f8580604d89c1 && 
-   export COVID_RESET_CHIMERICS=TRUE &&
+   export FLEPI_RESET_CHIMERICS=TRUE &&
    rm -rf model_output data/us_data.csv data-truth &&
    rm -rf data/mobility_territories.csv data/geodata_territories.csv &&
    rm -rf data/seeding_territories.csv && 
@@ -102,20 +102,20 @@ If resuming from a previous run, there are an additional couple variables to set
 
 
 
-<pre><code>export SCENARIO=FCH_R16_lowBoo_modVar_ContRes_blk4_Dec18_tsvacc &#x26;&#x26; 
-   export VALIDATION_DATE="2022-12-18" &#x26;&#x26; 
-   export COVID_MAX_STACK_SIZE=1000 &#x26;&#x26; 
-   export COMPUTE_QUEUE="Compartment-JQ-1588569574" &#x26;&#x26;
-   export CENSUS_API_KEY=c235e1b5620232fab506af060c5f8580604d89c1 &#x26;&#x26; 
-   export COVID_RESET_CHIMERICS=TRUE &#x26;&#x26;
-   rm -rf model_output data/us_data.csv data-truth &#x26;&#x26;
-   rm -rf data/mobility_territories.csv data/geodata_territories.csv &#x26;&#x26;
-   rm -rf data/seeding_territories.csv &#x26;&#x26; 
+```
+export FLEPI_RUN_INDEX=FCH_R16_lowBoo_modVar_ContRes_blk4_Dec18_tsvacc && 
+   export VALIDATION_DATE="2022-12-18" && 
+   export COVID_MAX_STACK_SIZE=1000 && 
+   export COMPUTE_QUEUE="Compartment-JQ-1588569574" &&
+   export CENSUS_API_KEY=c235e1b5620232fab506af060c5f8580604d89c1 && 
+   export FLEPI_RESET_CHIMERICS=TRUE &&
+   rm -rf model_output data/us_data.csv data-truth &&
+   rm -rf data/mobility_territories.csv data/geodata_territories.csv &&
+   rm -rf data/seeding_territories.csv && 
    rm -rf data/seeding_territories_Level5.csv data/seeding_territories_Level67.csv
    
-export RESUME_ID=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan22_tsvacc &#x26;&#x26;
-<strong>  export RESUME_S3=USA-20221212T145730
-</strong></code></pre>
+export RESUME_LOCATION=s3://idd-inference-runs/USA-20230423T235232
+```
 {% endtab %}
 {% endtabs %}
 
@@ -123,18 +123,17 @@ export RESUME_ID=FCH_R16_lowBoo_modVar_ContRes_blk4_Jan22_tsvacc &#x26;&#x26;
 
 {% code overflow="wrap" %}
 ```
-export COVID_RUN_INDEX=$SCENARIO && 
-   export CONFIG_NAME=config_$SCENARIO.yml && 
-   export CONFIG_PATH=/home/app/drp/$CONFIG_NAME && 
-   export COVID_PATH=/home/app/drp/COVIDScenarioPipeline && 
-   export DATA_PATH=/home/app/drp && 
+export CONFIG_NAME=config_$SCENARIO.yml && 
+   export CONFIG_PATH=/home/app/drp/COVID19_USA/$CONFIG_NAME && 
+   export FLEPI_PATH=/home/app/drp/flepiMoP && 
+   export DATA_PATH=/home/app/drp/COVID19_USA && 
    export INTERVENTION_NAME="med" && 
-   export COVID_STOCHASTIC=FALSE && 
+   export FLEPI_STOCHASTIC=FALSE && 
    rm -rf $DATA_PATH/model_output DATA_PATH/us_data.csv && 
    cd $DATA_PATH && 
-   Rscript $COVID_PATH/R/scripts/build_US_setup.R -c $CONFIG_NAME && 
-   Rscript $COVID_PATH/R/scripts/build_covid_data.R -c $CONFIG_NAME && 
-   Rscript $COVID_PATH/R/scripts/full_filter.R -c $CONFIG_NAME -j 1 -n 1 -k 1 && 
+   Rscript $FLEPI_PATH/R/scripts/build_US_setup.R -c $CONFIG_NAME && 
+   Rscript $FLEPI_PATH/R/scripts/build_covid_data.R -c $CONFIG_NAME && 
+   Rscript $FLEPI_PATH/R/scripts/full_filter.R -c $CONFIG_NAME -j 1 -n 1 -k 1 && 
    printenv CONFIG_NAME
 ```
 {% endcode %}
@@ -160,7 +159,7 @@ You will be prompted to enter the following items. These can be found in a file 
 {% tab title="Standard" %}
 <pre><code><strong>export CONFIG_PATH=$CONFIG_NAME &#x26;&#x26;
 </strong><strong>cd $DATA_PATH &#x26;&#x26;
-</strong>$COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic &#x26;&#x26;
+</strong>$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic &#x26;&#x26;
 printenv CONFIG_NAME
 </code></pre>
 {% endtab %}
@@ -169,7 +168,7 @@ printenv CONFIG_NAME
 ```
 export CONFIG_PATH=$CONFIG_NAME &&
 cd $DATA_PATH &&
-$COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic -j 1 -k 1 &&
+$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic -j 1 -k 1 &&
 printenv CONFIG_NAME
 ```
 {% endtab %}
@@ -183,7 +182,7 @@ printenv CONFIG_NAME
 
 <pre><code>export CONFIG_PATH=$CONFIG_NAME &#x26;&#x26;
 <strong>cd $DATA_PATH &#x26;&#x26;
-</strong>$COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-carry-seeding --restart-from-location=s3://idd-inference-runs/$RESUME_S3 --restart-from-run-id=$RESUME_ID &#x26;&#x26;
+</strong>$FLEPI_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stochastic --resume-carry-seeding --restart-from-location=s3://idd-inference-runs/$RESUME_S3 --restart-from-run-id=$RESUME_ID &#x26;&#x26;
 printenv CONFIG_NAME
 </code></pre>
 
@@ -198,7 +197,7 @@ $COVID_PATH/batch/inference_job.py -c $CONFIG_PATH -q $COMPUTE_QUEUE --non-stoch
 printenv CONFIG_NAME
 ```
 
-****
+
 
 **Single Iteration + Carry seeding**  (_do this to produce additional scenarios where no fitting is required_)_:_
 

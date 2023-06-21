@@ -1,12 +1,48 @@
+---
+description: >-
+  This section describes how to specify the compartmental model of infectious
+  disease transmission
+---
+
 # Specifying compartmental model
 
-We want to allow users to work with a wide variety of infectious diseases or, in our case, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental differential equations model via the configuration file.
+We want to allow users to work with a wide variety of infectious diseases or, one infectious disease under a wide variety of modeling assumptions. To facilitate this, we allow the user to specify their compartmental model of disease dynamics via the configuration file.
 
-We originally considered asking users to specify each compartment and transition manually. However, we quickly found that created long confusing configuration files, and created a shorthand to more tersely specify both compartments and transitions between them.
+We originally considered asking users to specify each compartment and transition manually. However, we quickly found that created long confusing configuration files, and created a shorthand to more tersely specify both compartments and transitions between them. This works especially well for models where individuals are stratified by other properties (like age, vaccination status, etc) in addition to their infection status.&#x20;
+
+The model is specified in two separate sections of the configuration file. In the `compartments` section, users define the possible states individuals can be categorized into. Then in the `seir` section, users define the possible transitions between states, the values of parameters that govern the rates of these transitions, and the numerical method used to simulate the model.&#x20;
+
+An example section of a configuration file defining a simple SIR model is below.&#x20;
+
+```
+compartments:
+  infection_state: ["S", "I", "R"]
+  
+seir:
+  transitions:
+    # infection
+    - source: [S]
+      destination: [I]
+      proportional_to: [[S], [I]]
+      rate: [beta]
+      proportion_exponent: 1
+    # recovery
+    - source: [I]
+      destination: [R]
+      proportional_to: [[I]]
+      rate: [gamma]
+      proportion_exponent: 1
+  parameters:
+    beta: 0.1
+    gamma: 0.2
+  integration:
+     method: rk4
+     dt: 1.00
+```
 
 ## Specifying model compartments (`compartments`)
 
-The first stage of specifying the model is to define the infection states (variables) that the model will track. These "compartments" are defined first in the `compartments` section of the config file, before describing the processes that lead to transitions between them. &#x20;
+The first stage of specifying the model is to define the infection states (variables) that the model will track. These "compartments" are defined first in the `compartments` section of the config file, before describing the processes that lead to transitions between them.  The compartments are defined separately from the rest of the model because they are also used by the `seeding` section that defines initial conditions and importations.&#x20;
 
 For simple disease models, the compartments can simply be listed with whatever notation the user chooses. For example, for a simple SIR model, the compartments could be `["S", "I", "R"]`. The config also requires that there be a variable name for the property of the individual that these compartments describe, which for example in this case could be `infection_state`
 
@@ -41,14 +77,13 @@ In order to more easily describe transitions, we want to be able to refer to a c
 
 If the user wants to specify a model in which some compartments are repeated across states but others are not, there will be pros and cons of how the model is specified. Specifying it using the cross product notation is simpler, less error prone, and makes config files easier to read, and there is no issue with having compartments that have zero individuals in them throughout the model. However, for very large models, extra compartments increase the memory required to conduct the simulation, and so having unnecessary compartments tracked may not be desired.&#x20;
 
-For example, consider a model of a disease that follows SI dynamics in two separate age groups (children and adults), but for which only adults receive vaccination, with one or two doses of one of two vaccine types. With the simplified notation, this model could be specified as  ..
+For example, consider a model of a disease that follows SI dynamics in two separate age groups (children and adults), but for which only adults receive vaccination, with one or two doses of vaccine. With the simplified notation, this model could be specified as:&#x20;
 
 ```
  compartments:
    infection_state: ["S", "I"]
    age_group: ["child","adult"]
    vaccination_status: ["unvaccinated", "1dose", "2dose"]
-   vaccine_type: ["brand1", "brand2"]
 ```
 
 corresponding to 12 compartments, 4 of which are unnecessary to the model
@@ -73,7 +108,7 @@ Or, it could be specified with the less concise notation
 
 ```
 compartments:
-   overall_date: ["S_child","I_child","S_adult_unvaccinated","I_adult_unvaccinated","S_adult_1dose","I_adult_1dose","S_adult_2dose","I_adult_2dose"]
+   overall_state: ["S_child","I_child","S_adult_unvaccinated","I_adult_unvaccinated","S_adult_1dose","I_adult_1dose","S_adult_2dose","I_adult_2dose"]
 ```
 
 which does not result in any unnecessary compartments being included.&#x20;
@@ -90,11 +125,11 @@ We specify one or more _transition globs_, each of which corresponds to one or m
 
 A transition has 5 pieces associated of information that a user can specify
 
-* source
-* destination
-* rate
-* proportional\_to
-* proportion\_exponent
+* `source`
+* `destination`
+* `rate`
+* `proportional_to`
+* `proportion_exponent`
 
 For more details on the mathematical forms possible for transitions in our models, read the [Model Description section](../../model-description.md#generalized-compartmental-infection-model).
 
@@ -164,6 +199,8 @@ and then sum the terms in each group
 
 From here, we can say that the transition we are describing is proportional to `S_unvaccinated` and `I_unvaccinated + I_vaccinated,` i.e. the rate depends on the product `S_unvaccinated * (I_unvaccinated + I_vaccinated)`.
 
+For transitions that occur at a constant per-capita rate (ie, E -> I at rate $$\gamma$$ in an SEIR model), it is possible to simply write `proportional_to: ["source"]`&#x20;
+
 #### Proportion Exponent
 
 This is an exponent modifying each group of compartments that contribute to the rate. It is equivalent to the "order" term in chemical kinetics. For example, if the reaction rate for the model above depends linearly on the number of unvaccinated susceptible individuals but on the total infected individuals sub-linearly, for example to a power 0.9, we would write
@@ -177,6 +214,8 @@ or a power parameter `alpha`, which can be given a numeric value later:
 ```
 [1, alpha]
 ```
+
+The  (top level) length of the `proportional_exponent` vector must be the same as the  (top level) length of the `proportional_to` vector, even if the desire of the user is to have the same exponent for all terms being multiplied together to get the rate.&#x20;
 
 #### Summary
 
@@ -381,7 +420,7 @@ seir:
       destination: [R]
       proportional_to: [[I]]
       rate: [gamma]
-      proportion_exponent: 1
+      proportion_exponent: [1,1]
   parameters:
     beta: 0.1
     gamma: 0.2
@@ -416,7 +455,7 @@ If there are no parameter values that need to be specified (all rates given nume
 
 ### Specifying parameters values from distributions
 
-Parameter values can also be specified as random values drawn from a distribution. In this case, every time the model is run (NOTE slot vs iteration), a new random values of the parameter is drawn. For example, to choose the same value of beta = 0.1 each time the model is run but to choose a random values of gamma with mean on a log scale of $$e^{-1.6} = 0.2$$ and standard deviation  on a log scale of $$e^{0.2} = 1.2$$ (e.g., 1.2-fold variation).&#x20;
+Parameter values can also be specified as random values drawn from a distribution, as a way of including uncertainty in parameters in the model output. In this case, every time the model is run independently, a new random value of the parameter is drawn. For example, to choose the same value of beta = 0.1 each time the model is run but to choose a random values of gamma with mean on a log scale of $$e^{-1.6} = 0.2$$ and standard deviation  on a log scale of $$e^{0.2} = 1.2$$ (e.g., 1.2-fold variation).&#x20;
 
 ```
 seir:
@@ -426,7 +465,7 @@ seir:
         distribution: fixed
         value: 0.1
     gamma: 
-      values:
+      value:
         distribution: lognorm
         logmean: -1.6
         logsd: 0.2
@@ -442,7 +481,7 @@ Sometimes, we want to be able to specify model parameters that have different va
 
 This can be done by providing a data file in .csv format that has a list of values of the parameter for a corresponding timepoint and subpopulation name. One column should be `date` and the others should be the `geoid` names of each subpopulation.   For time periods in between those specified in the file, the model will linearly interpolate between parameter values.&#x20;
 
-For example, for an SIR model simple [two-province population structure](../specifying-population-structure.md#example-1) where the relative transmissibility peaks on January 1 then decreases linearly to a minimal value on June 1 then increases linearly again, but varies more in the small province than the large province, the `theta` parameter could be constructed from the file **seasonal\_transmission.csv** with contents
+For example, for an SIR model simple [two-province population structure](../specifying-population-structure.md#example-1) where the relative transmissibility peaks on January 1 then decreases linearly to a minimal value on June 1 then increases linearly again, but varies more in the small province than the large province, the `theta` parameter could be constructed from the file **seasonal\_transmission\_2pop.csv** with contents
 
 ```
 date,        small_province,    large_province
@@ -475,7 +514,7 @@ seir:
     beta: 0.1
     gamma: 0.2
     theta:
-       timeseries: data/model_input/seasonal_transmission.csv
+       timeseries: data/seasonal_transmission.csv
 ```
 
 The first and last date in the `date` column should correspond to the start\_date and end\_date for the simulation specified in the header of the config.
@@ -493,20 +532,15 @@ Our framework allows for two major methods for implementing compartmental models
 
 The mathematics behind each implementation is described in the [Model Description](../../model-description.md) section
 
-| Config item                   | Required? | Type/Format              | Description                                                                                                                                                                                                                                                                                                                                                             |
-| ----------------------------- | --------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ? unknown name. `stochastic`? | ?         | boolean                  | `FALSE` to run the model deterministically, `TRUE` to run stochastically                                                                                                                                                                                                                                                                                                |
-| `method`                      | optional  | string                   | The algorithm used to numerically integrate the system of differential equations, if `stochastic`=`FALSE`. Current possible values are `rk4`, which uses a 4th order Runge-Kutta algorithm,  or `legacy`(Default) which uses the transition rates for the stochastic model but always chooses the average rate.  If stochastic = TRUE then the method cannot be `rk4`.  |
-| `dt`                          | ?         | Any positive real number | The timestep used for the numerical integration or discrete time stochastic update                                                                                                                                                                                                                                                                                      |
+<table><thead><tr><th>Config item</th><th width="122">Required?</th><th width="171">Type/Format</th><th>Description</th></tr></thead><tbody><tr><td><code>method</code></td><td>optional</td><td>string:  <code>stochastic</code>,<code>rk4</code>, or <code>legacy</code></td><td>The algorithm used to simulate the mode equations. If <code>stochastic</code>, uses a discrete time stochastic process with a rate-saturation correction. If<code>rk4</code>, model is simulated deterministically by numerical integration using a 4th order Runge-Kutta algorithm.  If <code>legacy</code>(Default), uses the transition rates for the stochastic model but always chooses the average rate (an Euler style update) </td></tr><tr><td><code>dt</code></td><td>optional</td><td>Any positive real number</td><td>The timestep used for the numerical integration or discrete time stochastic update. Default is <code>dt = 2</code></td></tr></tbody></table>
 
-**``**
+
 
 For example, to simulate a model deterministically using the 4th order Runge-Kutta algorithm for numerical integration with a timestep of 1 day:
 
 ```
 seir:
   integration:
-     stochastic: FALSE
      method: rk4
      dt: 1.00
 ```
@@ -516,7 +550,7 @@ Alternatively, to simulate a model stochastically with a timestep of 0.1 days
 ```
 seir:
   integration:
-     stochastic: TRUE
+     method: stochastic
      dt: 0.1
 ```
 

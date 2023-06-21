@@ -25,13 +25,7 @@ seeding:
   perturbation_sd: 3
 ```
 
-| Config Item         | Required?               | Type/Format                                                                      | Description                                                                                                                                               |
-| ------------------- | ----------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| method              | required                | "FolderDraw"                                                                     |                                                                                                                                                           |
-| seeding\_file\_type | required for FolderDraw | "seed" or "impa"                                                                 | indicates which seeding file type the SEIR model will look for, "seed", which is generated from create\_seeding.R, or "impa", which refers to importation |
-| folder\_path        | required                | path to folder where importation inference files will be saved                   |                                                                                                                                                           |
-| lambda\_file        | required                | path to seeding file                                                             |                                                                                                                                                           |
-| perturbation\_sd    | required                | standard deviation for the proposal value of the seeding date, in number of days |                                                                                                                                                           |
+<table><thead><tr><th>Config Item</th><th width="214">Required?</th><th>Type/Format</th><th>Description</th></tr></thead><tbody><tr><td>method</td><td>required</td><td>"FolderDraw"</td><td></td></tr><tr><td>seeding_file_type</td><td>required for FolderDraw</td><td>"seed" or "impa"</td><td>indicates which seeding file type the SEIR model will look for, "seed", which is generated from create_seeding.R, or "impa", which refers to importation</td></tr><tr><td>folder_path</td><td>required</td><td>path to folder where importation inference files will be saved</td><td></td></tr><tr><td>lambda_file</td><td>required</td><td>path to seeding file</td><td></td></tr><tr><td>perturbation_sd</td><td>required</td><td>standard deviation for the proposal value of the seeding date, in number of days</td><td></td></tr></tbody></table>
 
 The method for determining the proposal distribution for the seeding amount is hard-coded in the inference package (`R/pkgs/inference/R/functions/perturb_seeding.R`). It is pertubed with a normal distribution where the mean of the distribution 10 times the number of confirmed cases on a given date and the standard deviation is 1.
 
@@ -89,14 +83,7 @@ This configuration allows us to infer geoid-level baseline R0 estimates by addin
 
 Interventions may be specified in the same way as before, or with an added `perturbation` section that indicates that inference should be performed on a given intervention's effectiveness. As previously, interventions with perturbations may be specified for all modeled locations or for explicit `affected_geoids.` In this setup, both the prior distribution and the range of the support of the final inferred value are specified by the `value` section. In the configuration above, the inference algorithm will search 0 to 0.9 for all geoids to estimate the effectiveness of the `stayhome` intervention period. The prior distribution on intervention effectiveness follows a truncated normal distribution with a mean of 0.6 and a standard deviation of 0.3. The `perturbation` section specifies the perturbation/step size between the previously-accepted values and the next proposal value.
 
-| Item                | Required?             | Type/Format                                                                                                                                          |
-| ------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| template            | Required              | "ReduceR0" or "Stacked"                                                                                                                              |
-| period\_start\_date | optional for ReduceR0 | date between global `start_date` and `end_date`; default is global `start_date`                                                                      |
-| period\_end\_date   | optional for ReduceR0 | date between global `start_date` and `end_date`; default is global `end_date`                                                                        |
-| value               | required for ReduceR0 | specifies both the prior distribution and range of support for the final inferred values                                                             |
-| perturbation        | optional for ReduceR0 | this option indicates whether inference will be performed on this setting and how the proposal value will be identified from the last accepted value |
-| affected\_geoids    | optional for ReduceR0 | list of geoids, which must be in geodata                                                                                                             |
+<table><thead><tr><th width="216">Item</th><th>Required?</th><th>Type/Format</th></tr></thead><tbody><tr><td>template</td><td>Required</td><td>"ReduceR0" or "Stacked"</td></tr><tr><td>period_start_date</td><td>optional for ReduceR0</td><td>date between global <code>start_date</code> and <code>end_date</code>; default is global <code>start_date</code></td></tr><tr><td>period_end_date</td><td>optional for ReduceR0</td><td>date between global <code>start_date</code> and <code>end_date</code>; default is global <code>end_date</code></td></tr><tr><td>value</td><td>required for ReduceR0</td><td>specifies both the prior distribution and range of support for the final inferred values</td></tr><tr><td>perturbation</td><td>optional for ReduceR0</td><td>this option indicates whether inference will be performed on this setting and how the proposal value will be identified from the last accepted value</td></tr><tr><td>affected_geoids</td><td>optional for ReduceR0</td><td>list of geoids, which must be in geodata</td></tr></tbody></table>
 
 ## New `outcomes` section
 
@@ -316,9 +303,4 @@ The hierarchical settings specified here are used to group the inference of cert
 
 It is now possible to specify prior values for inferred parameters. This will have the effect of speeding up model convergence.
 
-| Item          | Required? | Type/Format                                                |
-| ------------- | --------- | ---------------------------------------------------------- |
-| scenario name | required  | name of prior scenario, user defined                       |
-| name          | required  | name of NPI scenario or parameter that will have the prior |
-| module        | required  | name of the module where this parameter is estimated       |
-| likelihood    | required  | specifies the distribution of the prior                    |
+<table><thead><tr><th>Item</th><th width="40">Required?</th><th>Type/Format</th></tr></thead><tbody><tr><td>scenario name</td><td>required</td><td>name of prior scenario, user defined</td></tr><tr><td>name</td><td>required</td><td>name of NPI scenario or parameter that will have the prior</td></tr><tr><td>module</td><td>required</td><td>name of the module where this parameter is estimated</td></tr><tr><td>likelihood</td><td>required</td><td>specifies the distribution of the prior</td></tr></tbody></table>

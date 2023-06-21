@@ -14,8 +14,8 @@ To actually run the model, this repository folder must be located inside a locat
 
 This directory contains the core Python code that creates and simulates generic compartmental models and additionally simulates observed variables. This code is called `gempyor` for **General Epidemics Modeling Pipeline with Yterventions and Outcome Reporting.** The code in gempyor is called from R scripts (see **/main\_scripts** and **/R** sections below) that read the config, run the model simulation via gempyor as required, read in data, and run the model inference algorithms.&#x20;
 
-* pyproject.toml - TBA
-* setup.cfg
+* `pyproject.toml` - contains the build system requirements and dependencies for the gempyor package; used during package installation
+* `setup.cfg` - contains information used by Python's `setuptools` to build the `gempyor` package. Contains the definitions of command line shortcuts for running simulations directly from `gempyor` (bypassing R interface) if desired &#x20;
 
 #### **/gempyor\_pkg/src/gempyor/**
 
@@ -96,9 +96,9 @@ This directory contains the core R code - organized into functions within packag
   * ReportLoadData.R
   * setup\_testing\_environment.R
 
-#### ****
+####
 
-#### ****
+####
 
 ### /test
 
