@@ -181,12 +181,17 @@ Rscript build/local_install.R # warnings are ok; there should be no error.
 pip install --no-deps -e flepimop/gempyor_pkg/
 ```
 
-Now flepiMoP is ready 🎉. Now you need to set $DATA\_PATH to your data folder. For a COVID-19 run, do:
+Now flepiMoP is ready 🎉.&#x20;
+
+Next step is to setup the data. First $DATA\_PATH to your data folder, and set any data options. If you are using the Delph Epidata API, first register for a key here: [https://cmu-delphi.github.io/delphi-epidata/](https://cmu-delphi.github.io/delphi-epidata/). Once you have a key, add that below where you see \[YOUR API KEY]. Alternatively, you can put that key in your config file in the `inference` section as `delphi_api_key: "YOUR API KEY"`.
+
+For a COVID-19 run, do:
 
 ```bash
 cd /scratch4/struelo1/flepimop-code/$USER
 export DATA_PATH=$(pwd)/COVID19_USA
 export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
+export DELPHI_API_KEY="[YOUR API KEY]"
 ```
 
 for Flu do:
