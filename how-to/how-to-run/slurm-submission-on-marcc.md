@@ -191,7 +191,7 @@ For a COVID-19 run, do:
 cd /scratch4/struelo1/flepimop-code/$USER
 export DATA_PATH=$(pwd)/COVID19_USA
 export GT_DATA_SOURCE="csse_case, fluview_death, hhs_hosp"
-export GT_API_KEY="[YOUR API KEY]"
+export DELPHI_API_KEY="[YOUR API KEY]"
 ```
 
 for Flu do:
