@@ -24,10 +24,11 @@ To run the entire pipeline we use the command prompt. To open the command prompt
 {% hint style="danger" %}
 If you have a newer Mac computer that runs with an Apple Silicon chip, you may encounter errors. Here are a few tips to avoid them
 
-* Install any minor updates to your operating system
+* Make sure you have Mac OS 11 or above
+* Install any minor updates to the operating system
 * Install Rosetta 2 for Mac&#x20;
   * In terminal type `softwareupdate --install-rosetta`
-* Make sure you've installed the Docker version that matches with the chip your Mac has (Intel vs Apple Silicon). If you're unsure, uninstall Docker, delete all Docker related files, and install again from scratch
+* Make sure you've installed the Docker version that matches with the chip your Mac has (Intel vs Apple Silicon). If you're unsure, uninstall Docker (Go to Docker > Troubleshoot (bug icon in top right) > Uninstall), delete all Docker related files, and install again from scratch
 * Update Docker to the latest version
 {% endhint %}
 
@@ -44,6 +45,10 @@ If you have a newer Mac computer that runs with an Apple Silicon chip, you may e
 #### When installing R packages
 
 #### When installing Python package gempyor
+
+#### When running flepimop or gempyor&#x20;
+
+:warning: MADV\_DONTNEED does not work (memset will be used instead) : (This is the expected behaviour if you are running under QEMU)
 
 
 
