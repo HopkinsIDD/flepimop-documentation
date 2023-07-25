@@ -2,10 +2,52 @@
 description: >-
   Short internal tutorial on running locally using a "Docker" container. Note
   that these directions are updated from the previous to remove specifics for US
-  COVID-19 models and include for Macs
+  COVID-19 models and include hints for Macs
 ---
 
 # Running with docker locally (update) 🛳
+
+{% hint style="info" %}
+**Helpful tools**
+
+To understand the basics of docker refer to the following: [Docker Basics](https://www.docker.com/)
+
+To install docker for Mac, refer to the following link: [Installing Docker for Mac](https://docs.docker.com/desktop/install/mac-install/). Pay special attention to the specific chip your Mac has (Apple Silicon vs Intel), as installation files and directions differ
+
+To install docker for Windows, refer to the following link: [Installing Docker for Windows](https://docs.docker.com/desktop/windows/install/)
+
+The following is a good tutorial for introduction to docker: [Docker Tutorial](https://www.youtube.com/watch?v=gFjxB0Jn8Wo\&list=PL6gx4Cwl9DGBkvpSIgwchk0glHLz7CQ-7)
+
+To run the entire pipeline we use the command prompt. To open the command prompt type “Command Prompt" in the search bar and open the command prompt. Here is a tutorial video for navigating through the command prompt: [Command Prompt Tutorial](https://www.youtube.com/watch?v=A3nwRCV-bTU)
+{% endhint %}
+
+{% hint style="danger" %}
+If you have a newer Mac computer that runs with an Apple Silicon chip, you may encounter errors. Here are a few tips to avoid them
+
+* Install any minor updates to your operating system
+* Install Rosetta 2 for Mac&#x20;
+  * In terminal type `softwareupdate --install-rosetta`
+* Make sure you've installed the Docker version that matches with the chip your Mac has (Intel vs Apple Silicon). If you're unsure, uninstall Docker, delete all Docker related files, and install again from scratch
+* Update Docker to the latest version
+{% endhint %}
+
+
+
+<details>
+
+<summary>Getting errors?</summary>
+
+#### When initially running the Docker image
+
+:warning: _The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested_
+
+#### When installing R packages
+
+#### When installing Python package gempyor
+
+
+
+</details>
 
 ## Setup Docker
 
@@ -41,11 +83,6 @@ First, make sure you have the latest version of the flepimop Docker (`hopkinsidd
 ```
 docker pull hopkinsidd/flepimop:latest-dev
 ```
-
-{% hint style="info" %}
-* you will need an active internet connection for this step, but not for other steps of running the model
-* Depending on your user permissions, on Mac/UNIX you may have to type `sudo` before `docker` in these commands
-{% endhint %}
 
 Next, run the Docker image by entering the following, replace `<dir1>` and `<dir2>` with the path names for your machine (no quotes or brackets, just the path text)
 
@@ -85,8 +122,10 @@ Rscript build/local_install.R # Install R packages
 pip install --no-deps -e flepimop/gempyor_pkg/ # Install Python package gempyor
 ```
 
+Each installation step may take a few minutes to run.
+
 {% hint style="info" %}
-Note: These installations take place in the Docker container and not the local operating system. They must be made once while starting the container and need not be done for every time you are running tests, provided they have been installed once.
+Note: These installations take place in the Docker container and not the local operating system. They must be made once while starting the container and need not be done for every time you run a model, provided they have been installed once. You will need an active internet connection for pulling the Docker image and installing the R packages (since some are hosted online), but not for other steps of running the model
 {% endhint %}
 
 ## Run the code
@@ -156,22 +195,18 @@ gempyor-outcomes -c config.yml
 
 You can put all of this together into a single script that can be run all at once:&#x20;
 
-
-
-{% hint style="info" %}
-**Other helpful tools**
-
-To understand the basics of docker refer to the following: [Docker Basics](https://www.docker.com/)
-
-To install docker for Mac, refer to the following link: [Installing Docker for Mac](https://docs.docker.com/desktop/install/mac-install/). Pay special attention to the specific chip your Mac has (Apple Silicon vs Intel), as installation files and directions differ
-
-To install docker for Windows, refer to the following link: [Installing Docker for Windows](https://docs.docker.com/desktop/windows/install/)
-
-The following is a good tutorial for introduction to docker: [Docker Tutorial](https://www.youtube.com/watch?v=gFjxB0Jn8Wo\&list=PL6gx4Cwl9DGBkvpSIgwchk0glHLz7CQ-7)
-
-To run the entire pipeline we use the command prompt. To open the command prompt type “Command Prompt" in the search bar and open the command prompt. Here is a tutorial video for navigating through the command prompt: [Command Prompt Tutorial](https://www.youtube.com/watch?v=A3nwRCV-bTU)
-{% endhint %}
-
-{% hint style="danger" %}
-If you have a newer Mac laptop that runs with an Apple Silicon chip, you may encounter errors. TO BE ADDED
-{% endhint %}
+```
+docker pull hopkinsidd/flepimop:latest-dev
+docker run -it \
+  -v <dir1>:/home/app/flepimop \
+  -v <dir2>:/home/app/drp \
+hopkinsidd/flepimop:latest-dev
+export FLEPI_PATH=/home/app/flepimop/
+export DATA_PATH=/home/app/drp/
+cd $FLEPI_PATH
+Rscript build/local_install.R
+pip install --no-deps -e flepimop/gempyor_pkg/
+cd $DATA_PATH
+rm -rf model_output
+gempyor-seir -c config.yml
+```
