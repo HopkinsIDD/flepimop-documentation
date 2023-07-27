@@ -1,12 +1,88 @@
 ---
-description: Short internal tutorial on running locally using a "Docker" container.
+description: >-
+  Short internal tutorial on running locally using a "Docker" container. Note
+  that these directions are updated from the previous to remove specifics for US
+  COVID-19 models and include hints for Macs
 ---
 
-# Running with docker locally 🛳
+# Running with docker locally (update) 🛳
 
-### Setup
+{% hint style="info" %}
+**Helpful tools**
 
-**Run Docker Image**
+To understand the basics of docker refer to the following: [Docker Basics](https://www.docker.com/)
+
+To install docker for Mac, refer to the following link: [Installing Docker for Mac](https://docs.docker.com/desktop/install/mac-install/). Pay special attention to the specific chip your Mac has (Apple Silicon vs Intel), as installation files and directions differ
+
+To install docker for Windows, refer to the following link: [Installing Docker for Windows](https://docs.docker.com/desktop/windows/install/)
+
+The following is a good tutorial for introduction to docker: [Docker Tutorial](https://www.youtube.com/watch?v=gFjxB0Jn8Wo\&list=PL6gx4Cwl9DGBkvpSIgwchk0glHLz7CQ-7)
+
+To run the entire pipeline we use the command prompt. To open the command prompt type “Command Prompt" in the search bar and open the command prompt. Here is a tutorial video for navigating through the command prompt: [Command Prompt Tutorial](https://www.youtube.com/watch?v=A3nwRCV-bTU)
+{% endhint %}
+
+{% hint style="danger" %}
+If you have a newer Mac computer that runs with an Apple Silicon chip, you may encounter errors. Here are a few tips to avoid them
+
+* Make sure you have Mac OS 11 or above
+* Install any minor updates to the operating system
+* Install Rosetta 2 for Mac&#x20;
+  * In terminal type `softwareupdate --install-rosetta`
+* Make sure you've installed the Docker version that matches with the chip your Mac has (Intel vs Apple Silicon). If you're unsure, uninstall Docker (Go to Docker > Troubleshoot (bug icon in top right) > Uninstall), delete all Docker related files, and install again from scratch
+* Update Docker to the latest version
+{% endhint %}
+
+
+
+<details>
+
+<summary>Getting errors?</summary>
+
+#### When initially running the Docker image
+
+:warning: _The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested_
+
+#### When installing R packages
+
+#### When installing Python package gempyor
+
+#### When running flepimop or gempyor&#x20;
+
+:warning: MADV\_DONTNEED does not work (memset will be used instead) : (This is the expected behaviour if you are running under QEMU)
+
+
+
+</details>
+
+## Setup Docker
+
+See the [Before any run](before-any-run.md) section to ensure you have access to the correct files needed to run. On your local machine, determine the file paths to:
+
+* the directory containing the flepimop code (likely the folder you cloned from Github), which we'll call `<dir1>`
+* the directory containing your project code including input configuration file and population structure (again likely from Github), which we'll call `<dir2>`
+
+{% hint style="info" %}
+For example, if you clone your Github repositories into a local folder called Github and are using the flepimop\_sample as a project repository, your directory names could be\
+\
+_**On Mac:**_&#x20;
+
+\<dir1> = /Users/YourName/Github/flepiMoP
+
+\<dir2> = /Users/YourName/Github/flepimop\_sample\
+\
+_**On Windows:**_ \
+\<dir1> = C:\Users\YourName\Github\flepiMoP
+
+\<dir2> = C:\Users\YourName\Github\flepimop\_sample\
+
+
+(hint: if you navigate to a directory like `C:\Users\YourName\Github` using `cd C:\Users\YourName\Github, modify the above <dir1> paths to be .\flepiMoP)`\
+
+
+Note that Docker file and directory names are case sensitive
+{% endhint %}
+
+### **Run Docker image**
 
 {% hint style="info" %}
 Current Docker image: `/hopkinsidd/flepimop:latest-dev`
@@ -18,91 +94,87 @@ A docker container is an environment which is isolated from the rest of the oper
 
 For flepiMoP, we have a docker container that will help you get running quickly!&#x20;
 
+First, make sure you have the latest version of the flepimop Docker (`hopkinsidd/flepimop)` downloaded on your machine by opening your terminal application and entering:
+
 ```
 docker pull hopkinsidd/flepimop:latest-dev
+```
+
+Next, run the Docker image by entering the following, replace `<dir1>` and `<dir2>` with the path names for your machine (no quotes or brackets, just the path text)
+
+In Mac, run Docker as follows:
+
+```
 docker run -it \
-  -v <dir1>\:/home/app/flepimop \
+  -v <dir1>/:/home/app/flepimop \
   -v <dir2>:/home/app/drp \
 hopkinsidd/flepimop:latest-dev  
 ```
 
-In this command we run the docker image `hopkinsidd/flepimop`. The `-v` command is used to allocate space from Docker and mount it at the given location.&#x20;
+In Windows, run Docker as follows:
 
-This mounts the data folder `<dir1>` to a path called `drp` within the docker environment, and the COVIDScenarioPipeline `<dir2>` in `flepimop`.&#x20;
+```
+docker run -it \
+  -v <dir1>:/home/app/flepimop \
+  -v <dir2>:/home/app/drp \
+hopkinsidd/flepimop:latest-dev  // Some code
+```
 
-## 🚀 Run inference
+In this command, we run the Docker container, creating a volume and mounting (`-v`) your code and project directories into the container. Creating a volume and mounting it to a container basically allocates space in Docker for it to mirror - and have read and write access - to files on your local machine.&#x20;
 
-#### Fill the environment variables (do this every time)
+The folder with the flepiMoP code `<dir2>` will be on the path `flepimop` within the Docker environment, while the project folder will be at the path `drp.`&#x20;
 
-First, populate the folder name variables:
+{% hint style="success" %}
+You now have a local Docker container installed, which includes the R and Python versions required to run flepiMop with all the required packagers already installed!&#x20;
+{% endhint %}
+
+{% hint style="info" %}
+You don't need to re-run the above steps every time you want to run the model. When you're done using Docker for the day, you can simply "detach" from the container and pause it, without deleting it from your machine. Then you can re-attach to it when you next want to run the model.&#x20;
+{% endhint %}
+
+### Define environment variables
+
+Create environmental variables for the paths to the flepimop code folder and the project folder:
 
 ```bash
-export FLEPI_PATH=/home/app/csp/
+export FLEPI_PATH=/home/app/flepimop/
 export DATA_PATH=/home/app/drp/
 ```
 
-Then, export variables for some flags and the census API key (you can use your own):
+Go into the code directory and do the installation the R and Python code packages
 
-{% code overflow="wrap" %}
 ```bash
-export FLEPI_STOCHASTIC_RUN=false
-export FLEPI_RESET_CHIMERICS=TRUE
-export CENSUS_API_KEY="6a98b751a5a7a6fc365d14fa8e825d5785138935"
+cd $FLEPI_PATH # move to the flepimop directory
+Rscript build/local_install.R # Install R packages
+pip install --no-deps -e flepimop/gempyor_pkg/ # Install Python package gempyor
 ```
-{% endcode %}
 
-<details>
-
-<summary>Where do I get a census key API?</summary>
-
-The Census Data Application Programming Interface (API) is an API that gives the public access to raw statistical data from various Census Bureau data programs.  To acquire your own API Key, click [here](https://api.census.gov/data/key\_signup.html).
-
-After you enter your details, you should receive an email using which you can activate your key and then use it.
-
-_Note: Do not enter the API Key in quotes, copy the key as it is._
-
-</details>
-
-Go into the Pipeline repo (making sure it is up to date on your favorite branch) and do the installation required of the repository:
-
-<pre class="language-bash"><code class="lang-bash">cd $FLEPI_PATH   # it'll move to the flepiMoP/ directory
-Rscript local_install.R               # Install the R stuff
-<strong>pip install --no-deps -e gempyor_pkg/ # install gempyor
-</strong>git lfs install
-git lfs pull
-</code></pre>
+Each installation step may take a few minutes to run.
 
 {% hint style="info" %}
-Note: These installations take place in the docker container and not the Operating System. They must be made once while starting the container and need not be done for every time you are running tests, provided they have been installed once.
+Note: These installations take place in the Docker container and not the local operating system. They must be made once while starting the container and need not be done for every time you run a model, provided they have been installed once. You will need an active internet connection for pulling the Docker image and installing the R packages (since some are hosted online), but not for other steps of running the model
 {% endhint %}
 
-### Run the code
+## Run the code
 
-Everything is now ready. 🎉 Let's do some clean-up in the data folder (these files might not exist, but it's good practice to make sure your simulation isn't re-using some old files).&#x20;
+Everything is now ready 🎉  The next step depends on what sort of simulation you want to run: One that includes inference (fitting model to data) or only a forward simulation (non-inference). Inference is run from R, while forward-only simulations are run directly from the Python package gempyor.
+
+In either case, navigate to the project folder and make sure to delete any old model output files that are there
 
 ```bash
-cd $DATA_PATH       # goes to Flu_USA
-git restore data/
-rm -rf data/mobility_territories.csv data/geodata_territories.csv data/us_data.csv
+cd $DATA_PATH       # goes to your project repository
 rm -r model_output/ # delete the outputs of past run if there are
 ```
 
-Stay in `$DATA_PATH`, select a config, and build the setup. The setup creates the population seeding file (geodata) and the population mobility file (mobility). Then, run inference:
+### Inference run
+
+An inference run requires a configuration file that has the `inference` section. Stay in the `$DATA_PATH` folder, and run the inference script, providing the name of the configuration file you want to run (ex. `config.yml`)&#x20;
 
 ```bash
-export CONFIG_PATH=config_SMH_R1_lowVac_optImm_2022.yml
-Rscript $FLEPI_PATH/datasetup/build_US_setup.R
-Rscript $FLEPI_PATH/datasetup/build_flu_data.R
-Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R.R -j 1 -n 1 -k 1
+Rscript  $FLEPI_PATH/flepimop/main_scripts/inference_main.R -c config.yml
 ```
 
-where:
-
-* `n` is the number of parallel inference slots,
-* `j` is the number of CPU cores it'll use in your machine,
-* `k` is the number of iterations per slots.
-
-It should run successfully and create a lot of files in `model_output/`.&#x20;
+This will run the model and create a lot of output files in `$DATA_PATH/model_output/`.&#x20;
 
 The last few lines visible on the command prompt should be:
 
@@ -114,16 +186,54 @@ The last few lines visible on the command prompt should be:
 >
 > NULL
 
-{% hint style="info" %}
-**Other helpful tools**
+If you want to quickly do runs with options different from those encoded in the configuration file, you can do that from the command line, for example
 
-To understand the basics of docker refer to the following: [Docker Basics](https://www.docker.com/)
+```
+Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R -j 1 -n 1 -k 1 -c config.yml
+```
 
-To install docker for windows refer to the following link: [Installing Docker](https://docs.docker.com/desktop/windows/install/)
+where:
 
-The following is a good tutorial for introduction to docker: [Docker Tutorial](https://www.youtube.com/watch?v=gFjxB0Jn8Wo\&list=PL6gx4Cwl9DGBkvpSIgwchk0glHLz7CQ-7)
+* `n` is the number of parallel inference slots,
+* `j` is the number of CPU cores to use on your machine (if `j` > `n`, only `n` cores will actually be used. If `j` <`n`, some cores will run multiple slots in sequence)
+* `k` is the number of iterations per slots.
 
-To run the entire pipeline we use the command prompt. To open the command prompt type “Command Prompt" in the search bar and open the command prompt. Here is a tutorial video for navigating through the command prompt: [Command Prompt Tutorial](https://www.youtube.com/watch?v=A3nwRCV-bTU)
+### Non inference run
+
+Stay in the `$DATA_PATH` folder, and run a simulation directly from forward-simulation Python package `gempyor.`&#x20;
+
+To run an SIR-style model only (config does not need to have `outcomes` section), call `gempyor-seir` providing the name of the configuration file you want to run (ex. `config.yml`)&#x20;
+
+```
+gempyor-seir -c config.yml
+```
+
+{% hint style="warning" %}
+It is currently required that all configuration files have an `interventions` section. There is currently no way to simulate a model with no interventions, though this functionality is expected soon. For now, simply create an intervention that has value zero.&#x20;
 {% endhint %}
 
-To test, we use the test folder (test\_documentation\_inference\_us in this case) in the CovidScenariPipeline as the data repository folder. We run the docker container and set the paths.
+To run an SIR + observational model (configuration file has `seir` and `outcomes` section)
+
+```
+gempyor-outcomes -c config.yml
+```
+
+## Summary
+
+You can put all of this together into a single script that can be run all at once:&#x20;
+
+```
+docker pull hopkinsidd/flepimop:latest-dev
+docker run -it \
+  -v <dir1>:/home/app/flepimop \
+  -v <dir2>:/home/app/drp \
+hopkinsidd/flepimop:latest-dev
+export FLEPI_PATH=/home/app/flepimop/
+export DATA_PATH=/home/app/drp/
+cd $FLEPI_PATH
+Rscript build/local_install.R
+pip install --no-deps -e flepimop/gempyor_pkg/
+cd $DATA_PATH
+rm -rf model_output
+gempyor-seir -c config.yml
+```

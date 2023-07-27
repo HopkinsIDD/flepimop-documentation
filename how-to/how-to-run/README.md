@@ -8,8 +8,8 @@ This section provides instructions for installation and how to run on each platf
 [quick-start-guide-conda.md](quick-start-guide-conda.md)
 {% endcontent-ref %}
 
-{% content-ref url="running-with-docker-locally.md" %}
-[running-with-docker-locally.md](running-with-docker-locally.md)
+{% content-ref url="running-with-docker-locally-1.md" %}
+[running-with-docker-locally-1.md](running-with-docker-locally-1.md)
 {% endcontent-ref %}
 
 {% content-ref url="slurm-submission-on-marcc.md" %}

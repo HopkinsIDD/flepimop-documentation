@@ -21,3 +21,9 @@ Put your model configuration file(s) directly in this repository
 #### Create a data folder
 
 This data folder (which can have any name, but for simplicity can just be called **data**), should contain your file specifying the [population structure, mobility files](../../model-of-disease-transmission-+-observation/model-implementation/specifying-population-structure.md), and [seeding/initial conditions](../../model-of-disease-transmission-+-observation/model-implementation/specifying-initial-conditions-and-seeding.md).&#x20;
+
+### Deciding how to run
+
+(Fill in with pros and cons of different methods, which users they are best for)
+
+##
