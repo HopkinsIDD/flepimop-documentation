@@ -93,7 +93,7 @@ Next, run the Docker image by entering the following, replace `<dir1>` and `<dir
 
 ```
 docker run -it \
-  -v <dir1>\:/home/app/flepimop \
+  -v <dir1>:/home/app/flepimop \
   -v <dir2>:/home/app/drp \
 hopkinsidd/flepimop:latest-dev  
 ```
