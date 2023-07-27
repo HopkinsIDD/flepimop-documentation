@@ -33,26 +33,6 @@ This table is useful for a quick comparison of these sections
 
 ## Specifying model seeding
 
-```
-seeding:
-  method: FromFile
-  seeding_file: data/seeding_2pop.csv
-```
-
-### seeding::method
-
-FromFile
-
-PoissonDistributed
-
-NegativeBinomialDistributed
-
-FolderDraw
-
-### seeding::seeding\_file
-
-### seeding::lambda\_file
-
 The configuration items in the `seeding` section of the config file are
 
 `seeding:method` Must be either "`NoSeeding"`, "`FromFile"`, "`PoissonDistributed"`, "`NegativeBinomialDistributed"`, or "`FolderDraw".`
@@ -64,6 +44,14 @@ The configuration items in the `seeding` section of the config file are
 `seeding::seeding_file_type`  Only required for method "`FolderDraw".` Either `seir` or `seed`
 
 Details on implementing each seeding method and the options that go along with it are below
+
+#### Example
+
+```
+seeding:
+  method: FromFile
+  seeding_file: data/seeding_2pop.csv
+```
 
 ### seeding::method
 

@@ -21,7 +21,6 @@
 * [Inference Description](model-inference/inference-description.md)
 * [Inference Implementation](model-inference/inference-implementation/README.md)
   * [Configuration options](model-inference/inference-implementation/configuration-options.md)
-  * [Example](model-inference/inference-implementation/example.md)
   * [Code structure](model-inference/inference-implementation/code-structure.md)
 * [(OLD) Configuration setup](model-inference/old-configuration-setup.md)
 * [Inference Model Output](model-inference/inference-model-output.md)
@@ -42,8 +41,6 @@
 ## 🛠 How-To
 
 * [Useful commands](how-to/useful-commands.md)
-* [Common errors](how-to/common-errors.md)
-* [Tutorials](how-to/tutorials.md)
 * [How to Run](how-to/how-to-run/README.md)
   * [Before any run](how-to/how-to-run/before-any-run.md)
   * [Running with conda locally 🐍](how-to/how-to-run/quick-start-guide-conda.md)
@@ -51,6 +48,8 @@
   * [Running with docker locally (update) 🛳](how-to/how-to-run/running-with-docker-locally-1.md)
   * [Running on Rockfish/MARCC 🪨🐠](how-to/how-to-run/slurm-submission-on-marcc.md)
   * [Running on AWS 🌳](how-to/how-to-run/running-on-aws.md)
+* [Tutorials](how-to/tutorials.md)
+* [Common errors](how-to/common-errors.md)
 * [Create a post-processing script](how-to/create-a-post-processing-script.md)
 
 ## 🗜 Development
