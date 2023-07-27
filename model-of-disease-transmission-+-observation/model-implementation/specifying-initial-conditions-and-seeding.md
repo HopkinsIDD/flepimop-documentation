@@ -29,7 +29,7 @@ This table is useful for a quick comparison of these sections
 | Specifies an incidence or prevalence? | Amounts specified are prevalence values                                                                                                                                                                                | Amounts specified are instantaneous incidence values                                                                                                                                                             |
 | Useful for?                           | Specifying initial conditions, especially if simulation does not start with a single infection introduced into a naive population.                                                                                     | Modeling importations, evolution of new strains, and specifying initial conditions                                                                                                                               |
 
-
+An example configuration file containing both initial condition and seeding section is given below.&#x20;
 
 ## Specifying model seeding
 
@@ -46,12 +46,6 @@ The configuration items in the `seeding` section of the config file are
 Details on implementing each seeding method and the options that go along with it are below
 
 #### Example
-
-```
-seeding:
-  method: FromFile
-  seeding_file: data/seeding_2pop.csv
-```
 
 ### seeding::method
 
@@ -73,7 +67,7 @@ This seeding method reads in a user-defined file with a list of seeding events (
 ```
 seeding:
   method: "FromFile"
-  seeding_file: seeding.csv
+  seeding_file: seeding_2pop.csv
 ```
 
 Where seeding.csv contains:
@@ -129,7 +123,11 @@ The configuration items in the `initial_conditions` section of the config file a
 
 `initial_conditions:method` Must be either "`Default"`, `"SetInitialConditions"`, "`FromFile"`, or "`FolderDraw".`
 
-`initial_conditions:initial_conditions_file` Only required for `method: “SetInitialConditions”` and `method: “FromFile”.` Path to a .csv or .parquet file containing the list of initial conditions for each compartment.&#x20;
+`initial_conditions:initial_conditions_file` Only required for `method: “FromFile”` and `method: “FolderDraw”.` Path to a .csv or .parquet file containing the list of initial conditions for each compartment.&#x20;
+
+`initial_conditions:states_file` Only required for `method: “SetInitialConditions”`. Path to a .csv or .parquet file containing the list of initial conditions for each compartment.&#x20;
+
+`initial_conditions:initial_file_type` Only required for `method: “FolderDraw”`. Description TBA
 
 `initial_conditions::allow_missing_nodes` Optional for all methods, determines what will happen if `initial_conditions_file` is missing values for some subpopulations.  If FALSE, the default behavior, or unspecified, an error will occur if subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment (The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.)
 
@@ -157,7 +155,7 @@ with the accompanying geodata file
 
 The model will be started with 1000 individuals in the S\_\[TBA] compartment.&#x20;
 
-#### SetInitialCondition
+#### SetInitialConditions
 
 With this method users can specify arbitrary initial conditions in a convenient formatted input csv file.
 
@@ -166,7 +164,7 @@ For example
 ```
 // Some code
 initial_conditions:
-    method: SetInitialCondition
+    method: SetInitialConditions
     allow_missing_nodes: TRUE
 ```
 
@@ -178,7 +176,7 @@ where initial\_conditions.csv contains
 * `place` -  the name of the subpopulation (geoid) for which the initial condition is being specified. By default, all subpopulations must be listed in this file, unless the `allow_missing_nodes` option is set to TRUE.&#x20;
 * `amount`  - the value of the initial condition.&#x20;
 
-For each subpopulation, if there are compartments that are not listed in `SetInitialConditions`, it will be assumed there are zero individuals in them. Note that there is currently no mechanism to ensure that the sum of the values of the initial conditions in all compartments in a location adds up to the total population of that location.&#x20;
+For each subpopulation, if there are compartments that are not listed in `SetInitialConditions`, it will be assumed there are zero individuals in them. Note that there is currently no mechanism to ensure that the sum of the values of the initial conditions in all compartments in a location adds up to the total population of that location. If `initial_conditions_file`is FALSE or unspecified, an error will occur if initial conditions for some subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment (The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.)
 
 #### FromFile
 

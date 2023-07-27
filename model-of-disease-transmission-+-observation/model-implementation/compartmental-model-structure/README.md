@@ -277,25 +277,19 @@ we would have a transition from `S_unvaccinated` to I`_vaccinated` and `S_vaccin
 
 #### Rate
 
-Since there are two changes to x a time. The first change we make, is to allow specifying a rate for each component, which are multiplied together. So,
+The rate vector allows users to specify the rate constant for all the source -> destination transitions that are defined in a shorthand way, by instead specifying how the rate is altered depending on the compartment type. For example, the rate of transmission between an susceptible (S) and an infected (I) individual may vary depending on whether the susceptible individual is vaccinated or not AND whether the infected individual is vaccinated or not. The overall rate constant is constructed by multiplying together or "broadcasting" all the compartment-type-specific terms that are relevant to a given compartment.&#x20;
+
+For example,&#x20;
 
 ```
-[3, 0.6]
-```
-
-would correspond to an rate of
-
-```
-[3 * 0.6]
-```
-
-By itself, this is useless, but we also allow broadcasting of each component:
-
-```
-[[3], [0.6,0.5]]
+rate: [[3], [0.6,0.5]]
 ```
 
 This would mean our transition from `S_unvaccinated` to I`_unvaccinated` would have a rate of `3 * 0.6` while our transition from `S_vaccinated` to I`_vaccinated` would have a rate of `3 * 0.5`.
+
+The rate vector should be the same shape as `source` and `destination` and in the same relative order.&#x20;
+
+Note that if the desire is to make a model where the difference in the rate constants varies in a more complicated than multiplicative way between different compartment types, it would be better to specify separate transitions for each compartment type instead of using this shorthand.&#x20;
 
 #### Proportional To
 
@@ -336,11 +330,15 @@ If, for example, we want to model a situation where vaccinated susceptibles cann
 
 #### Proportion Exponent
 
-Similarly to rate and proportional to, we provide an exponent for component and every group across the broadcast. So we could for example use:
+Similarly to `rate` and `proportional_to`, we provide an exponent for component and every group across the broadcast. So we could for example use:
 
 ```
 [[1,1], [0.9,0.8]]
 ```
+
+The  (top level) length of the `proportional_exponent` vector must be the same as the (top level) length of the `proportional_to` vector, even if the desire of the user is to have the same exponent for all terms being multiplied together to get the rate. Within each vector entry, the arrays must have the same length as the `source` and `destination` vectors.&#x20;
+
+&#x20;
 
 #### Summary
 
