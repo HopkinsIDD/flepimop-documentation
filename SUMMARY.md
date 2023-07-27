@@ -40,6 +40,7 @@
 
 ## 🛠 How-To
 
+* [Page](how-to/page.md)
 * [Useful commands](how-to/useful-commands.md)
 * [How to Run](how-to/how-to-run/README.md)
   * [Before any run](how-to/how-to-run/before-any-run.md)

@@ -62,11 +62,22 @@ See the [Before any run](before-any-run.md) section to ensure you have access to
 * the directory containing your project code including input configuration file and population structure (again likely from Github), which we'll call `<dir2>`
 
 {% hint style="info" %}
-For example, if you clone your Github repositories into a local folder called Github and are using the flepimop\_sample as a project repository, your directory names could be
+For example, if you clone your Github repositories into a local folder called Github and are using the flepimop\_sample as a project repository, your directory names could be\
+\
+_**On Mac:**_&#x20;
 
 \<dir1> = /Users/YourName/Github/flepiMoP
 
-\<dir2> = /Users/YourName/Github/flepimop\_sample
+\<dir2> = /Users/YourName/Github/flepimop\_sample\
+\
+_**On Windows:**_ \
+\<dir1> = C:\Users\YourName\Github\flepiMoP
+
+\<dir2> = C:\Users\YourName\Github\flepimop\_sample\
+
+
+(hint: if you navigate to a directory like `C:\Users\YourName\Github` using `cd C:\Users\YourName\Github, modify the above <dir1> paths to be .\flepiMoP)`\
+
 
 Note that Docker file and directory names are case sensitive
 {% endhint %}
@@ -91,11 +102,22 @@ docker pull hopkinsidd/flepimop:latest-dev
 
 Next, run the Docker image by entering the following, replace `<dir1>` and `<dir2>` with the path names for your machine (no quotes or brackets, just the path text)
 
+In Mac, run Docker as follows:
+
+```
+docker run -it \
+  -v <dir1>/:/home/app/flepimop \
+  -v <dir2>:/home/app/drp \
+hopkinsidd/flepimop:latest-dev  
+```
+
+In Windows, run Docker as follows:
+
 ```
 docker run -it \
   -v <dir1>:/home/app/flepimop \
   -v <dir2>:/home/app/drp \
-hopkinsidd/flepimop:latest-dev  
+hopkinsidd/flepimop:latest-dev  // Some code
 ```
 
 In this command, we run the Docker container, creating a volume and mounting (`-v`) your code and project directories into the container. Creating a volume and mounting it to a container basically allocates space in Docker for it to mirror - and have read and write access - to files on your local machine.&#x20;
