@@ -115,7 +115,10 @@ hopkinsidd/flepimop:latest-dev
 ```
 
 {% hint style="danger" %}
-On windows, make sure the path to dir1 and dir2 are written using forward slashes `/` instead of backslashes \\. Make sure there is no trailing slashes at the end.
+_On Windows:_\
+Make sure the path to dir1 and dir2 are written using forward slashes `/` instead of backslashes \\. Make sure there is no trailing slashes at the end.\
+\
+If you get an error, you may need to delete the "\\" line breaks and submit as a single continuous line of code.
 {% endhint %}
 
 In this command, we run the Docker container, creating a volume and mounting (`-v`) your code and project directories into the container. Creating a volume and mounting it to a container basically allocates space in Docker for it to mirror - and have read and write access - to files on your local machine.&#x20;
