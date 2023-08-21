@@ -57,10 +57,6 @@
 
 * [Python guidelines for developers](development/python-guidelines-for-developers.md)
 
-***
-
-* [Acknowledgements](acknowledgements.md)
-
 ## Deprecated pages
 
 * [Running with RStudio Server on AWS EC2](deprecated-pages/running-with-rstudio-server-on-aws-ec2.md)
