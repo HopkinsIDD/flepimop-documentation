@@ -51,7 +51,7 @@ For questions about the pipeline or to report a bug, please use the “Issues”
 
 ### Acknowledgments
 
-FlepiMoP is actively developed by its current contributors, including Joseph C Lemaitre, Sara L Loo, Clifton McKee, Claire Smith, Sung-mok Jung, Koji Sato, Erica Carcelen, Alison Hill, Justin Lessler, and Shaun Truelove, affiliated to the:&#x20;
+FlepiMoP is actively developed by its current contributors, including Joseph C Lemaitre, Sara L Loo, Clifton McKee, Claire Smith, Sung-mok Jung, Heramb Gupta, Koji Sato, Erica Carcelen, Alison Hill, Justin Lessler, and Shaun Truelove, affiliated to the:&#x20;
 
 * Department of Epidemiology, Gillings School of Global Public Health, University of North Carolina at Chapel Hill, Chapel Hill, NC, USA for (JCL, JL)
 * Johns Hopkins University International Vaccine Access Center, Department of International Health, Baltimore, MD, USA for (SLL, KJ, EC, ST)
