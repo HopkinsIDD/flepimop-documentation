@@ -2,25 +2,25 @@
 
 * [Home](README.md)
 
-## 🦠 Model of disease transmission + observation
+## 🦠 gempyor: modeling infectious disease dynamics <a href="#gempyor" id="gempyor"></a>
 
-* [Model Description](model-of-disease-transmission-+-observation/model-description.md)
-* [Model Implementation](model-of-disease-transmission-+-observation/model-implementation/README.md)
-  * [Introduction to configuration files](model-of-disease-transmission-+-observation/model-implementation/introduction-to-configuration-files.md)
-  * [Specifying population structure](model-of-disease-transmission-+-observation/model-implementation/specifying-population-structure.md)
-  * [Specifying compartmental model](model-of-disease-transmission-+-observation/model-implementation/compartmental-model-structure.md)
-  * [Specifying initial conditions and seeding](model-of-disease-transmission-+-observation/model-implementation/specifying-initial-conditions-and-seeding.md)
-  * [Specifying observational model](model-of-disease-transmission-+-observation/model-implementation/outcomes-for-compartments.md)
-  * [Specifying interventions](model-of-disease-transmission-+-observation/model-implementation/intervention-templates.md)
-  * [Other configuration options](model-of-disease-transmission-+-observation/model-implementation/other-configuration-options.md)
-  * [Code structure](model-of-disease-transmission-+-observation/model-implementation/code-structure.md)
-* [Model Output](model-of-disease-transmission-+-observation/output-files.md)
+* [Modeling infectious disease dynamics](gempyor/model-description.md)
+* [Model Implementation](gempyor/model-implementation/README.md)
+  * [FlepiMoP's configuration file](gempyor/model-implementation/introduction-to-configuration-files.md)
+  * [Specifying population structure](gempyor/model-implementation/specifying-population-structure.md)
+  * [Specifying compartmental model](gempyor/model-implementation/compartmental-model-structure.md)
+  * [Specifying initial conditions and seeding](gempyor/model-implementation/specifying-initial-conditions-and-seeding.md)
+  * [Specifying observational model](gempyor/model-implementation/outcomes-for-compartments.md)
+  * [Specifying interventions](gempyor/model-implementation/intervention-templates.md)
+  * [Other configuration options](gempyor/model-implementation/other-configuration-options.md)
+  * [Code structure](gempyor/model-implementation/code-structure.md)
+* [Model Output](gempyor/output-files.md)
 
 ## 📈 Model Inference
 
 * [Inference Description](model-inference/inference-description.md)
 * [Inference Implementation](model-inference/inference-implementation/README.md)
-  * [Configuration options](model-inference/inference-implementation/configuration-options.md)
+  * [(OLD) Configuration options](model-inference/inference-implementation/configuration-options.md)
   * [Code structure](model-inference/inference-implementation/code-structure.md)
 * [(OLD) Configuration setup](model-inference/old-configuration-setup.md)
 * [Inference Model Output](model-inference/inference-model-output.md)
@@ -29,7 +29,8 @@
 
 * [Setting up the model and post-processing](more/setting-up-the-model-and-post-processing/README.md)
   * [Config writer](more/setting-up-the-model-and-post-processing/config-writer.md)
-  * [Plotting scripts](more/setting-up-the-model-and-post-processing/plotting-scripts.md)
+  * [Diagnostic plotting scripts](more/setting-up-the-model-and-post-processing/plotting-scripts.md)
+  * [Create a post-processing script](more/setting-up-the-model-and-post-processing/create-a-post-processing-script.md)
   * [Reporting](more/setting-up-the-model-and-post-processing/reporting.md)
 * [Advanced](more/advanced/README.md)
   * [File descriptions](more/advanced/file-descriptions.md)
@@ -38,20 +39,18 @@
   * [Swapping model modules](more/advanced/swapping-model-modules.md)
   * [Resuming inference runs](more/advanced/resuming-inference-runs.md)
 
-## 🛠 How-To
+## 🛠 How To Run
 
-* [Page](how-to/page.md)
-* [Useful commands](how-to/useful-commands.md)
-* [How to Run](how-to/how-to-run/README.md)
-  * [Before any run](how-to/how-to-run/before-any-run.md)
-  * [Running locally](how-to/how-to-run/running-locally.md)
-  * [Running locally in a conda environment 🐍](how-to/how-to-run/quick-start-guide-conda.md)
-  * [Running with Docker locally (updated) 🛳](how-to/how-to-run/running-with-docker-locally.md)
-  * [Running on SLURM HPC](how-to/how-to-run/slurm-submission-on-marcc.md)
-  * [Running on AWS 🌳](how-to/how-to-run/running-on-aws.md)
-* [Tutorials](how-to/tutorials.md)
-* [Create a post-processing script](how-to/create-a-post-processing-script.md)
-* [Common errors](how-to/common-errors.md)
+* [Before any run](how-to-run/before-any-run.md)
+* [How to Run (to be deleted soon)](how-to-run/how-to-run.md)
+* [Running with Docker locally 🛳](how-to-run/running-with-docker-locally.md)
+* [Running locally](how-to-run/running-locally.md)
+* [Running locally in a conda environment (outdated) 🐍](how-to-run/quick-start-guide-conda.md)
+* [Running on SLURM HPC](how-to-run/slurm-submission-on-marcc.md)
+* [Running on AWS 🌳](how-to-run/running-on-aws.md)
+* [Tutorials](how-to-run/tutorials.md)
+* [Common errors](how-to-run/common-errors.md)
+* [Useful commands](how-to-run/useful-commands.md)
 
 ## 🗜 Development
 
@@ -70,5 +69,9 @@
 ## JHU Internal
 
 * [US specific How to Run](jhu-internal/us-specific-how-to-run/README.md)
-  * [Running with Docker locally 🛳](jhu-internal/us-specific-how-to-run/running-with-docker-locally.md)
+  * [Running with Docker locally (outdated/US specific) 🛳](jhu-internal/us-specific-how-to-run/running-with-docker-locally.md)
   * [Copy of Running on Rockfish/MARCC 🪨🐠](jhu-internal/us-specific-how-to-run/slurm-submission-on-marcc.md)
+
+## Group 1
+
+* [Page 1](group-1/page-1.md)
