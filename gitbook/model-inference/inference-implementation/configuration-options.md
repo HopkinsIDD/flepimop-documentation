@@ -1,8 +1,8 @@
-# Configuration options
+# (OLD) Configuration options
 
-## New `filtering` section
+## `filtering` section
 
-This section configures the settings for the inference algorithm. The below example shows the settings for some typical default settings, where the model is calibrated to the weekly incident deaths and weekly incident confirmed cases for each geoid. Statistics, hierarchical\_stats\_geo, and priors each have scenario names (e.g., `sum_deaths,` `local_var_hierarchy,` and `local_var_prior,` respectively).
+The `filtering` section configures the settings for the inference algorithm. The below example shows the settings for some typical default settings, where the model is calibrated to the weekly incident deaths and weekly incident confirmed cases for each geoid. Statistics, hierarchical\_stats\_geo, and priors each have scenario names (e.g., `sum_deaths,` `local_var_hierarchy,` and `local_var_prior,` respectively).
 
 ```
 filtering:

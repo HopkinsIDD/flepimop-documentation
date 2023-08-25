@@ -125,7 +125,7 @@ Note that while the traditional Metropolis Hastings algorithm for MCMC will prov
 
 We consider the sequence $$\theta_m$$ to represent a sample from the posterior probability distribution, and use it to calculate statistics about the inferred parameter values and the epidemic trajectories resulting from them (e.g., mean, median, 95% credible intervals).
 
-<figure><img src="../../.gitbook/assets/FlepiMop Inference.png" alt=""><figcaption><p>Diagram of the custom multi-level MCMC method used for parameter inference in FlepiMoP. Each square represents a single subpopulation which has a set of associated parameter values. Diagram is for a single MCMC chain; multiple parallel chains are typically run and combined to form a posterior distribution of parameter values. </p></figcaption></figure>
+<figure><img src="../.gitbook/assets/FlepiMop Inference.png" alt=""><figcaption><p>Diagram of the custom multi-level MCMC method used for parameter inference in FlepiMoP. Each square represents a single subpopulation which has a set of associated parameter values. Diagram is for a single MCMC chain; multiple parallel chains are typically run and combined to form a posterior distribution of parameter values. </p></figcaption></figure>
 
 There are a few important notes/limitations about our method currently:
 

@@ -2,4 +2,4 @@
 
 
 
-<figure><img src="../../.gitbook/assets/pipeline-overview.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/pipeline-overview.png" alt=""><figcaption></figcaption></figure>

@@ -8,11 +8,11 @@ Click on below:
 
 Sign in as IAM user with your given Accound ID, username and Password
 
-<figure><img src="../../../.gitbook/assets/スクリーンショット 2022-10-14 10.07.24.png" alt=""><figcaption><p>Sign in as IAM user</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/スクリーンショット 2022-10-14 10.07.24.png" alt=""><figcaption><p>Sign in as IAM user</p></figcaption></figure>
 
 &#x20;Then the next view appears, check "regeon" as "Oregon" by default and "user@Accond ID" as you expeced.
 
-<figure><img src="../../../.gitbook/assets/スクリーンショット 2022-10-14 10.10.02.png" alt=""><figcaption><p>Console Home</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/スクリーンショット 2022-10-14 10.10.02.png" alt=""><figcaption><p>Console Home</p></figcaption></figure>
 
 If you have already accessed AWS console, these kinds of view can be seen. In the case select "EC2" to go to "EC2 Dashboard"(if not, skip it).
 
@@ -20,13 +20,13 @@ If you have already accessed AWS console, these kinds of view can be seen. In th
 
 In this EC2 Dashboard, we can maintain the EC2 boxes from creation to deletion. In this section, how to create an EC2 instance from the AMI image which has already been registered is shown.
 
-<figure><img src="../../../.gitbook/assets/スクリーンショット 2022-10-14 10.22.56.png" alt=""><figcaption><p>EC2 Dashboard</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/スクリーンショット 2022-10-14 10.22.56.png" alt=""><figcaption><p>EC2 Dashboard</p></figcaption></figure>
 
 Select "Images>AMIs" in the right pane(Navigation pain),&#x20;
 
 Select an AMI name which name is "IDD Staging AMI" in the "Amazon Machine Images (AMIs)"  by clicking the responding AMI checkbox on the left, then push the  "Launch instance from AMI" button (colored in orange).
 
-<figure><img src="../../../.gitbook/assets/スクリーンショット 2022-10-14 10.31.32.png" alt=""><figcaption><p>Select an AMI Image among Amazon Machine Images(AMIs)</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/スクリーンショット 2022-10-14 10.31.32.png" alt=""><figcaption><p>Select an AMI Image among Amazon Machine Images(AMIs)</p></figcaption></figure>
 
 ### Launch an instance
 
@@ -51,7 +51,7 @@ To create an EC2 instance, fill out the items as below (example):
     * Common security groups
       * select "dvc_usa" and "dvc\__usa2" by drop-down menu
 
-<figure><img src="../../../.gitbook/assets/スクリーンショット 2022-10-14 12.48.08.png" alt=""><figcaption><p>Network settings </p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/スクリーンショット 2022-10-14 12.48.08.png" alt=""><figcaption><p>Network settings </p></figcaption></figure>
 
 *   Advanced details
 
@@ -59,13 +59,13 @@ To create an EC2 instance, fill out the items as below (example):
 
 
 
-    <figure><img src="../../../.gitbook/assets/スクリーンショット 2022-11-23 午前11.58.58.png" alt=""><figcaption><p>Advanced details</p></figcaption></figure>
+    <figure><img src="../../.gitbook/assets/スクリーンショット 2022-11-23 午前11.58.58.png" alt=""><figcaption><p>Advanced details</p></figcaption></figure>
 
 
 
 then push "Launch Instance" button which is located at the bottom right side of the screen&#x20;
 
-<figure><img src="../../../.gitbook/assets/スクリーンショット 2022-10-14 12.50.32.png" alt=""><figcaption><p>Launch Instance in Summary</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/スクリーンショット 2022-10-14 12.50.32.png" alt=""><figcaption><p>Launch Instance in Summary</p></figcaption></figure>
 
-<figure><img src="../../../.gitbook/assets/スクリーンショット 2022-10-14 12.51.59.png" alt=""><figcaption><p>When in Success</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/スクリーンショット 2022-10-14 12.51.59.png" alt=""><figcaption><p>When in Success</p></figcaption></figure>
 
