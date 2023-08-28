@@ -53,6 +53,10 @@ Parameters and other options specified in the configuration files can take on a 
 
 ### Global header
 
+{% hint style="success" %}
+Required section
+{% endhint %}
+
 These global configuration options typically sit at the top of the configuration file.
 
 | Item                     | Required?                                                        | Type/Format  | Description                                                                                            |
@@ -83,28 +87,64 @@ nslots: 1000
 
 ### `spatial_setup` section
 
+{% hint style="success" %}
+Required section
+{% endhint %}
+
 This section specifies the population structure on which the model will be simulated, including the names and sizes of each subpopulation and the connectivity between them. More details [here](broken-reference).
 
 ### `compartments` section
 
-This section is where users can specify the variables (infection states) that will be tracked in the infectious disease transmission model. More details HERE. The other details of the model are specified in the `seir` section, including transitions between these compartments (`seir::transitions`), the names of the parameters governing the transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`)
+{% hint style="success" %}
+Required section
+{% endhint %}
 
-### `seeding` section
-
-This section is used to specify how infections are "seeded" into the compartments, where they are then governed by the model equations. This seeding can be used to create initial conditions (ie introductions at time zero) or to represent importations from an outside population that occur at any later time. Numeric values can be added to any compartment of the model, not just those representing "infected" states (e.g., immune individuals in the "R" state could be introduced at any point). More details HERE.
+This section is where users can specify the variables (infection states) that will be tracked in the infectious disease transmission model. More details can be found [here](compartmental-model-structure.md). The other details of the model are specified in the `seir` section, including transitions between these compartments (`seir::transitions`), the names of the parameters governing the transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`).  The initial conditions of the model can be specified in the `initial_conditions` section, and any other inputs into the model from external populations or instantaneous transitions between states that occur at later times can be specified in the `seeding` section. &#x20;
 
 ### `seir` section
 
-This section is where users can specify the details of the infectious disease transmission model they wish to simulate (e.g., SEIR). This model describes the allowed transitions (`seir::transitions`) between the compartments that were specified in the `compartments` section, the values of the parameters involved in these transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`). The initial conditions of the model - the time and location where infection is first introduced - are specified in a separate `seeding` section (see below). More details [here](compartmental-model-structure.md).
+{% hint style="success" %}
+Required section
+{% endhint %}
+
+This section is where users can specify the details of the infectious disease transmission model they wish to simulate (e.g., SEIR). This model describes the allowed transitions (`seir::transitions`) between the compartments that were specified in the `compartments` section, the values of the parameters involved in these transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`).  More details [here](compartmental-model-structure.md).  The initial conditions of the model can be specified in the separate `initial_conditions` section, and any other inputs into the model from external populations or instantaneous transitions between states that occur at later times can be specified in the `seeding` section. &#x20;
+
+### `initial_conditions` section
+
+{% hint style="info" %}
+Optional section
+{% endhint %}
+
+This section is used to specify the initial conditions of the model, which define how individuals are distributed between the model compartments at the time the model simulation begins. Importantly, the initial conditions specify the time and location where infection is first introduced. If this section is omitted, default values are used. If users want to add infections to the population at later times, or add or remove individuals from compartments separately from the model rules, they can do so via the related `seeding` section. More details [here](specifying-initial-conditions-and-seeding.md).&#x20;
+
+### `seeding` section
+
+{% hint style="info" %}
+Optional section
+{% endhint %}
+
+This section is used to specify how individuals are instantaneously "seeded"  from one compartments to another, where they then continue to be governed by the model equations. For example, this seeding could be used to represent importations of infected individuals from an outside population, mutation events that create new strains, or vaccinations that alter disease susceptibility. Seeding events can occur at time in the simulation. The seeding section specifies the numeric values added to or removed from any compartment of the model. More details [here](specifying-initial-conditions-and-seeding.md).&#x20;
 
 ### `outcomes` section
+
+{% hint style="info" %}
+Optional section
+{% endhint %}
 
 This section is where users can define new variables representing the observed quantities and how they are related to the underlying state variables in the model (e.g., the fraction of infections that are detected as cases). More details [here](outcomes-for-compartments.md).&#x20;
 
 ### `interventions` section
 
-This section is where users can specify time-varying changes to parameters governing either the infectious disease model or the observational model. More details [HERE](intervention-templates.md).&#x20;
+{% hint style="success" %}
+Required section
+{% endhint %}
 
-### `filtering` section
+This section is where users can specify time-varying changes to parameters governing either the infectious disease model or the observational model. More details [here](intervention-templates.md).&#x20;
 
-This section is where users can specify the details of how the model is fit to data, including what data streams they will be included and which outcome variables they represent and the likelihood functions describing the probability of the data given the model. More details HERE. &#x20;
+### `inference` section
+
+{% hint style="info" %}
+Optional section
+{% endhint %}
+
+This section is where users can specify the details of how the model is fit to data, including what data streams they will be included and which outcome variables they represent and the likelihood functions describing the probability of the data given the model. More details [here](../../model-inference/inference-implementation/). &#x20;
