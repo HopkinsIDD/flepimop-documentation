@@ -4,28 +4,28 @@
 
 Every intervention has a template, which tells gempyor how to implement the intervention from the config. We currently support the following interventions:
 
-* Reduce
+* SinglePeriodModifier
   * Modify a parameter during a single time period
-* MultiTimeReduce
+* MultiPeriodModifier
   * Modify a parameter during a multiple time periods
-* ReduceIntervention
+* ModifierModifier
   * Modify another intervention during a single time period
-* Stacked
+* StackedModifier
   * Combine two or more interventions multiplicatively
 
-## Reduce
+## SinglePeriodModifier
 
-Take a `parameter`, and reduce it's value by `value` (new = (1-`value`) \* old) for `affected_geoids` during \[`period_start_date`, `period_end_date`]
+Take a `parameter`, and reduce it's value by `value` (new = (1-`value`) \* old) for `subpop` during \[`period_start_date`, `period_end_date`]
 
-### Config Example (Reduce)
+### Config Example (SinglePeriodModifier)
 
 ```
 local_variance:
-  template: Reduce
+  template: SinglePeriodModifier
   parameter: r0
   period_start_date: 2020-01-01
   period_end_date: 2021-12-31
-  affected_geoids: ['06000', '11000']
+  subpop: ['06000', '11000']
   value:
     distribution: truncnorm
     mean: .5
@@ -50,9 +50,9 @@ A date when the intervention starts. The intervention will only reduce the value
 
 A date when the intervention ends. The intervention will only reduce the value of the parameter before (inclusive) this date.
 
-#### `affected_geoids`
+#### `subpop`
 
-A list of geoid names to affect, or the word 'all'. The intervention will do nothing for any geoids not listed here. If 'all', every geoid listed in the geoid file will be affected.
+A list of subpop names to affect, or the word 'all'. The intervention will do nothing for any subpops not listed here. If 'all', every subpop listed in the subpop file will be affected.
 
 #### `value`
 
@@ -62,22 +62,22 @@ The percentage reduction by which to reduce the parameter. The new parameter val
 new_value = old_value * (1 - reduction)
 ```
 
-## MultiTimeReduce
+## MultiPeriodModifier
 
-### Config Example (MultiTimeReduce)
+### Config Example (MultiPeriodModifier)
 
 ```
 school_year_R13:
-  template: MultiTimeReduce
+  template: MultiPeriodModifier
   parameter: r0
   groups:
-    - affected_geoids: ["01000"]
+    - subpop: ["01000"]
       periods:
         - start_date: 2021-08-16
           end_date: 2021-11-23
         - start_date: 2022-01-03
           end_date: 2022-03-19
-    - affected_geoids: ["02000"]
+    - subpop: ["02000"]
       periods:
         - start_date: 2021-08-16
           end_date: 2021-11-23
@@ -101,17 +101,17 @@ A parameter name to reduce. Reducing a parameter will modify the parameter's val
 
 A list of places and times the intervention should affect.
 
-**`affected_geoids`**
+**`subpop`**
 
-A list of geoid names to affect, or the word 'all'. The intervention will do nothing for any geoids not listed here. If 'all', every geoid listed in the geoid file will be affected.
+A list of subpop names to affect, or the word 'all'. The intervention will do nothing for any subpops not listed here. If 'all', every subpop listed in the subpop file will be affected.
 
 ####
 
-## ReduceIntervention
+## ModifierModifier
 
 Modify another intervention.
 
-## Stacked
+## StackedModifier
 
 Apply a multiplicative (or additive) combination two or more interventions.
 

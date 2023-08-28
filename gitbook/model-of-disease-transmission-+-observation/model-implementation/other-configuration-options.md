@@ -77,7 +77,7 @@ interventions:
     - Lockdown
   settings:
     None:
-      template: Reduce
+      template: SinglePeriodModifier
       parameter: r0
       period_start_date: 2020-04-01
       period_end_date: 2020-05-15
@@ -86,7 +86,7 @@ interventions:
         value: 0
         settings:
     Lockdown:
-      template: Reduce
+      template: SinglePeriodModifier
       parameter: r0
       period_start_date: 2020-04-01
       period_end_date: 2020-05-15
@@ -144,7 +144,6 @@ spatial_setup:
   geodata: geodata_2019_statelevel.csv
   mobility: mobility_2011-2015_statelevel.csv
   popnodes: pop2019est
-  nodenames: geoid
   modeled_states:
     - CT
     - MA
@@ -158,7 +157,7 @@ spatial_setup:
 `geodata.csv` contains&#x20;
 
 ```
-USPS	geoid	pop2019est
+USPS	subpop	pop2019est
 AL	01000	4876250
 AK	02000	737068
 AZ	04000	7050299

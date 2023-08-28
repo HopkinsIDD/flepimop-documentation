@@ -77,7 +77,7 @@ interventions:
     - Lockdown
   settings:
     None:
-      template: Reduce
+      template: SinglePeriodModifier
       parameter: r0
       period_start_date: 2020-04-01
       period_end_date: 2020-05-15
@@ -86,7 +86,7 @@ interventions:
         value: 0
         settings:
     Lockdown:
-      template: Reduce
+      template: SinglePeriodModifier
       parameter: r0
       period_start_date: 2020-04-01
       period_end_date: 2020-05-15

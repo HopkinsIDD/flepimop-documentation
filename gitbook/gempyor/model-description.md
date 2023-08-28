@@ -255,9 +255,9 @@ $$
 \beta_j'(t) = (1-r_k(t;t_{k,\text{start}},t_{k,\text{end}}))(1-r_l(t;t_{l,\text{start}},t_{l,\text{end}})))\beta_j^0
 $$
 
-In this case, $$r_k(t)$$ and $$r_l(t)$$ are both considered simple **`Reduce`** interventions. There are four possible types of interventions that can be included in the model
+In this case, $$r_k(t)$$ and $$r_l(t)$$ are both considered simple **`SinglePeriodModifier`** interventions. There are four possible types of interventions that can be included in the model
 
-* **`Reduce`** - an intervention $$r_j$$ that leads to a fractional reduction in a parameter value in subpopulation $$j$$ (i.e., $$\beta_j$$) between two timepoints&#x20;
+* **`SinglePeriodModifier`** - an intervention $$r_j$$ that leads to a fractional reduction in a parameter value in subpopulation $$j$$ (i.e., $$\beta_j$$) between two timepoints&#x20;
 
 $$
 \beta_j'(t) = (1-r_j(t;t_{j,\text{start}},t_{j,\text{end}}))\beta_j^0
@@ -270,7 +270,7 @@ r_j(t;t_{j,\text{start}},t_{j,\text{end}})  = \begin{cases}
 \end{cases}
 $$
 
-* **`MultiTimeReduce`** - an intervention $$r_j$$ that leads to a fractional reduction in a parameter value in subpopulation $$j$$ (i.e., $$\beta_j$$) value between multiple sets of timepoints
+* **`MultiPeriodModifier`** - an intervention $$r_j$$ that leads to a fractional reduction in a parameter value in subpopulation $$j$$ (i.e., $$\beta_j$$) value between multiple sets of timepoints
 
 $$
 \beta_j'(t) = (1-r_j(t; \{t_{j,k,\text{start}},t_{j,k,\text{end}}\}_k))\beta_j^0
@@ -286,7 +286,7 @@ r_j &\text{if  } t_{j,kn,\text{start}} < t <t_{j,kn,\text{end}} \\
 \end{dcases}
 $$
 
-* **`ReduceIntervention`**- an intervention $$\pi_j$$ that leads to a fractional reduction in the value of another intervention $$r_j$$ between two timepoints
+* **`ModifierModifier`**- an intervention $$\pi_j$$ that leads to a fractional reduction in the value of another intervention $$r_j$$ between two timepoints
 
 $$
 \beta_j'(t) = (1-r_j(t;t_{j,\text{start}},t_{j,\text{end}})(1-\pi_{r,j}(t;t_{r,j,\text{start}},t_{r,j,\text{end}})))\beta_j^0
@@ -299,5 +299,5 @@ $$
 \end{cases}
 $$
 
-* **`Stacked`** - TBA
+* **`StackedModifier`** - TBA
 

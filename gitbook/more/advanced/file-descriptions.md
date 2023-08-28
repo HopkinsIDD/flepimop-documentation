@@ -33,10 +33,10 @@ This directory contains the core Python code that creates and simulates generic 
 * seeding\_ic.py
 * /NPI/
   * base.py -&#x20;
-  * Reduce.py -&#x20;
-  * ReduceR0.py -&#x20;
-  * MultiTimeReduce.py -&#x20;
-  * ReduceInterven.py -&#x20;
+  * SinglePeriodModifier.py -&#x20;
+
+  * MultiPeriodModifier.py -&#x20;
+  * SinglePeriodModifierInterven.py -&#x20;
 * /dev - contains functions that are still in development
 * /data - ?
 
@@ -161,7 +161,7 @@ Important files and folders include
 
 #### **/data/outcomes**
 
-* usa-geoid-params-output\_V2.parquet
+* usa-subpop-params-output\_V2.parquet
 
 **/data/intervention\_tracking**
 

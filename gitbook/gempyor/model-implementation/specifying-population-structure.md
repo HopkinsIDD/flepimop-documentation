@@ -24,7 +24,6 @@ spatial_setup:
   geodata: geodata.csv
   mobility: mobility.csv
   popnodes: population
-  nodenames: geoid
 ```
 
 ## Items and options
@@ -48,7 +47,7 @@ spatial_setup:
 #### Example geodata file format
 
 ```
-geoid,population,include_in_report
+subpop,population,include_in_report
 10001,1000,TRUE
 20002,2000,FALSE
 ```
@@ -83,13 +82,12 @@ spatial_setup:
   geodata: geodata.csv
   mobility: mobility.csv
   popnodes: population
-  nodenames: geoid
 ```
 
-`geodata.csv` contains the population structure (with `nodename` column `geoid` and `popnodes` column `population`)
+`geodata.csv` contains the population structure (with `nodename` column `subpop` and `popnodes` column `population`)
 
 ```
-geoid,          population
+subpop,          population
 large_province, 10000
 small_province, 1000
 ```

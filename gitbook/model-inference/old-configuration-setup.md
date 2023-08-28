@@ -1,6 +1,6 @@
 # (OLD) Configuration setup
 
-**Need to add multiTimeReduce and hospitalization interventions**
+**Need to add MultiPeriodModifier and hospitalization interventions**
 
 ## Overview
 
@@ -14,7 +14,7 @@ We describe these options below and present default values in the example config
 
 ## Modifications to `seeding`
 
-The model can perform inference on the seeding date and initial number of seeding infections in each geoid. An example of this new config section is:
+The model can perform inference on the seeding date and initial number of seeding infections in each subpop. An example of this new config section is:
 
 ```
 seeding:
@@ -41,7 +41,7 @@ interventions:
     - Scenario1
   settings:
     local_variance:
-      template: ReduceR0
+      template: SinglePeriodModifierR0
       value:
         distribution: truncnorm
         mean: 0
@@ -55,7 +55,7 @@ interventions:
         a: -1
         b: 1
     stayhome:
-      template: ReduceR0
+      template: SinglePeriodModifierR0
       period_start_date: 2020-04-04
       period_end_date: 2020-04-30
       value:
@@ -71,7 +71,7 @@ interventions:
         a: -1
         b: 1
     Scenario1:
-      template: Stacked
+      template: StackedModifier
       scenarios: 
         - local_variance
         - stayhome
@@ -79,11 +79,11 @@ interventions:
 
 ### `interventions::settings::[setting_name]`
 
-This configuration allows us to infer geoid-level baseline R0 estimates by adding a `local_variance` intervention. The baseline geoid-specific R0 estimate may be calculated as $$R0*(1-local_variance),$$ where R0 is the baseline simulation R0 value, and local\_variance is an estimated geoid-specific value.
+This configuration allows us to infer subpop-level baseline R0 estimates by adding a `local_variance` intervention. The baseline subpop-specific R0 estimate may be calculated as $$R0*(1-local_variance),$$ where R0 is the baseline simulation R0 value, and local\_variance is an estimated subpop-specific value.
 
-Interventions may be specified in the same way as before, or with an added `perturbation` section that indicates that inference should be performed on a given intervention's effectiveness. As previously, interventions with perturbations may be specified for all modeled locations or for explicit `affected_geoids.` In this setup, both the prior distribution and the range of the support of the final inferred value are specified by the `value` section. In the configuration above, the inference algorithm will search 0 to 0.9 for all geoids to estimate the effectiveness of the `stayhome` intervention period. The prior distribution on intervention effectiveness follows a truncated normal distribution with a mean of 0.6 and a standard deviation of 0.3. The `perturbation` section specifies the perturbation/step size between the previously-accepted values and the next proposal value.
+Interventions may be specified in the same way as before, or with an added `perturbation` section that indicates that inference should be performed on a given intervention's effectiveness. As previously, interventions with perturbations may be specified for all modeled locations or for explicit `subpop.` In this setup, both the prior distribution and the range of the support of the final inferred value are specified by the `value` section. In the configuration above, the inference algorithm will search 0 to 0.9 for all subpops to estimate the effectiveness of the `stayhome` intervention period. The prior distribution on intervention effectiveness follows a truncated normal distribution with a mean of 0.6 and a standard deviation of 0.3. The `perturbation` section specifies the perturbation/step size between the previously-accepted values and the next proposal value.
 
-<table><thead><tr><th width="216">Item</th><th>Required?</th><th>Type/Format</th></tr></thead><tbody><tr><td>template</td><td>Required</td><td>"ReduceR0" or "Stacked"</td></tr><tr><td>period_start_date</td><td>optional for ReduceR0</td><td>date between global <code>start_date</code> and <code>end_date</code>; default is global <code>start_date</code></td></tr><tr><td>period_end_date</td><td>optional for ReduceR0</td><td>date between global <code>start_date</code> and <code>end_date</code>; default is global <code>end_date</code></td></tr><tr><td>value</td><td>required for ReduceR0</td><td>specifies both the prior distribution and range of support for the final inferred values</td></tr><tr><td>perturbation</td><td>optional for ReduceR0</td><td>this option indicates whether inference will be performed on this setting and how the proposal value will be identified from the last accepted value</td></tr><tr><td>affected_geoids</td><td>optional for ReduceR0</td><td>list of geoids, which must be in geodata</td></tr></tbody></table>
+<table><thead><tr><th width="216">Item</th><th>Required?</th><th>Type/Format</th></tr></thead><tbody><tr><td>template</td><td>Required</td><td>"SinglePeriodModifierR0" or "StackedModifier"</td></tr><tr><td>period_start_date</td><td>optional for SinglePeriodModifierR0</td><td>date between global <code>start_date</code> and <code>end_date</code>; default is global <code>start_date</code></td></tr><tr><td>period_end_date</td><td>optional for SinglePeriodModifierR0</td><td>date between global <code>start_date</code> and <code>end_date</code>; default is global <code>end_date</code></td></tr><tr><td>value</td><td>required for SinglePeriodModifierR0</td><td>specifies both the prior distribution and range of support for the final inferred values</td></tr><tr><td>perturbation</td><td>optional for SinglePeriodModifierR0</td><td>this option indicates whether inference will be performed on this setting and how the proposal value will be identified from the last accepted value</td></tr><tr><td>subpop</td><td>optional for SinglePeriodModifierR0</td><td>list of subpops, which must be in geodata</td></tr></tbody></table>
 
 ## New `outcomes` section
 
@@ -93,7 +93,7 @@ This section is now structured more like the `interventions` section of the conf
 outcomes:
   method: delayframe
   param_from_file: TRUE
-  param_place_file: "usa-geoid-params-output.parquet" ## ../../Outcomes/data/usa-geoid-params-output.parquet
+  param_place_file: "usa-subpop-params-output.parquet" ## ../../Outcomes/data/usa-subpop-params-output.parquet
   scenarios:
     - med
   settings:
@@ -176,7 +176,7 @@ outcomes:
 | ------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | method             | **required** | "delayframe"                                                                                                                                                  |
 | param\_from\_file  | required     | if TRUE, will look for param\_place\_file                                                                                                                     |
-| param\_place\_file | optional     | path to geoid-params parquet file, which indicates location specific risk values. Values in this file will override values in the config if there is overlap. |
+| param\_place\_file | optional     | path to subpop-params parquet file, which indicates location specific risk values. Values in this file will override values in the config if there is overlap. |
 | scenarios          | required     | user-defined scenario name                                                                                                                                    |
 | settings           | required     | See details below                                                                                                                                             |
 
@@ -204,7 +204,7 @@ Users must specific two metrics for each health outcome, probability and delay, 
 
 ## New `filtering` section
 
-This section configures the settings for the inference algorithm. The below example shows the settings for some typical default settings, where the model is calibrated to the weekly incident deaths and weekly incident confirmed cases for each geoid. Statistics, hierarchical\_stats\_geo, and priors each have scenario names (e.g., `sum_deaths,` `local_var_hierarchy,` and `local_var_prior,` respectively).
+This section configures the settings for the inference algorithm. The below example shows the settings for some typical default settings, where the model is calibrated to the weekly incident deaths and weekly incident confirmed cases for each subpop. Statistics, hierarchical\_stats\_geo, and priors each have scenario names (e.g., `sum_deaths,` `local_var_hierarchy,` and `local_var_prior,` respectively).
 
 ```
 filtering:

@@ -477,7 +477,7 @@ Note that understanding when a new parameter values from this distribution is dr
 
 Sometimes, we want to be able to specify model parameters that have different values at different timepoints. For example, the relative transmissibility may vary throughout the year based on the weather conditions, or the rate at which individuals are vaccinated may vary as vaccine programs are rolled out. One way to do this is to instead specify the parameter values as a timeseries.&#x20;
 
-This can be done by providing a data file in .csv format that has a list of values of the parameter for a corresponding timepoint and subpopulation name. One column should be `date` and the others should be the `geoid` names of each subpopulation.   For time periods in between those specified in the file, the model will linearly interpolate between parameter values.&#x20;
+This can be done by providing a data file in .csv format that has a list of values of the parameter for a corresponding timepoint and subpopulation name. One column should be `date` and the others should be the `subpop` names of each subpopulation.   For time periods in between those specified in the file, the model will linearly interpolate between parameter values.&#x20;
 
 For example, for an SIR model simple [two-province population structure](specifying-population-structure.md#example-1) where the relative transmissibility peaks on January 1 then decreases linearly to a minimal value on June 1 then increases linearly again, but varies more in the small province than the large province, the `theta` parameter could be constructed from the file **seasonal\_transmission\_2pop.csv** with contents
 

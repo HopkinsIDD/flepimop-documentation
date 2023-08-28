@@ -106,7 +106,7 @@ Files in the `hnpi` folder contain any parameter intervention values that apply 
 
 `parameter`: The outcome parameter to which the intervention applies.
 
-`reduction`: The values in this column are the reduction values of the intervention parameters, which apply to the given parameter in a given geoid. Note that these are strictly reductions **(see description on other page?)**; thus a negative value corresponds to an increase in the parameter, while a positive value corresponds to a decrease in the parameter.&#x20;
+`reduction`: The values in this column are the reduction values of the intervention parameters, which apply to the given parameter in a given subpop. Note that these are strictly reductions **(see description on other page?)**; thus a negative value corresponds to an increase in the parameter, while a positive value corresponds to a decrease in the parameter.&#x20;
 
 ## SEED (Model initial conditions and seeding values)
 

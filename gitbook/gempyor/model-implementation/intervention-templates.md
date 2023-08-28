@@ -12,24 +12,24 @@ Each intervention is specified as one of several possible types in the configura
 
 We currently support the following interventions types. Each of these is described in detail below:
 
-* _Reduce:_ Modified a parameter during a single time period.
-* _MultiTimeReduce:_ Modifies a parameter during a multiple time periods.
-* _ReduceIntervention:_ Modifies another intervention during a single time period.
-* _Stacked:_ Combines two or more interventions multiplicatively.
+* _SinglePeriodModifier:_ Modified a parameter during a single time period.
+* _MultiPeriodModifier:_ Modifies a parameter during a multiple time periods.
+* _ModifierModifier:_ Modifies another intervention during a single time period.
+* _StackedModifier:_ Combines two or more interventions multiplicatively.
 
-## Reduce
+## SinglePeriodModifier
 
-_**Reduce interventions**_ enable the user to specify an intervention that multiplicatively reduces the `parameter` of interest.&#x20;
+_**SinglePeriodModifier interventions**_ enable the user to specify an intervention that multiplicatively reduces the `parameter` of interest.&#x20;
 
 For example, if you would like an intervention that mirrors a lockdown intervention and reduces transmission by 50%
 
-Take a `parameter`, and reduce it's value by `value` (new = (1-`value`) \* old) for `affected_geoids` during \[`period_start_date`, `period_end_date`]
+Take a `parameter`, and reduce it's value by `value` (new = (1-`value`) \* old) for `subpop` during \[`period_start_date`, `period_end_date`]
 
-#### Config Example (Reduce)
+#### Config Example (SinglePeriodModifier)
 
 ```
 lockdown:
-  template: Reduce
+  template: SinglePeriodModifier
   parameter: r0
   period_start_date: 2020-01-01
   period_end_date: 2021-12-31
@@ -74,16 +74,16 @@ The percentage reduction by which to reduce the parameter. The new parameter val
 new_value = old_value * (1 - reduction)
 ```
 
-## MultiTimeReduce
+## MultiPeriodModifier
 
-### Config Example (MultiTimeReduce)
+### Config Example (MultiPeriodModifier)
 
 ```
 school_year_R13:
-  template: MultiTimeReduce
+  template: MultiPeriodModifier
   parameter: r0
   groups:
-    - affected_geoids: ["01000"]
+    - subpop: ["01000"]
       periods:
         - start_date: 2021-08-16
           end_date: 2021-11-23
@@ -115,15 +115,15 @@ A list of places and times the intervention should affect.
 
 **`subpop`**
 
-A list of geoid names to affect, or the word 'all'. The intervention will do nothing for any geoids not listed here. If 'all', every geoid listed in the geoid file will be affected.
+A list of subpop names to affect, or the word 'all'. The intervention will do nothing for any subpops not listed here. If 'all', every subpop listed in the subpop file will be affected.
 
 ####
 
-## ReduceIntervention
+## ModifierModifier
 
 Modify another intervention.
 
-## Stacked
+## StackedModifier
 
 Apply a multiplicative (or additive) combination two or more interventions.
 

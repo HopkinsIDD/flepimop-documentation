@@ -79,13 +79,13 @@ small_province, 2020-02-01, 5, S, E
 
 `seeding::seeding_file` must contain the following columns:
 
-* `place` - the name of the subpopulation (geoid) in which the seeding event takes place. Seeding cannot move individuals between different subpopulations.&#x20;
+* `subpop` - the name of the subpopulation in which the seeding event takes place. Seeding cannot move individuals between different subpopulations.&#x20;
 * `date` - the date the seeding event occurs, in YYYY-MM-DD format
 * `amount` - an integer value for the the amount of individuals who transition between states in the seeding event
 * `source_*`  and  `destination_*` - For each compartment group (ie infection stage, vaccination stage, age group), a different column describes the status of individuals before and after the transition described by the seeding event. For example, for a model where individuals are stratified by age and vaccination status,  and a 1-day vaccination campaign for young children and the elderly moves a large number of individuals into a vaccinated state, this file could be something like
 
 ```
-place, date, amount, source_infection_stage, source_vaccine_doses, source_age_group, destination_infection_stage, destination_vaccine_doses, destination_age_group
+subpop, date, amount, source_infection_stage, source_vaccine_doses, source_age_group, destination_infection_stage, destination_vaccine_doses, destination_age_group
 anytown, 1950-03-15, 452, S, 0dose, under5years, S, 1dose, under5years
 anytown, 1950-03-16, 527, S, 0dose, 5_10years, S, 1dose, 5_10years
 anytown, 1950-03-17, 1153, S, 0dose, over65years, S, 1dose, over65years
@@ -173,7 +173,7 @@ where initial\_conditions.csv contains
 `initial_conditions::initial_conditions_file` must contain the following columns:
 
 * `comp` - the concatenated name of the compartment for which an initial condition is being specified. The order of the compartment groups in the name must be the same as the order in which these groups are defined in the config for the model, e.g. you cannot say unvaccinated\_S
-* `place` -  the name of the subpopulation (geoid) for which the initial condition is being specified. By default, all subpopulations must be listed in this file, unless the `allow_missing_nodes` option is set to TRUE.&#x20;
+* `subpop` -  the name of the subpopulation for which the initial condition is being specified. By default, all subpopulations must be listed in this file, unless the `allow_missing_nodes` option is set to TRUE.&#x20;
 * `amount`  - the value of the initial condition.&#x20;
 
 For each subpopulation, if there are compartments that are not listed in `SetInitialConditions`, it will be assumed there are zero individuals in them. Note that there is currently no mechanism to ensure that the sum of the values of the initial conditions in all compartments in a location adds up to the total population of that location. If `initial_conditions_file`is FALSE or unspecified, an error will occur if initial conditions for some subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment (The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.)
