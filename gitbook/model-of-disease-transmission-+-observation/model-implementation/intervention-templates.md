@@ -99,7 +99,7 @@ A parameter name to reduce. Reducing a parameter will modify the parameter's val
 
 #### `groups`
 
-A list of places and times the intervention should affect.
+A list of subpops and times the intervention should affect.
 
 **`subpop`**
 

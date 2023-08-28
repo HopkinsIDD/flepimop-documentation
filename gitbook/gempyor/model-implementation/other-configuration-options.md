@@ -143,8 +143,6 @@ spatial_setup:
   state_level: TRUE
   geodata: geodata_2019_statelevel.csv
   mobility: mobility_2011-2015_statelevel.csv
-  popnodes: pop2019est
-  nodenames: geoid
   modeled_states:
     - CT
     - MA
@@ -158,7 +156,7 @@ spatial_setup:
 `geodata.csv` contains&#x20;
 
 ```
-USPS	geoid	pop2019est
+USPS	subpop	population
 AL	01000	4876250
 AK	02000	737068
 AZ	04000	7050299

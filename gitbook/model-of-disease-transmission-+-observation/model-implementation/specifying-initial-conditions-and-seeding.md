@@ -62,7 +62,7 @@ seeding:
 
 #### FromFile
 
-This seeding method reads in a user-defined file with a list of seeding events (instantaneous transitions of individuals between compartments) including the time and place of the event, and the source and destination compartment of the individuals. For example, for the simple two-subpopulation SIR model where the outbreak starts with an 5 individuals in the small province from being infected from a source outside the population, the seeding section of the config could be specified as
+This seeding method reads in a user-defined file with a list of seeding events (instantaneous transitions of individuals between compartments) including the time and subpop of the event, and the source and destination compartment of the individuals. For example, for the simple two-subpopulation SIR model where the outbreak starts with an 5 individuals in the small province from being infected from a source outside the population, the seeding section of the config could be specified as
 
 ```
 seeding:
@@ -73,7 +73,7 @@ seeding:
 Where seeding.csv contains:
 
 ```
-place, date, amount, source_infection_stage, destination_infection_stage
+subpop, date, amount, source_infection_stage, destination_infection_stage
 small_province, 2020-02-01, 5, S, E
 ```
 

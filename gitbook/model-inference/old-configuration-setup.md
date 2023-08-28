@@ -93,7 +93,7 @@ This section is now structured more like the `interventions` section of the conf
 outcomes:
   method: delayframe
   param_from_file: TRUE
-  param_place_file: "usa-subpop-params-output.parquet" ## ../../Outcomes/data/usa-subpop-params-output.parquet
+  param_subpop_file: "usa-subpop-params-output.parquet" ## ../../Outcomes/data/usa-subpop-params-output.parquet
   scenarios:
     - med
   settings:
@@ -175,8 +175,8 @@ outcomes:
 | Item               | Required?    | Type/Format                                                                                                                                                   |
 | ------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | method             | **required** | "delayframe"                                                                                                                                                  |
-| param\_from\_file  | required     | if TRUE, will look for param\_place\_file                                                                                                                     |
-| param\_place\_file | optional     | path to subpop-params parquet file, which indicates location specific risk values. Values in this file will override values in the config if there is overlap. |
+| param\_from\_file  | required     | if TRUE, will look for param\_subpop\_file                                                                                                                     |
+| param\_subpop\_file | optional     | path to subpop-params parquet file, which indicates location specific risk values. Values in this file will override values in the config if there is overlap. |
 | scenarios          | required     | user-defined scenario name                                                                                                                                    |
 | settings           | required     | See details below                                                                                                                                             |
 
