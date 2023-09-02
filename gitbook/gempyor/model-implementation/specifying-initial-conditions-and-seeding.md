@@ -133,7 +133,7 @@ The configuration items in the `initial_conditions` section of the config file a
 
 Details on implementing each initial conditions method and the options that go along with it are below
 
-### initial\_conditions::method
+### `initial_conditions::method`
 
 #### Default
 
