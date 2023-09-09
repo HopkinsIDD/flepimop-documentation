@@ -6,20 +6,20 @@ description: >-
 
 # Specifying interventions
 
-**Interventions** are a powerful feature in _flepiMoP_ to enable user to modify any of the parameters being specified in the model. They can be used to mirror public health control interventions, like non-pharmaceutical interventions (NPIs), or can be used to modify any of the transmission model parameters or observation model parameters, enabling user-specified modifiers or inference-driven fitting.
+**Interventions** are a powerful feature in _flepiMoP_ to enable users to modify any of the parameters being specified in the model. They can be used to mirror public health control interventions, like non-pharmaceutical interventions (NPIs), or can be used to modify any of the transmission model parameters or observation model parameters, enabling user-specified modifiers or inference-driven fitting.
 
-In the `interventions` section of the configuration file the user can specify several possible types of interventions which will then be implemented in the model. Each intervention modifying a parameter during one or multiple time periods and for one or multiple specified subpopulations.
+In the `interventions` section of the configuration file the user can specify several possible types of interventions which will then be implemented in the model. Each intervention modifies a parameter during one or multiple time periods and for one or multiple specified subpopulations.
 
-We currently support the following interventions types. Each of these is described in detail below:
+We currently support the following intervention types. Each of these is described in detail below:
 
-* _SinglePeriodModifier:_ Modified a parameter during a single time period.
-* _MultiPeriodModifier:_ Modifies a parameter by the same amount during a multiple time periods.
-* _ModifierModifier:_ Modifies another intervention during a single time period.
-* _StackedModifier:_ Combines two or more interventions multiplicatively.
+* `"SinglePeriodModifier"` – Modifies a parameter during a single time period
+* `"MultiPeriodModifier"` – Modifies a parameter by the same amount during a multiple time periods
+* `"ModifierModifier"` – Modifies another intervention during a single time period
+* `"StackedModifier"` – Combines two or more interventions multiplicatively
 
-Within flepiMoP, interventions are run as "scenarios". With scenarios, we can use the same configuration file to run multiple versions of the model where only the interventions applied differs.
+Within _flepiMoP_, interventions are run as "scenarios". With scenarios, we can use the same configuration file to run multiple versions of the model where only the interventions applied differs.
 
-The interventions section contains two sections: `interventions:scenarios`, which lists the name of the intervention that will run in each separate scenario, and `interventions:settings`, where the details of each intervention are specified (e.g.,  the parameter it acts on, the time it is active, and the subpopulation it is applied in). An example is outlined below
+The interventions section contains two sections: `interventions::scenarios`, which lists the name of the intervention that will run in each separate scenario, and `interventions::settings`, where the details of each intervention are specified (e.g.,  the parameter it acts on, the time it is active, and the subpopulation it is applied to). An example is outlined below
 
 ```
 interventions:
@@ -33,7 +33,7 @@ interventions:
       ...
 ```
 
-&#x20;The major benefit of specifying both "scenarios" and "interventions" is that the user can use the `StackedModifier` interventions to combine other interventions in different ways, and then run either the individual or combined interventions as scenarios. This way, each scenario may consist of one or more individual interventions, and each intervention may be part of multiple scenarios. This provides a shorthand way to quickly consider multiple different versions of a model that have different combinations of interventions occurring. For example, during an outbreak we could evaluate the impact of school closures, case isolation, and masking, or any one or two of these three measures. An example of a configuration file combining interventions to create new scenarios is given below:
+&#x20;The major benefit of specifying both "scenarios" and "interventions" is that the user can use the `"StackedModifier"` interventions to combine other interventions in different ways, and then run either the individual or combined interventions as scenarios. This way, each scenario may consist of one or more individual interventions, and each intervention may be part of multiple scenarios. This provides a shorthand to quickly consider multiple different versions of a model that have different combinations of interventions occurring. For example, during an outbreak we could evaluate the impact of school closures, case isolation, and masking, or any one or two of these three measures. An example of a configuration file combining interventions to create new scenarios is given below
 
 ```
 interventions:
@@ -63,7 +63,7 @@ Each time a configuration file is run, the user much specify which intervention 
 
 #### Example
 
-\[Give a configuration file that tries to use all the possible option available. Based on simple SIR model with parameters beta and gamma in 2 subpopulations. maybe a SinglePeriodModifier on Beta for a lockdown and Gamma for isolation, one having a fixed value and one from a distribution, MultiPeriodModifier for school year in different places, ModifierModifer for ..., StackedModifier for .... ]
+\[Give a configuration file that tries to use all the possible option available. Based on simple SIR model with parameters `beta` and `gamma` in 2 subpopulations. Maybe a SinglePeriodModifier on `beta` for a lockdown and `gamma` for isolation, one having a fixed value and one from a distribution, MultiPeriodModifier for school year in different places, ModifierModifer for ..., StackedModifier for .... ]
 
 ## **`interventions::scenarios`**
 
@@ -81,7 +81,7 @@ table of options - if there are repeated options used across the different types
 
 ### SinglePeriodModifier
 
-_**SinglePeriodModifier**_** interventions** enable the user to specify an intervention that multiplicatively reduces the `parameter` of interest.
+`SinglePeriodModifier` interventions enable the user to specify an intervention that multiplicatively reduces the `parameter` of interest.
 
 For example, if you would like an intervention that mirrors a lockdown intervention and reduces transmission by 50%
 

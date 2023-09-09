@@ -24,7 +24,7 @@ as `spatial_setup::geodata` having a value of `minimal`
 
 ## Notation
 
-Parameters and other options specified in the configuration files can take on a variety of types of values, using the following notations
+Parameters and other options specified in the configuration files can take on a variety of types of values, using the following notations:
 
 * **dates** are specified as \[year]-\[month]-\[day]. (e.g., 2020-01-31)
 * **boolean** values are either "TRUE" or "FALSE"

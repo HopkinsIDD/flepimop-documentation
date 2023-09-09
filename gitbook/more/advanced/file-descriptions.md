@@ -1,6 +1,6 @@
 # File descriptions
 
-## FlepiMoP
+## _flepiMoP_
 
 [https://github.com/HopkinsIDD/flepiMoP](https://github.com/HopkinsIDD/flepiMoP)
 
@@ -12,31 +12,30 @@ To actually run the model, this repository folder must be located inside a locat
 
 ### **/gempyor\_pkg**
 
-This directory contains the core Python code that creates and simulates generic compartmental models and additionally simulates observed variables. This code is called `gempyor` for **General Epidemics Modeling Pipeline with Yterventions and Outcome Reporting.** The code in gempyor is called from R scripts (see **/main\_scripts** and **/R** sections below) that read the config, run the model simulation via gempyor as required, read in data, and run the model inference algorithms.&#x20;
+This directory contains the core Python code that creates and simulates generic compartmental models and additionally simulates observed variables. This code is called `gempyor` for **General Epidemics Modeling Pipeline with Yterventions and Outcome Reporting.** The code in gempyor is called from R scripts (see **/main\_scripts** and **/R** sections below) that read the config, run the model simulation via gempyor as required, read in data, and run the model inference algorithms.
 
 * `pyproject.toml` - contains the build system requirements and dependencies for the gempyor package; used during package installation
-* `setup.cfg` - contains information used by Python's `setuptools` to build the `gempyor` package. Contains the definitions of command line shortcuts for running simulations directly from `gempyor` (bypassing R interface) if desired &#x20;
+* `setup.cfg` - contains information used by Python's `setuptools` to build the `gempyor` package. Contains the definitions of command line shortcuts for running simulations directly from `gempyor` (bypassing R interface) if desired
 
 #### **/gempyor\_pkg/src/gempyor/**
 
 * seir.py - Contains the core code for simulating the mathematical model. Takes in the model definition and parameters from the config, and outputs a file with a timeseries of the value of each state variable (# of individuals in each compartment)
-* simulate\_seir.py -&#x20;
-* steps\_rk.py -&#x20;
-* steps\_source.py -&#x20;
+* simulate\_seir.py -
+* steps\_rk.py -
+* steps\_source.py -
 * outcomes.py - Contains the core code for generating the outcome variables. Takes in the output of the mathematical model and parameters from the config, and outputs a file with a timeseries of the value of each outcome (observed) variable
-* simulate\_outcomes.py -&#x20;
+* simulate\_outcomes.py -
 * setup.py
-* file\_paths.py -&#x20;
+* file\_paths.py -
 * compartments.py
 * parameters.py
 * results.py
 * seeding\_ic.py
 * /NPI/
-  * base.py -&#x20;
-  * SinglePeriodModifier.py -&#x20;
-
-  * MultiPeriodModifier.py -&#x20;
-  * SinglePeriodModifierInterven.py -&#x20;
+  * base.py -
+  * SinglePeriodModifier.py -
+  * MultiPeriodModifier.py -
+  * SinglePeriodModifierInterven.py -
 * /dev - contains functions that are still in development
 * /data - ?
 
@@ -44,52 +43,41 @@ This directory contains the core Python code that creates and simulates generic 
 
 Contains notebooks with some `gempyor`-specific documentation and examples
 
-* Rinterface.Rmd - And R notebook that provides some background on `gempyor` and describes how to run it as a standalone package in python, without the R wrapper scripts or the Docker.&#x20;
+* Rinterface.Rmd - And R notebook that provides some background on `gempyor` and describes how to run it as a standalone package in python, without the R wrapper scripts or the Docker.
 * Rinterface.html - HTML output of Rinterface.Rmd
-
-
 
 ### **/R**
 
 ### **/main\_scripts**
 
-This directory contains the R scripts that takes the specifications in the configuration file and sets up the model simulation, reads the data, and performs inference.&#x20;
+This directory contains the R scripts that takes the specifications in the configuration file and sets up the model simulation, reads the data, and performs inference.
 
 * inference\_main.R - This is the master R script used to run the model. It distributes the model runs across computer cores, setting up runs for all the scenarios specified in the config, and for each model iteration used in the parameter inference. Note that despite the name "inference" in this file, this script must be used to run the model even if no parameter inference is conducted
-* inference\_slot.R - This script contains the main code of the inference algorithm.&#x20;
-* create\_seeding.R -&#x20;
+* inference\_slot.R - This script contains the main code of the inference algorithm.
+* create\_seeding.R -
 
 ### **/R\_packages**
 
 This directory contains the core R code - organized into functions within packages - that handle the model setup, data pulling and processing, conducting parameter inference for the model, and manipulating model output.
 
-*   **flepicommon**
-
-    * config.R
-    * DataUtils.R
-    * file\_paths.R
-    * safe\_eval.R
-    * compartments.R
-
-
-*   **inference** - contains code to&#x20;
-
-    * groundtruth.R - contains functions for pulling ground truth data from various sources. Calls functions in the `flepicommon` package
-    * functions.R - contains many functions used in running the inference algorithm
-    * inference\_slot\_runner\_funcs.R - contains many functions used in running the inference algorithm
-    * inference\_to\_forecast.R -&#x20;
-    * documentation.Rmd - Summarizes the documentation relevant to the inference package, including the configuration file options relevant to model fitting
-    * InferenceTest.R -&#x20;
-    * /tests/ -&#x20;
-
-
-*   **config.writer**
-
-    * create\_config\_data.R
-    * process\_npi\_list.R
-    * yaml\_utils.R
-
-
+* **flepicommon**
+  * config.R
+  * DataUtils.R
+  * file\_paths.R
+  * safe\_eval.R
+  * compartments.R
+* **inference** - contains code to
+  * groundtruth.R - contains functions for pulling ground truth data from various sources. Calls functions in the `flepicommon` package
+  * functions.R - contains many functions used in running the inference algorithm
+  * inference\_slot\_runner\_funcs.R - contains many functions used in running the inference algorithm
+  * inference\_to\_forecast.R -
+  * documentation.Rmd - Summarizes the documentation relevant to the inference package, including the configuration file options relevant to model fitting
+  * InferenceTest.R -
+  * /tests/ -
+* **config.writer**
+  * create\_config\_data.R
+  * process\_npi\_list.R
+  * yaml\_utils.R
 * **report.generation**
   * DataLoadFuncs.R
   * ReportBuildUtils.R

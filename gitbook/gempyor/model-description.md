@@ -90,7 +90,7 @@ The _flepiMoP_ model structure is specifically designed to make it simple to enc
 
 #### Age groups
 
-To describe an SEIR-type disease that spreads and progresses differently among children versus adults, one may want to repeat each compartment of the model for each of the two age groups (C – Children, A – Adults), creating an age-stratified model:
+To describe an SEIR-type disease that spreads and progresses differently among children versus adults, one may want to repeat each compartment of the model for each of the two age groups (C – Children, A – Adults), creating an age-stratified model
 
 $$
 S_C \xrightarrow{S_C (\beta_{CC} I_C/N_C + \beta_{AC} I_A/N_A)} E_C \xrightarrow{\sigma_C E_C} I_C \xrightarrow{\gamma_C I_C} R_C,
@@ -104,7 +104,7 @@ where $$\beta_{XY}$$ is the transmission rate between age X and Y, and we have a
 
 #### Vaccination status
 
-Vaccination status could influence disease progression and infectiousness, and could also change over time as individuals choose to get the vaccine (V – vaccinated, U – unvaccinated):
+Vaccination status could influence disease progression and infectiousness, and could also change over time as individuals choose to get the vaccine (V – vaccinated, U – unvaccinated)
 
 $$
 S_U \xrightarrow{\beta S_U (I_U + I_V)/N} E_U \xrightarrow{\sigma_U E_U} I_U \xrightarrow{\gamma_U I_U} R_U,
@@ -126,7 +126,7 @@ where $$u$$ is the vaccination rate (we assume that individuals do not receive t
 
 #### Pathogen strain
 
-Another common stratification would be pathogen strain, such as COVID-19 variants. Individuals may be infected with one of several variants, strains, or serotypes. Our framework can easily create multistrain models, for example:
+Another common stratification would be pathogen strain, such as COVID-19 variants. Individuals may be infected with one of several variants, strains, or serotypes. Our framework can easily create multistrain models, for example
 
 $$
 S_A \xrightarrow{\beta_A S_A I_A/N_A} E_A \xrightarrow{\sigma_A E_A} I_ A \xrightarrow{\gamma_A I_A} R_A,
@@ -206,13 +206,13 @@ Currently, the following properties must be the same across all subpopulations:
 
 #### Mixing between subpopulations
 
-The generalized compartmental model allows for second order “interaction” terms that describe transitions between model states that depend on interactions between pairs of individuals. For example, in the context of a classical SIR model, the rate of new infections depends on interactions between susceptible and infectious individuals and the transmission rate:
+The generalized compartmental model allows for second order “interaction” terms that describe transitions between model states that depend on interactions between pairs of individuals. For example, in the context of a classical SIR model, the rate of new infections depends on interactions between susceptible and infectious individuals and the transmission rate
 
 $$
 \frac{dI}{dt} = \beta S I - \gamma I
 $$
 
-For a model with multiple subpopulations, each of these interactions can occur either between individuals in the same or different subpopulations, with specific rate parameters for each combination of individual locations:
+For a model with multiple subpopulations, each of these interactions can occur either between individuals in the same or different subpopulations, with specific rate parameters for each combination of individual locations
 
 $$
 \frac{dI_i}{dt} = \sum_j \beta_{ji} I_j S_i - \gamma I_i
@@ -222,7 +222,7 @@ where $$\beta_{ji}$$ is the per-contact per-time rate of disease transmission be
 
 In general for infection models in connected subpopulations, the transmission rates $$\beta_{ji}$$ can take on arbitrary values. In this pipeline, however, we impose an additional structure on these terms. We assume that interactions between subpopulations occur when individuals temporarily relocate to another subpopulation, where they interact with locals. We call this movement “mobility”, and it could be due to regular commuting, special travel, etc. There is a transmission rate ($$\beta_j$$) associated with each subpopulation $$j$$, and individuals physically in that subpopulation – permanently or temporarily – are exposed and infected with this local rate whenever they encounter local susceptible individuals.
 
-The transmission matrix is then:
+The transmission matrix is then
 
 $$
 \beta_{ji} = \begin{cases} p_a \frac{M_{ij}}{N_i} \beta_j &\text{if } j \neq i \\ \left( 1- \sum_{j \neq i} p_a \frac{M_{ij}}{N_i} \right) &\text{if } j = i \end{cases}
