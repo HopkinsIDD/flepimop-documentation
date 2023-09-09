@@ -1,10 +1,10 @@
-# FlepiMoP's configuration file
+# flepiMoP's configuration file
 
 ## About configuration files
 
-FlepiMop is set up so that all parameters and other options for running the pipeline can be specified in a single "configuration" file (aka "config"). Users do not need to edit any other code files, or even be aware of their contents, to create and run complex model scenarios. Configuration files also provide a convenient record of model options and promote reproducibility of model results.
+_flepiMop_ is set up so that all parameters and other options for running the pipeline can be specified in a single "configuration" file (aka "config"). Users do not need to edit any other code files, or even be aware of their contents, to create and run complex model scenarios. Configuration files also provide a convenient record of model options and promote reproducibility of model results.
 
-We use the `YAML` language syntax to write config files, which are typically named something like `config.yml`. The file is has simple plain text contents and follows a tabbed outline structure. When config files are read by the model code, a data structure encoding the model options is created.
+We use the `YAML` language syntax to write config files, which are typically named something like `config.yml`. The file has simple plain text contents and follows a tabbed outline structure. When config files are read by the model code, a data structure encoding the model options is created.
 
 Comments can be added to the config file by starting with the hash key (`#`) then a space. Comments can start anywhere on a line and continue until the end, but if they run over to a new line, a new # must be used at the start of the new line.
 
@@ -30,7 +30,7 @@ Parameters and other options specified in the configuration files can take on a 
 * **boolean** values are either "TRUE" or "FALSE"
 * **files** names are ....
 * **probability** is a float between 0 and 1
-* **distribution** is a probability distribution from which a random value for the parameter is drawn each time a new simulation is run(or chain, if doing inference), and is specified with the following config structure:&#x20;
+* **distribution** is a probability distribution from which a random value for the parameter is drawn each time a new simulation is run (or chain, if doing inference), and is specified with the following config structure:
 
 ### Distributions
 
@@ -99,7 +99,7 @@ This section specifies the population structure on which the model will be simul
 Required section
 {% endhint %}
 
-This section is where users can specify the variables (infection states) that will be tracked in the infectious disease transmission model. More details can be found [here](compartmental-model-structure.md). The other details of the model are specified in the `seir` section, including transitions between these compartments (`seir::transitions`), the names of the parameters governing the transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`).  The initial conditions of the model can be specified in the `initial_conditions` section, and any other inputs into the model from external populations or instantaneous transitions between states that occur at later times can be specified in the `seeding` section. &#x20;
+This section is where users can specify the variables (infection states) that will be tracked in the infectious disease transmission model. More details can be found [here](compartmental-model-structure.md). The other details of the model are specified in the `seir` section, including transitions between these compartments (`seir::transitions`), the names of the parameters governing the transitions (`seir::parameters`), and the numerical method used to simulate the equations over time (`seir::integration`). The initial conditions of the model can be specified in the `initial_conditions` section, and any other inputs into the model from external populations or instantaneous transitions between states that occur at later times can be specified in the `seeding` section. &#x20;
 
 ### `seir` section
 
@@ -123,7 +123,7 @@ This section is used to specify the initial conditions of the model, which defin
 Optional section
 {% endhint %}
 
-This section is used to specify how individuals are instantaneously "seeded"  from one compartments to another, where they then continue to be governed by the model equations. For example, this seeding could be used to represent importations of infected individuals from an outside population, mutation events that create new strains, or vaccinations that alter disease susceptibility. Seeding events can occur at time in the simulation. The seeding section specifies the numeric values added to or removed from any compartment of the model. More details [here](specifying-initial-conditions-and-seeding.md).&#x20;
+This section is used to specify how individuals are instantaneously "seeded" from one compartment to another, where they then continue to be governed by the model equations. For example, this seeding could be used to represent importations of infected individuals from an outside population, mutation events that create new strains, or vaccinations that alter disease susceptibility. Seeding events can occur at any time in the simulation. The seeding section specifies the numeric values added to or removed from any compartment of the model. More details [here](specifying-initial-conditions-and-seeding.md).&#x20;
 
 ### `outcomes` section
 

@@ -6,7 +6,7 @@
 
 * [Modeling infectious disease dynamics](gempyor/model-description.md)
 * [Model Implementation](gempyor/model-implementation/README.md)
-  * [FlepiMoP's configuration file](gempyor/model-implementation/introduction-to-configuration-files.md)
+  * [flepiMoP's configuration file](gempyor/model-implementation/introduction-to-configuration-files.md)
   * [Specifying population structure](gempyor/model-implementation/specifying-population-structure.md)
   * [Specifying compartmental model](gempyor/model-implementation/compartmental-model-structure.md)
   * [Specifying initial conditions and seeding](gempyor/model-implementation/specifying-initial-conditions-and-seeding.md)

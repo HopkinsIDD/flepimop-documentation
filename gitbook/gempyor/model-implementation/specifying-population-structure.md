@@ -8,9 +8,9 @@ description: >-
 
 ## Overview
 
-The `spatial_setup` section of the configuration file is where users can input the information required to define a population structure on which to simulate the model. The options allow the user to determine the population size of each subpopulation that makes up the overall population, and to specify the amount of mixing that occurs between each pair of subpopulations.&#x20;
+The `spatial_setup` section of the configuration file is where users can input the information required to define a population structure on which to simulate the model. The options allow the user to determine the population size of each subpopulation that makes up the overall population, and to specify the amount of mixing that occurs between each pair of subpopulations.
 
-An example configuration file with the global header and the spatial\_setup section is below
+An example configuration file with the global header and the spatial\_setup section is below:
 
 ```
 name: test_simulation
@@ -28,8 +28,6 @@ spatial_setup:
 
 ## Items and options
 
-
-
 | Config Item | Required?    | Type/Format  | Description                                |
 | ----------- | ------------ | ------------ | ------------------------------------------ |
 | geodata     | **required** | path to file | path to file relative to `data_path`       |
@@ -40,7 +38,7 @@ spatial_setup:
 ### `geodata` file
 
 * `geodata` is a .csv with column headers, with at least two columns: `nodenames` and `popnodes`.
-* `nodenames` is the name of a column in `geodata` that specifies unique geographical identification strings for each subpopulation.&#x20;
+* `nodenames` is the name of a column in `geodata` that specifies unique geographical identification strings for each subpopulation.
 * `popnodes` is the name of a column in `geodata` that specifies the population size (number of individual residents) of the subpopulation given in the`nodenames` column.
 * `include_in_report` is the name of an optional column in `geodata` that specifies which `nodenames` are included in the report. Models may include more locations than simply the location of interest.
 
@@ -54,7 +52,7 @@ subpop,population,include_in_report
 
 ### `mobility` file
 
-The `mobility` file is a .csv file (it has to contain .csv as extension) with long form comma separated values. Columns have to be named `ori`, `dest`, `amount,` with amount being the average number individuals moving from subpop `ori` to subpop `dest` on any given day. Details on the mathematics of this model of contact are explained in the [Model Description section](../model-description.md#mixing-between-subpopulations). Unassigned relations are assumed to be zero. The location entries in the `ori` and `dest` columns should match exactly the `nodenames` column in `geodata.csv`
+The `mobility` file is a .csv file (it has to contain .csv as extension) with long form comma separated values. Columns have to be named `ori`, `dest`, `amount,` with amount being the average number individuals moving from the origin subpopulation `ori` to destination subpopulation `dest` on any given day. Details on the mathematics of this model of contact are explained in the [Model Description section](../model-description.md#mixing-between-subpopulations). Unassigned relations are assumed to be zero. The location entries in the `ori` and `dest` columns should match exactly the `nodenames` column in `geodata.csv`
 
 #### Example mobility file format
 
@@ -64,7 +62,7 @@ ori, dest, amount
 20002, 10001, 3
 ```
 
-It is also possible, but NOT RECOMMENDED to specify the `mobility` file as a .txt with space-separated values in the shape of a matrix. This matrix is symmetric and of size K x K, with K being the number of rows in `geodata`. The above example corresponds to
+It is also possible, but **not recommended** to specify the `mobility` file as a .txt with space-separated values in the shape of a matrix. This matrix is symmetric and of size K x K, with K being the number of rows in `geodata`. The above example corresponds to
 
 ```
 0 3
