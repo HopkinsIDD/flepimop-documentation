@@ -261,7 +261,7 @@ new_parameter_value = original_parameter_value * (1 - baseline_intervention_valu
 
 Apply a multiplicative (or additive) combination two or more interventions.
 
-### interventions::settings::groups
+## interventions::settings::groups
 
 `subpop_groups:` For any of the intervention types, `subpop_groups` is an optional list of lists specifying which subsets of subpopulations in `subpop` should share parameter values; when parameters are drawn from a distribution or fit to data. All other subpopulations not listed will have unique intervention values unlinked to other areas. If the value is `'all',` then all subpopulations will be assumed to have the same intervention value. When the `subpop_groups` option is not specified, all subpopulations will be assuemd to have unique values of the intervention.&#x20;
 
