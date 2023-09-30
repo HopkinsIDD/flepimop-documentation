@@ -18,7 +18,7 @@ Variables should not be included as outcomes if they influence the infection tra
 
 The `outcomes` section is not required in the config. However, there are benefits to including it, even if the only outcome variable is set to be equivalent to one of the infection model variables. If the compartmental model is complicated but you only want to visualize a few output variables, the [outcomes output file](../output-files.md) will be much easier to work with.  If the model is being fit to data, then the `outcomes` section is required, as only outcome variables can be compared to data.
 
-As an example, imagine we are simulating an SIR-style model and want to compare it to real epidemic data in which cases of infection and death from infection are reported. Our model doesn't explicitly include death, but suppose we know that 1% of all infections eventually lead to death, and that death occurs on average 3 weeks after infection. We know that not all infections are reported as cases, but aren't sure of the case detection rate, and so consider two possibilities: that 90% of infections are detected, and that only 50% are detected. Assume we know that cases are reported 2 days after infection begins. The model and `outcomes` section of the config for these outcomes, which we call `incidC` (daily incidence of cases) and `incidD` (daily incidence of death) would be
+As an example, imagine we are simulating an SIR-style model and want to compare it to real epidemic data in which cases of infection and death from infection are reported. Our model doesn't explicitly include death, but suppose we know that 1% of all infections eventually lead to hospitalization, and that hospitalization occurs on average 1 week after infection. We know that not all infections are reported as cases, and assume that only 50% are detected and are reported 2 days after infection begins. The model and `outcomes` section of the config for these outcomes, which we call `incidC` (daily incidence of cases) and `incidH` (daily incidence of hospital admission) would be
 
 <pre><code>compartments:
   infection_state: ["S", "I", "R"]
@@ -38,64 +38,56 @@ seir:
       rate: [gamma]
       proportion_exponent: 1
   parameters:
-    beta: 0.1
-    gamma: 0.2
+    beta: 0.2
+    gamma: 0.1
 
 <strong>outcomes:
-</strong>  method: delayframe
-  scenarios:
-    - high_case_detection_scenario
-    - low_case_detection_scenario
-  settings:
-      high_case_detection_scenario:
-        incidC:
-          source:
-            incidence:
-              infection_state: "I"
-          probability: 0.9
-          delay: 2
-        incidD:
-          source:
-            incidence:
-              infection_state: "D"
-          probability: 0.01
-          delay: 21 
-      low_case_detection_scenario:
-        incidC:
-          source:
-            incidence:
-              infection_state: "I"
-          probability: 0.5
-          delay: 2
-        incidD:
-          source:
-            incidence:
-              infection_state: "D"
-          probability: 0.01
-          delay: 21 
+</strong>  settings:
+    method: delayframe
+  outcomes:
+    incidC:
+      source:
+        incidence:
+          infection_state: "I"
+      probability: 0.5
+      delay: 2
+    incidH:
+      source:
+        incidence:
+          infection_state: "D"
+      probability: 0.01
+      delay: 21 
 </code></pre>
 
 in the following sections we describe in more detail how this specification works
 
 ## Specifying `outcomes` in the configuration file
 
-### outcomes::method
-
-
-
-### outcomes::scenarios
-
 ### outcomes::settings
+
+#### outcomes::method
+
+outcomes::paths
+
+### outcomes::outcomes
 
 #### Source
 
+incidence or prevalence
+
+list of compartments
+
 #### Probability
+
+distribution?
 
 #### Delay
 
+distribution?
+
 #### Duration
 
-### outcomes::paths
+distribution?
 
 ## Examples
 
