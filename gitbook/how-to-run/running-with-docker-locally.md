@@ -34,7 +34,7 @@ _**On Windows:**_ \
 Note that Docker file and directory names are case sensitive
 {% endhint %}
 
-### Set up Docker
+## Set up Docker
 
 [Docker](https://www.docker.com/) is a software platform that allows you to build, test, and deploy applications quickly. Docker packages software into standardized units called **containers** that have everything the software needs to run including libraries, system tools, code, and runtime. This means you can run and install software without installing the dependencies in the local operating system.
 
@@ -218,3 +218,44 @@ cd $DATA_PATH
 rm -rf model_output
 gempyor-simulate -c config.yml
 </code></pre>
+
+## Finishing up
+
+You can avoid repeating all the above steps every time you want to run the code. When the `docker run` command creates an container, it is stored locally on your computer with all the installed packages/variables/etc you created. You can leave this container and come back to it whenever you want, without having to redo all this set up.&#x20;
+
+When you're in the Docker container, figure out the name Docker has given to the container you created by typing
+
+```
+docker ps
+```
+
+the output will be something silly like
+
+```
+> festive_feistel
+```
+
+write this down for later reference. You can also see the container name in the Docker Desktop app's Containers tab.&#x20;
+
+To "detach" from the Docker container and stop it, type `CTLR` + `c`
+
+The command prompt for your terminal application is now just running locally, not in the Docker container.&#x20;
+
+Next time you want to re-start and "attach" the container, type
+
+```
+docker start container_name
+```
+
+at the command line or hit the play button ▶️ beside the container's name in the Docker app. Replace container\_name with the name for your old container.&#x20;
+
+Then "attach" to the container by typing
+
+```
+docker attach container_name
+```
+
+The reason that stopping/starting a container is separate from detaching/attaching is that technically you can leave a container (and any processes within it) running in the background and exit it. In case you want to do that, detach and leave it running by typing `CTRL` + `p` then quickly `CTRL` + `q`. Then when you want to attach to it again, you don't need to do the part about starting the container.&#x20;
+
+If you the core model code within the flepimop repository (`flepimop/flepimop/gempyor_pkg/` or `flepimop/flepimop/R_packages`) has been edited since you created the contained, or if the R or Python package requirements have changed, then you'll have to re-run the steps to install the packages, but otherwise, you can just start running model code!
+
