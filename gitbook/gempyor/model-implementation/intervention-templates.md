@@ -1,46 +1,48 @@
 ---
 description: >-
   This section describes how to specify the interventions in flepiMoP to modify 
-  parameters.
+  parameters of the transmission model or observational model.
 ---
 
 # Specifying interventions
 
 **Interventions** are a powerful feature in _flepiMoP_ to enable users to modify any of the parameters being specified in the model. They can be used to mirror public health control interventions, like non-pharmaceutical interventions (NPIs), or can be used to modify any of the transmission model parameters or observation model parameters, enabling user-specified modifiers or inference-driven fitting.
 
-In the `interventions` section of the configuration file the user can specify several possible types of interventions which will then be implemented in the model. Each intervention modifies a parameter during one or multiple time periods and for one or multiple specified subpopulations.
+In the `seir_modifiers` and `outcomes_modifiers` sections of the configuration file the user can specify several possible types of interventions which will then be implemented in the model. Each intervention modifies a parameter during one or multiple time periods and for one or multiple specified subpopulations.
 
 We currently support the following intervention types. Each of these is described in detail below:
 
 * `"SinglePeriodModifier"` – Modifies a parameter during a single time period
 * `"MultiPeriodModifier"` – Modifies a parameter by the same amount during a multiple time periods
 * `"ModifierModifier"` – Modifies another intervention during a single time period
-* `"StackedModifier"` – Combines two or more interventions multiplicatively
+* `"StackedModifier"` – Combines two or more interventions additively or multiplicatively, and is used to be able to turn on and off groups of interventions easily for different runs.&#x20;
 
 Within _flepiMoP_, interventions are run as "scenarios". With scenarios, we can use the same configuration file to run multiple versions of the model where only the interventions applied differs.
 
 The interventions section contains two sections: `interventions::scenarios`, which lists the name of the intervention that will run in each separate scenario, and `interventions::settings`, where the details of each intervention are specified (e.g.,  the parameter it acts on, the time it is active, and the subpopulation it is applied to). An example is outlined below
 
 ```
-interventions:
+seir_modifiers:
   scenarios:
     -NameOfIntervention1
     -NameofIntervention2
-  settings:
+  modifiers:
     NameOfIntervention1:
       ...
     NameOfIntervention2:
       ...
 ```
 
-&#x20;The major benefit of specifying both "scenarios" and "interventions" is that the user can use the `"StackedModifier"` interventions to combine other interventions in different ways, and then run either the individual or combined interventions as scenarios. This way, each scenario may consist of one or more individual interventions, and each intervention may be part of multiple scenarios. This provides a shorthand to quickly consider multiple different versions of a model that have different combinations of interventions occurring. For example, during an outbreak we could evaluate the impact of school closures, case isolation, and masking, or any one or two of these three measures. An example of a configuration file combining interventions to create new scenarios is given below
+In this example, each scenario runs a single intervention, but more complicated examples are possible. &#x20;
+
+The major benefit of specifying both "scenarios" and "modifiers" is that the user can use `"StackedModifier"` interventions to combine other interventions in different ways, and then run either the individual or combined interventions as scenarios. This way, each scenario may consist of one or more individual interventions, and each intervention may be part of multiple scenarios. This provides a shorthand to quickly consider multiple different versions of a model that have different combinations of interventions occurring. For example, during an outbreak we could evaluate the impact of school closures, case isolation, and masking, or any one or two of these three measures. An example of a configuration file combining interventions to create new scenarios is given below
 
 ```
-interventions:
+seir_modifiers:
   scenarios:
     -SchoolClosures
     -AllNPIs
-  settings:
+  modifiers:
     SchoolClosures:
       template:SinglePeriodModifier
       ...
@@ -51,14 +53,18 @@ interventions:
       template:SinglePeriodModifier
       ....
     AllNPIs
-      template: Stacked
-      scenarios: ["SchoolClosures","CaseIsolation","Masking"]
+      template: StackedModifier
+      modifiers: ["SchoolClosures","CaseIsolation","Masking"]
 ```
 
 
 
 {% hint style="info" %}
-Each time a configuration file is run, the user much specify which intervention scenarios will be run. If not specified, the model will be run one time for each scenario.&#x20;
+The `seir_modifiers::scenarios` (and similarly, the `outcomes_modifiers::scenarios`) sections are optional. If the `scenarios` section section is **not** included, the model will run separately for each modifier - with only one modifier being turned "on" each time. If there are both seir and outcome modifiers, it will run each time for every possible combination of a single seir modifier and a single outcome modifier.&#x20;
+{% endhint %}
+
+{% hint style="info" %}
+If the `scenarios`section is included, then each time a configuration file is run, the user much specify which intervention scenarios will be run. If not specified, the model will be run one time for each combination of `seir` and `outcome` scenario.&#x20;
 {% endhint %}
 
 #### Example
