@@ -237,11 +237,9 @@ outcomes:
 
 #### Sum
 
-Optional.
+Optional. `sum` is used to create new outcome variables that are sums over other previously defined outcome variables.&#x20;
 
-Used to create new outcome variables that are sums over other previously defined outcome variables.&#x20;
-
-If included, source, probability, delay, duration will be ignored.&#x20;
+If included, `source`, `probability`, `delay`, and `duration` will be ignored.&#x20;
 
 For example, to track new hospital admissions and current hospitalizations separately for children and adults, as well as for all ages combined
 
