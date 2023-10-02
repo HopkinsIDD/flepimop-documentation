@@ -21,8 +21,8 @@
 * [Inference Description](model-inference/inference-description.md)
 * [Inference Implementation](model-inference/inference-implementation/README.md)
   * [(OLD) Configuration options](model-inference/inference-implementation/configuration-options.md)
+  * [(OLD) Configuration setup](model-inference/inference-implementation/old-configuration-setup.md)
   * [Code structure](model-inference/inference-implementation/code-structure.md)
-* [(OLD) Configuration setup](model-inference/old-configuration-setup.md)
 * [Inference Model Output](model-inference/inference-model-output.md)
 
 ## 🖥 More
