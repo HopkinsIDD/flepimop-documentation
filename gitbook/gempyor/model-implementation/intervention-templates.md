@@ -62,7 +62,7 @@ seir_modifiers:
 ```
 
 {% hint style="info" %}
-The `seir_modifiers::scenarios` (and similarly, the `outcomes_modifiers::scenarios`) sections are optional. If the `scenarios` section section is **not** included, the model will run with all of the modifiers turned "on".&#x20;
+The `seir_modifiers::scenarios` and`outcomes_modifiers::scenarios` sections are optional. If the `scenarios` section section is **not** included, the model will run with all of the modifiers turned "on".&#x20;
 {% endhint %}
 
 {% hint style="info" %}
@@ -103,7 +103,7 @@ A formatted list consisting of the description of each modifier, including its n
 
 `SinglePeriodModifier` interventions enable the user to specify a multiplicative reduction to a `parameter` of interest. It take a `parameter`, and reduces it's value by `value` (new = (1-`value`) \* old) for the subpopulations listed in`subpop` during the time interval \[`period_start_date`, `period_end_date`]
 
-For example, if you would like to create an modifier called `lockdown` that reduces transmission by 70% in the state of California and the District of Columbia between two dates, you could specify this with a SinglePeriodModifier, as in the example below
+For example, if you would like to create an SEIR modifier called `lockdown` that reduces transmission by 70% in the state of California and the District of Columbia between two dates, you could specify this with a SinglePeriodModifier, as in the example below
 
 #### Example
 
@@ -117,6 +117,20 @@ seir_modifiers:
       period_end_date: 2020-05-01
       subpop: ['06000', '11000']
       value: 0.7
+```
+
+Or to create an outcome variable modifier called enhanced\_testing during which the case detection rate doubles&#x20;
+
+```
+outcome_modifiers:
+  modifiers:
+    enhanced_testing: 
+      method: SinglePeriodModifier
+      parameter: incidC::probability
+      period_start_date: 2020-03-15
+      period_end_date: 2020-05-01
+      subpop: ['06000', '11000']
+      value: -1.0
 ```
 
 #### Configuration options
@@ -192,9 +206,9 @@ new_parameter_value = old_parameter_value * (1 - value)
 
 `ModifierModifier` interventions allow the user to specify an intervention that acts to modify the value of _another intervention,_ as opposed to modifying a baseline parameter value.  The intervention multiplicatively reduces the `modifier` of interest by `value` (new = (1-`value`) \* old) for the subpopulations listed in `subpop` during  the time interval \[`period_start_date`, `period_end_date`].
 
-For example, `ModifierModifier` could be used to describe a social distancing policy that is in effect between two dates and reduces transmission by 60% if followed by the whole population, but part way through this period, adherence to the policy drops to only 50% of in one of the subpopulations population:
-
 #### Example
+
+For example, `ModifierModifier` could be used to describe a social distancing policy that is in effect between two dates and reduces transmission by 60% if followed by the whole population, but part way through this period, adherence to the policy drops to only 50% of in one of the subpopulations population:
 
 ```
 seir_modifiers:
@@ -276,9 +290,9 @@ new_parameter_value = original_parameter_value * (1 - baseline_intervention_valu
 
 ### StackedModifier
 
-Combine two or more modifiers into a scenario, so that they can easily be singled out to be run together without the other modifiers. If multiply modifiers act during the same time period in the same subpopulation, their effects are combined multiplicatively.&#x20;
+Combine two or more modifiers into a scenario, so that they can easily be singled out to be run together without the other modifiers. If multiply modifiers act during the same time period in the same subpopulation, their effects are combined multiplicatively. Modifiers of different types (i.e. SinglePeriodModifier, MultiPeriodModifier, ModifierModifier, other StackedModifiers) can be combined.&#x20;
 
-#### Example
+#### Examples
 
 ```
 seir_modifiers:
@@ -310,6 +324,37 @@ seir_modifiers:
     AllNPIs
       method: StackedModifier
       modifiers: ["SchoolClosures","CaseIsolation","Masking"]
+```
+
+or
+
+```
+outcome_modifiers:
+  scenarios:
+    - ReducedTesting
+    - AllDelays
+  modifiers:
+    DelayedTesting
+      method:SinglePeriodModifier
+      parameter: incidC::probability
+      period_start_date: 2020-03-15
+      period_end_date: 2020-05-01
+      subpop: 'all'
+      value: 0.5
+    DelayedHosp
+      method:SinglePeriodModifier
+      parameter: incidD::delay
+      period_start_date: 2020-04-01
+      period_end_date: 2020-05-01
+      subpop: 'all'
+      value: -1.0
+    LongerHospStay
+      method:SinglePeriodModifier
+      parameter: incidH::duration
+      period_start_date: 2020-04-15
+      period_end_date: 2020-05-01
+      subpop: 'all'
+      value: -0.5
 ```
 
 #### Configuration options
