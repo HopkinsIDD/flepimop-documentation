@@ -10,13 +10,11 @@ description: >-
 
 Our pipeline allows users to encode state variables describing the infection status of individuals in the population in two different ways. The first way is via the state variables and transitions of the compartmental model of disease transmission, which are specified in the [`compartments`](compartmental-model-structure.md) and [`seir`](compartmental-model-structure.md) sections of the config. This model should include all variables that influence the natural course of the epidemic (i.e., all variables that feed back into the model by influencing the rate of change of other variables). For example, the number of infected individuals influences the rate at which new infections occur, and the number of immune individuals influences the number of individuals at risk of acquiring infection.
 
-However, these intrinsic model variables may be difficult to observe in the real world and so directly comparing model predictions about the values of these variables to data might not make sense. Instead, the observable outcomes of infection may include only a subset of individuals in any state, and may only be observed with a time delay. Thus, we allow users to define new `outcome` variables that are functions of the underlying model variables.
-
-There are several benefits to encoding variables as `outcomes` wherever possible. Firstly, `outcome` variables can be specified to occur stochastically, even if the model is run completely deterministically. This allows users to capture stochasticity that may be important for rare outcomes (e.g., severe disease or death), even while saving computational time when running the original model. Secondly, `outcome` variables can be specified to occur with arbitrary delay distributions that are difficult to encode in traditional (Markovian) compartmental models of infectious disease dynamics. Thirdly, because these variables don't feed back to the model they can be calculated after the model run is completed, and different variations of the rules for determining these outcomes can be calculated on the same model output (for example, a scenario with high case detection rate and another with low case detection rate).&#x20;
+However, these intrinsic model variables may be difficult to observe in the real world and so directly comparing model predictions about the values of these variables to data might not make sense. Instead, the observable outcomes of infection may include only a subset of individuals in any state, and may only be observed with a time delay. Thus, we allow users to define new `outcome` variables that are functions of the underlying model variables. Commonly used examples include detected cases or hospitalizations.&#x20;
 
 Variables should not be included as outcomes if they influence the infection trajectory. The choice of what variables to include in the compartmental disease model vs. the outcomes section may be very model specific. For example, hospitalizations due to infection could be encoded as an outcome variable that is some fraction of infections, but if we believe hospitalized individuals are isolated from the population and don't contribute to onward infection, or that the number of hospitalizations feeds back into the population's perception of risk of infection and influences everyone's contact behavior, this would not be the best choice. Similarly, we could include deaths due to infection as an outcome variable that is also some fraction of infections, but unless death is a very rare outcome of infection and we aren't worried about actually removing deceased individuals from the modeled populations, deaths should be in the compartmental model instead.
 
-The `outcomes` section is not required in the config. However, there are benefits to including it, even if the only outcome variable is set to be equivalent to one of the infection model variables. If the compartmental model is complicated but you only want to visualize a few output variables, the [outcomes output file](../output-files.md) will be much easier to work with.  If the model is being fit to data, then the `outcomes` section is required, as only outcome variables can be compared to data.
+The `outcomes` section is not required in the config. However, there are benefits to including it, even if the only outcome variable is set to be equivalent to one of the infection model variables. If the compartmental model is complicated but you only want to visualize a few output variables, the [outcomes output file](../output-files.md) will be much easier to work with.  Outcome variables always occur with some fixed delay from their source infection model variable, which can be more convenient than the exponential distribution underlying the infection model.  Outcome variables can be created to automatically sum over multiple compartments of the infection model, removing the need for post-processing code to do this. If the model is being fit to data, then the `outcomes` section is required, as only outcome variables can be compared to data.
 
 As an example, imagine we are simulating an SIR-style model and want to compare it to real epidemic data in which cases of infection and death from infection are reported. Our model doesn't explicitly include death, but suppose we know that 1% of all infections eventually lead to hospitalization, and that hospitalization occurs on average 1 week after infection. We know that not all infections are reported as cases, and assume that only 50% are detected and are reported 2 days after infection begins. The model and `outcomes` section of the config for these outcomes, which we call `incidC` (daily incidence of cases) and `incidH` (daily incidence of hospital admission) would be
 
@@ -54,7 +52,7 @@ seir:
     incidH:
       source:
         incidence:
-          infection_state: "D"
+          infection_state: "I"
       probability: 0.01
       delay: 21 
 </code></pre>
@@ -63,31 +61,231 @@ in the following sections we describe in more detail how this specification work
 
 ## Specifying `outcomes` in the configuration file
 
-### outcomes::settings
+The `outcomes` config section consists of a list of defined outcome variables (observables), which are defined by a user-created name (e.g., "incidH") the `source` compartment(s) in the infectious disease model that they draw from and  whether they draw from the `incidence` (new individuals entering into that compartment) or `prevalence` (total current individuals in that compartment). Each new outcome variable is always associated with two mandatory parameters - `probability` and `delay`, and one optional parameter - `duration`, defined below.
 
-#### outcomes::method
+**Example**
 
-outcomes::paths
+```
+// Some code
+```
 
-### outcomes::outcomes
+####
 
-#### Source
+<table><thead><tr><th width="165">Config item</th><th>Required?</th><th>Type/format</th><th>Description</th></tr></thead><tbody><tr><td>source</td><td>Yes</td><td>Varies</td><td>The infection model variable or outcome variable from which the named outcome variable is created</td></tr><tr><td><code>probability</code></td><td>Yes, unless sum option is used instead</td><td>value or distribution</td><td>The probability that an individual in the <code>source</code> variable appears in the named outcome variable</td></tr><tr><td><code>delay</code></td><td>Yes, unless sum option is used instead</td><td>value or distribution</td><td>The time delay between individual's appearance in <code>source</code> variable and appearance in named outcome variable</td></tr><tr><td><code>duration</code></td><td>No</td><td>value or distribution</td><td>The duration of time an individual remains counted within the  named outcome variablet</td></tr><tr><td><code>sum</code></td><td>No</td><td>List</td><td>A list of other outcome variables to sum into the current outcome variable</td></tr></tbody></table>
 
-incidence or prevalence
+#### `source`&#x20;
 
-list of compartments
+Required, unless [`sum`](outcomes-for-compartments.md#sum) option is used instead. This sub-section describes the compartment(s) in the infectious disease model from which this outcome variable is drawn. Outcome variables can be drawn from the `incidence` of a variable - meaning that some fraction of new individuals entering the infection model state each day are chosen to contribute to the outcome variable - or from the `prevalence`, meaning that each day some fraction of individuals currently in the infection state are chosen to contribute to the outcome variable. Note that whatever the source type, **the named outcome variable itself is always a measure of incidence**.&#x20;
 
-#### Probability
+To specify which compartment(s) contribute the user must specify the state(s) within each model stratification. For stratifications not mentioned, the outcome will sum over all states in that strata.&#x20;
 
-distribution?
+For example, consider a configuration in which the compartmental model was constructed to track infection status stratified by vaccination status and age group.  The following code would be used to create an outcome called `incidH_child` (incidence of hospitalization for children) and `incidH_adult` (incidence of hospitalization for adults) where some fraction of infected individuals would become hospitalized and we wanted to track separately track pediatric vs adult hospitalizations, but did not care about tracking the vaccination status of hospitalized individuals as in reality it was not tracked by the hospitals.&#x20;
+
+```
+ compartments:
+   infection_state: ["S", "I", "R"]
+   age_group: ["child", "adult"]
+   vaccination_status: ["unvaxxed", "vaxxed"]
+   
+outcomes:
+  incidH_child:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "child"
+    ...
+  incidH_adult:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "adult"
+    ...
+```
+
+to instead create an outcome variable for cases where on each day of infection there is some probability of testing positive (for example, for the situation of an asymptomatic infection where testing is administered totally randomly), the following code would be used
+
+```
+ compartments:
+   infection_state: ["S", "I", "R"]
+   age_group: ["child", "adult"]
+   vaccination_status: ["unvaxxed", "vaxxed"]
+   
+outcomes:
+  incidC:
+    source:
+      prevalence:
+        infection_state: "I"
+    ...
+```
+
+The source of an outcome variable can also be a previous defined outcome variable. For example, t to create a new variable for the number of individuals recruited to be part of a contact tracing program (incidT), which is just some fraction of diagnosed cases,&#x20;
+
+```
+outcomes:
+  incidC:
+    source:
+      prevalence:
+        infection_state: "I"
+    ...
+  incidT:
+    source: incidC
+    ...
+```
+
+#### `probability`&#x20;
+
+Required, unless [`sum`](outcomes-for-compartments.md#sum) option is used instead. `Probability` is the fraction of individuals in the source compartment who are counted as part of this outcome variable (if the source is incidence; if the source is prevalence it is the fraction of individuals per day).&#x20;
+
+`probability` can be a single value or a [distribution](introduction-to-configuration-files.md#distributions) (in which case each time the model is run, a different value for this parameter will be drawn from this distribution, but that value will be used for all calculations within this model run). It must be between 0 and 1.&#x20;
+
+Specifying the probability creates a parameter called `outcome_name::probability` that can be referred to in the [`outcome_modifiers`](intervention-templates.md) section of the config. The value of this parameter can be changed using the `probability::intervention_param_name` option.&#x20;
+
+For example, to track the incidence of hospitalization when 5% of children but only 1% of adults infected require hospitalization:&#x20;
+
+```
+outcomes:
+  incidH_child:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "child"
+    probability: 0.05
+  incidH_adult:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "adult"
+    probability: 0.01
+```
+
+To track the incidence of diagnosed cases iterating over uncertainty in the case detection rate (ranging 20% to 30%), and naming this parameter "case\_detect\_rate"
+
+```
+outcomes:
+  incidC:
+    source:
+      prevalence:
+        infection_state: "I"
+    probability:
+      value:
+        distribution: uniform
+        low: 0.2
+        high: 0.3
+      intervention_param_name: "case_detect_rate"
+```
 
 #### Delay
 
-distribution?
+Required, unless [`sum`](outcomes-for-compartments.md#sum) option is used instead. `delay` is the time delay between when individuals are chosen from the source compartment and when they are counted as part of this outcome variable.&#x20;
+
+`delay` can be a single value or a [distribution](introduction-to-configuration-files.md#distributions) (in which case each time the model is run, a different value for this parameter will be drawn from this distribution, but that value will be used for all calculations within this model run. Note that a delay distribution here **does not mean** that the delay time varies between individuals - it is identical).&#x20;
+
+Specifying the delay creates a parameter called `outcome_name::delay` that can be referred to in the [`outcome_modifiers`](intervention-templates.md) section of the config. The value of this parameter can be changed using the `delay::intervention_param_name` option.&#x20;
+
+For example, to track the incidence of hospitalization when 5% of children are hospitalized and hospitalization occurs 7 days after infection:
+
+```
+outcomes:
+  incidH_child:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "child"
+    probability: 0.05
+    delay: 7
+```
 
 #### Duration
 
-distribution?
+By default, all outcome variables describe incidence (new individuals entering each day). However, they can also track an associated "prevalence" if the user specifies how long individuals will stay classified as the outcome state the outcome variable describes. This is the `duration` parameter.&#x20;
+
+`duration` can be a single value or a [distribution](introduction-to-configuration-files.md#distributions) (in which case each time the model is run, a different value for this parameter will be drawn from this distribution, but that value will be used for all calculations within this model run. Note that a distribution of durations here **does not mean** that the duration time varies between individuals - it is identical).&#x20;
+
+Specifying the duration creates a parameter called `outcome_name::duration` that can be referred to in the [`outcome_modifiers`](intervention-templates.md) section of the config.  The value of this parameter can be changed using the `duration::intervention_param_name` option.&#x20;
+
+When the duration parameter is set, a new outcome variable is automatically created and named with the name of the original outcome variable + "\_curr". This name can be changed using the `duration::name` option.&#x20;
+
+For example, to track the incidence and prevalence of hospitalization when 5% of children are hospitalized, hospitalization occurs 7 days after infection, and the duration of hospitalization is 3 days:
+
+```
+outcomes:
+  incidH_child:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "child"
+    probability: 0.05
+    delay: 7
+    duration: 3
+```
+
+which creates the variable "incidH\_child\_curr" to track all currently hospitalized children. Since it doesn't make sense to call this new outcome variable an incidence, as it is a prevalence, we could instead rename it:
+
+```
+outcomes:
+  incidH_child:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "child"
+    probability: 0.05
+    delay: 7
+    duration: 
+      value: 3
+      name: "hosp_child_curr"
+```
+
+#### Sum
+
+Optional.
+
+Used to create new outcome variables that are sums over other previously defined outcome variables.&#x20;
+
+If included, source, probability, delay, duration will be ignored.&#x20;
+
+For example, to track new hospital admissions and current hospitalizations separately for children and adults, as well as for all ages combined
+
+```
+outcomes:
+  incidH_child:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "child"
+    probability: 0.05
+    delay: 6
+    duration: 
+      value: 14
+      name: "hosp_child_curr"
+  incidH_adult:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "adult"
+    probability: 0.01
+    delay: 8
+    duration:
+      value: 7
+      name: "hosp_adult_curr"
+  incidH_total: 
+    sum: ["incidH_child","incidH_adult"]
+  hosp_curr_total:   
+    sum: ["hosp_child_curr","hosp_adult_curr"]
+```
+
+### outcomes::settings
+
+There are other required and optional configuration items for the `outcomes` section which can be specified under `outcomes::settings`:
+
+`method`:  `delayframe.`This is the mathematical method used to create the outcomes variable values from the transmission model variables. Currently, the only model supported is `delayframe`, which ...&#x20;
+
+`param_from_file:`  Optional, `TRUE` or `FALSE`.  It is possible to allow any of the outcomes variables to have values that vary across the subpopulations. For example, disease severity rates or diagnosis rates may differ by demographic group. In this case, all the outcome parameter values defined in [outcomes::outcomes](outcomes-for-compartments.md#outcomes-outcomes) will represent baseline values, and then you can define a relative change from this baseline for any particular subpopulation using the paths section. If `params_from_file: TRUE` is specified, then these relative values will be read from the `params_subpop_file`. Otherwise, if `params_from_file: FALSE` or is not listed at all, all subpopulations will have the same values for the outcome parameters, defined below.&#x20;
+
+`param_subpop_file`: Required if `params_from_file: TRUE`. The path to a .csv or .parquet file that contains the relative amount by which a given outcome variable is shifted relative to baseline in each subpopulation. File must contain the following columns:
+
+* `subpop`: The subpopulation for which the parameter change applies. Must be a subpopulation defined in the [`geodata`](specifying-population-structure.md#geodata-file) file. For example, `small_province`
+* parameter:  The outcomes parameter which will be altered for this subpopulation. For example, `incidH_child: probability`
+* value: The amount by which the baseline value will be multiplied, for example, 0.75 or 1.1
 
 ## Examples
 
@@ -102,195 +300,5 @@ The configuration file we could use to model this situation includes
 ```
 // Some code
 
-compartments:
-
-seir:
-
-outcomes:
-  method: delayframe
-  paths:
-    params_from_file: FALSE
-  scenarios:
-    - high_testing
-    - low_testing
-  settings:
-    high_testing:
-      incidC_adults:
-      incidC_children:
-      incidC_total:
-      incidT_total:
-        source: incidC_total
-        probability:
-        delay:
-        distribution:
-    low_testing:
 ```
 
-### OLD
-
-```
-#outcomes:
-#  method: delayframe                   # Only fast is supported atm. Makes fast delay_table computations. Later agent-based method ?
-#  paths:
-#    param_from_file: TRUE               #
-#    param_subpop_file: <path.csv>       # OPTIONAL: File with param per csv. For each param in this file 
-#  scenarios:                           # Outcomes scenarios to run
-#    - low_death_rate
-#    - mid_death_rate
-#  settings:                            # Setting for each scenario
-#    low_death_rate:
-#      new_comp1:                               # New compartement name 
-#        source: incidence                      # Source of the new compartement: either an previously defined compartement or "incidence" for diffI of the SEIR
-#        probability:  <random distribution>           # Branching probability from source
-#        delay: <random distribution>                  # Delay from incidence of source to incidence of new_compartement
-#        duration: <random distribution>               # OPTIONAL ! Duration in new_comp. If provided, the model add to it's output "new_comp1_curr" with current amount in new_comp1
-#      new_comp2:                               # Example for a second compatiment
-#        source: new_comp1                      
-#        probability: <random distribution> 
-#        delay: <random distribution> 
-#        duration: <random distribution>
-#      death_tot:                               # Possibility to combine compartements for death.
-#        sum: ['death_hosp', 'death_ICU', 'death_incid']
-#         
-#    mid_death_rate:
-#      ...
-#
-# ## Input Data
-#
-# * <b>{param_subpop_file}</b> is a csv with columns subpop, parameter, value. Parameter is constructed as, e.g for comp1:
-#                probability: Pnew_comp1|source
-#                delay:       Dnew_comp1
-#                duration:    Lnew_comp1
-
-
-# ## Output Data
-# * {output_path}/model_output/{spatial_setup::setup_name}_[scenario]/[simulation ID].hosp.parquet
-
-```
-
-Nothing changes except how to specify the source of outcomes that comes from the seir sims. Before `incidI` was defined as the incidence of individuals in compartment I1 (i.e new infected). Now there may be incidI for different variants, so the source from seir file is different.
-
-Say we have a config with the compartment section of the `seir` module as:
-
-```
-  compartments:
-    infection_stage: ["S", "E", "I1", "I2", "I3", "R"]
-    vaccination_stage: ["0dose", "1dose", "2dose"]
-    variant_type: ["var0", "var1"]
-```
-
-and we want `incidH` from `incidI`. There are a different ways:
-
-### Backward compatibility (do not use, except for old configs)
-
-Using `incidI` still works. In that case the source is the incidence (new arrivals) in the meta compartment `infection_stage` and compartment `I1`. Both has to be defined to use this compatibility option.
-
-```
-    incidH:
-        source: incidI
-        probability:
-          value:
-            distribution: fixed
-            value: .1
-...
-```
-
-### Filtering (simple example)
-
-This does the same thing as before: select incidence in compartments `I1` (hence the source is the sum of the incidence in `I1_0dose_var0`, `I1_0dose_var1`, `I1_1dose_var0` and so on...
-
-```
-    incidH:
-        source: 
-          incidence:
-            infection_stage: "I1"
-...
-```
-
-this also works: it filters every dose and every variant, but just I1. Here we could e.g just filter for unvaccinated and 1 dose-
-
-```
-      incidH:                              
-        source: 
-          incidence:
-            infection_stage: "I1"
-            vaccination_stage: ["0dose", "1dose", "2dose"]
-            variant_type: ["var0", "var1"]
-...
-```
-
-### Full thing
-
-Here we have an example were the probabilities from each dose are not the same necessarily, but we want still to have an `incidH` with all hospitalisations for the report and as a source for later outcomes such as incidICU
-
-```
-      incidH_0dose:
-        source: 
-          incidence:
-            infection_stage: ["I1"]                             
-            vaccination_stage: ["0dose"]
-        probability:
-          value:
-            distribution: fixed
-            value: .1
-        delay:
-          value:
-            distribution: fixed
-            value: 7
-        duration:
-          value:
-            distribution: fixed
-            value: 7
-          name: incidH_0dose_curr
-      incidH_1dose:
-        source: 
-          incidence:
-            infection_stage: ["I1"]
-            vaccination_stage: "1dose"
-        probability:
-          value:
-            distribution: fixed
-            value: .05
-        delay:
-          value:
-            distribution: fixed
-            value: 7
-        duration:
-          value:
-            distribution: fixed
-            value: 7
-          name: incidH_1dose_curr
-      incidH_2dose:
-        source: 
-          incidence:
-            infection_stage: ["I1"]
-            vaccination_stage: ["2dose"]
-        probability:
-          value:
-            distribution: fixed
-            value: .005
-        delay:
-          value:
-            distribution: fixed
-            value: 7
-        duration:
-          value:
-            distribution: fixed
-            value: 7
-          name: incidH_2dose_curr
-      incidH:                                                         # all incidH
-        sum: ['incidH_2dose', 'incidH_1dose', 'incidH_0dose']
-      incidH_curr:                                              
-        sum: ['incidH_2dose_curr', 'incidH_1dose_curr', 'incidH_0dose_curr']
-...
-```
-
-after this, something like `incidICU` can be configured with source any of the defined compartments (from all hosp: use `incidH`but from only unvaccinated use `incidH_0dose`).
-
-Everything else work as before (e.g NPIs, ...). **But don't forget to do the sum of the durations also as it's not automatic** (maybe should be ?)
-
-### Things to know for using the files
-
-1. `p_comp` does not exist anymore in the hosp files. ==> removing the sum across p\_comp in R should do the trick if it was not using the different dosage.
-2. `incidI` does not exist anymore in hosp files (except when using the backward compatibility way, where it is re-created). If you'd want that it has to be created as an outcome with probability 1 (and can be defined for all variants or only some).
-3. when using relative probabilities (with `param_from_file`) the `source` column is not necessary anymore.
