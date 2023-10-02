@@ -119,17 +119,17 @@ TBA
 
 The configuration items in the `initial_conditions` section of the config file are
 
-`initial_conditions:method` Must be either `"Default"`, `"SetInitialConditions"`, `"FromFile"`, or `"FolderDraw".`
+`initial_conditions:method` Must be either `"Default"`, `"SetInitialConditions"`, or `"FromFile".`
 
-`initial_conditions:initial_conditions_file` Only required for `method: “FromFile”` and `method: “FolderDraw”.` Path to a .csv or .parquet file containing the list of initial conditions for each compartment.
-
-`initial_conditions:states_file` Only required for `method: “SetInitialConditions”`. Path to a .csv or .parquet file containing the list of initial conditions for each compartment.
+`initial_conditions:initial_conditions_file`Required for methods “`SetInitialConditions`” and “`FromFile`” . Path to a .csv or .parquet file containing the list of initial conditions for each compartment.
 
 `initial_conditions:initial_file_type` Only required for `method: “FolderDraw”`. Description TBA
 
-`initial_conditions::allow_missing_nodes` Optional for all methods, determines what will happen if `initial_conditions_file` is missing values for some subpopulations. If FALSE, the default behavior, or unspecified, an error will occur if subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment. (The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.)
+`initial_conditions::allow_missing_nodes` Optional for all methods, determines what will happen if `initial_conditions_file` is missing values for some subpopulations. If FALSE, the default behavior, or unspecified, an error will occur if subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment (the “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group), unless another compartment is designated to hold the rest of the individuals.&#x20;
 
-`initial_conditions::allow_missing_compartments` Only applies to methods `"FromFile"` or `"FolderDraw"`. If FALSE, the default behavior, or unspecified, an error will occur if any compartments are missing for any subpopulation. If TRUE, then it will be assumed there are zero individuals in compartments missing from the `initial_conditions file`.
+`initial_conditions::allow_missing_compartments` Optional for all methods. If FALSE, the default behavior, or unspecified, an error will occur if any compartments are missing for any subpopulation. If TRUE, then it will be assumed there are zero individuals in compartments missing from the `initial_conditions file`.
+
+`initial_conditions::proportional` If TRUE, assume that the user has specified all input initial conditions as fractions of the population, instead of numbers of individuals (the default behavior, or if set to FALSE). Code will check that initial values in all compartments sum to 1.0 and throw an error if not, and then will multiply all values by the total population size for that subpopulation.&#x20;
 
 Details on implementing each initial conditions method and the options that go along with it are below.
 
@@ -139,61 +139,137 @@ Details on implementing each initial conditions method and the options that go a
 
 The default initial conditions are that the initial value of all compartments for each subpopulation will be zero, except for the first compartment, whose value will be the population size. The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.
 
-For example, for the following configuration file
+For example, a model with the following compartments
 
 ```
-TBA
+ compartments:
+   infection_state: ["S", "I", "R"]
+   age_group: ["child", "adult"]
+   vaccination_status: ["unvaxxed", "vaxxed"]
+ 
+ initial_conditions:
+   method: default
 ```
 
 with the accompanying geodata file
 
 ```
-// Some code
+subpop,          population
+large_province, 10000
+small_province, 1000
 ```
 
-The model will be started with 1000 individuals in the S\_\[TBA] compartment.
+will be started with 1000 individuals in the S\_child\_unvaxxed in the "small province" and 10,000 in that compartment in the "large province".
 
 #### SetInitialConditions
 
-With this method users can specify arbitrary initial conditions in a convenient formatted input .csv file.
+With this method users can specify arbitrary initial conditions in a convenient formatted input .csv or .parquet file.
 
-For example
+For example, for a model with the following `compartments` and `initial_conditions` sections
 
 ```
-// Some code
+ compartments:
+   infection_state: ["S", "I", "R"]
+   age_group: ["child", "adult"]
+   vaccination_status: ["unvaxxed", "vaxxed"]
+   
 initial_conditions:
     method: SetInitialConditions
+    initial_conditions_file: initial_conditions.csv
     allow_missing_nodes: TRUE
+    allow_missing_compartments: TRUE
 ```
 
-where initial\_conditions.csv contains
+with the accompanying geodata file
 
 ```
-// Some code
+subpop,          population
+large_province, 10000
+small_province, 1000
 ```
+
+where `initial_conditions.csv` contains
+
+```
+subpop, mc_name, amount
+small_province, S_child_unvaxxed, 500
+small_province, S_adult_unvaxxed, 500
+large_province, S_child_unvaxxed, 5000
+large_province, E_adult_unvaxxed, 5
+large_province, S_adult_unvaxxed, "rest"
+```
+
+the model will be started with half of the population of both subpopulations, consisting of children and the other half of adults, everyone unvaccinated, and 5 infections (in exposed-but-not-yet-infectious class) among the unvaccinated adults in the large province, with the remaining individuals susceptible (4995).  All other compartments will contain zero individuals initially.&#x20;
 
 `initial_conditions::initial_conditions_file` must contain the following columns:
 
-* `comp` – the concatenated name of the compartment for which an initial condition is being specified. The order of the compartment groups in the name must be the same as the order in which these groups are defined in the config for the model, e.g., you cannot say `unvaccinated_S`.
 * `subpop` – the name of the subpopulation for which the initial condition is being specified. By default, all subpopulations must be listed in this file, unless the `allow_missing_nodes` option is set to TRUE.
-* `amount` – the value of the initial condition
+* `mc_name` – the concatenated name of the compartment for which an initial condition is being specified. The order of the compartment groups in the name must be the same as the order in which these groups are defined in the config for the model, e.g., you cannot say `unvaccinated_S`.
+* `amount` – the value of the initial condition; either a numeric value or the string "rest".
 
-For each subpopulation, if there are compartments that are not listed in `SetInitialConditions`, it will be assumed there are zero individuals in them. Note that there is currently no mechanism to ensure that the sum of the values of the initial conditions in all compartments in a location adds up to the total population of that location. If `initial_conditions_file` is FALSE or unspecified, an error will occur if initial conditions for some subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment. (The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.)
+For each subpopulation, if there are compartments that are not listed in `SetInitialConditions`, an error will be thrown unless `allow_missing_compartments` is set to TRUE, in which case it will be assumed there are zero individuals in them. If the sum of the values of the initial conditions in all compartments in a location does not add up to the total population of that location (specified in the geodata file), an error will be thrown. To allocate all remaining individuals in a subpopulation (the difference between the total population size and those allocated by defined initial conditions) to a single pre-specified compartment, include this compartment in the `initial_conditions_file` but instead of a number in the `amount` column, put the word "rest".&#x20;
+
+If `allow_missing_nodes` is FALSE or unspecified, an error will occur if initial conditions for some subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment. (The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.)
 
 #### FromFile
 
-Similar to `"SetInitialConditions"`, with this method users can specify arbitrary initial conditions in a formatted input file. However, the format of the input file is different and it can be either a .csv or .parquet file.
+Similar to `"SetInitialConditions"`, with this method users can specify arbitrary initial conditions in a formatted .csv or .parquet input file. However, the format of the input file is different. The required file format is consistent with the [output "seir" file ](../output-files.md#seir-infection-model-output)from the compartmental model, so the user could take output from one simulation and use it as input into another simulation with the same model structure.&#x20;
 
-For example, for the input
+For example, for an input configuration file containing
 
 ```
+name: test_simulation
+start_date: 2021-06-01
+
+ compartments:
+   infection_state: ["S", "I", "R"]
+   age_group: ["child", "adult"]
+   vaccination_status: ["unvaxxed", "vaxxed"]
+   
 initial_conditions:
-  method: "FromFile"
-  initial_conditions_file: pathtoyourfile.csv
-  allow_missing_compartments: FALSE
-  allow_missing_nodes: FALSE
+    method: SetInitialConditions
+    initial_conditions_file: initial_conditions_from_previous.csv
+    allow_missing_compartments: FALSE
+    allow_missing_nodes: FALSE
 ```
 
-\[TBA]
+with the accompanying geodata file
 
-#### FolderDraw
+```
+subpop,          population
+large_province, 10000
+small_province, 1000
+```
+
+where `initial_conditions_from_previous.csv` contains
+
+```
+mc_value_type, mc_infection_stage, mc_age, mc_vaccination_status, mc_name, small_province, large_province, date
+....
+prevalence, S, child, unvaxxed, 400, 900, 2021-06-01
+prevalence, S, child, vaxxed, 0, 0, 2021-06-01
+prevalence, I, child, unvaxxed, 5, 100, 2021-06-01
+prevalence, I, child, vaxxed, 0, 0, 2021-06-01
+prevalence, R, child, unvaxxed, 95, 4000, 2021-06-01
+prevalence, R, child, vaxxed, 0, 0, 2021-06-01
+prevalence, S, adult, unvaxxed, 50, 900, 2021-06-01
+prevalence, S, adult, vaxxed, 400, 0, 2021-06-01
+prevalence, I, adult, unvaxxed, 4, 100, 2021-06-01
+prevalence, I, adult, vaxxed, 1, 0, 2021-06-01
+prevalence, R, adult, unvaxxed, 75, 4000, 2021-06-01
+prevalence, R, adult, vaxxed, 20, 0, 2021-06-01
+...
+```
+
+The simulation would be initiated on 2021-06-01 with these values in each compartment (no children vaccinated, only adults in the small province vaccinated, some past and current infection in both compartments but ).
+
+`initial_conditions::initial_conditions_file` must contain the following columns:
+
+* `mc_value_type` – in model output files, this is either `prevalence` or `incidence`. Prevalence values only are selected to be used as initial conditions, since compartmental models described the prevalence (number of individuals at any given time) in each compartment. Prevalence is taken to be the value measured instantaneously at the start of the day
+* `mc_name` – The name of the compartment for which the value is reported, which is a concatenation of the compartment status in each state type, e.g. "S\_adult\_unvaxxed" and must be in the same order as these groups are defined in the config for the model, e.g., you cannot say `unvaxxed_S_adult`.
+* `subpop_1`, `subpop_2`, etc. – one column for each different subpopulation, containing the value of the number of individuals in the described compartment in that subpopulation at the given date. Note that these are named after the nodenames defined by the user in the `geodata` file.
+* `date` – The calendar date in the simulation, in YYYY-MM-DD format. Only values with a date that matches to the simulation `start_date` will be used.&#x20;
+
+#### SetInitialConditionsFolderDraw, FromFileFolderDraw
+
+initial\_file\_type:&#x20;
