@@ -36,8 +36,10 @@ seir:
       rate: [gamma]
       proportion_exponent: 1
   parameters:
-    beta: 0.2
-    gamma: 0.1
+    beta: 
+      value: 0.2
+    gamma: 
+      value: 0.1
 
 <strong>outcomes:
 </strong>  settings:
@@ -47,21 +49,40 @@ seir:
       source:
         incidence:
           infection_state: "I"
-      probability: 0.5
-      delay: 2
+      probability: 
+        value: 0.5
+      delay: 
+        value: 2
     incidH:
       source:
         incidence:
           infection_state: "I"
-      probability: 0.01
-      delay: 21 
+      probability: 
+        value: 0.01
+      delay: 
+        value: 21 
 </code></pre>
 
 in the following sections we describe in more detail how this specification works
 
 ## Specifying `outcomes` in the configuration file
 
-The `outcomes` config section consists of a list of defined outcome variables (observables), which are defined by a user-created name (e.g., "incidH") the `source` compartment(s) in the infectious disease model that they draw from and  whether they draw from the `incidence` (new individuals entering into that compartment) or `prevalence` (total current individuals in that compartment). Each new outcome variable is always associated with two mandatory parameters - `probability` and `delay`, and one optional parameter - `duration`, defined below.
+The `outcomes` config section consists of a list of defined outcome variables (observables), which are defined by a user-created name (e.g., "`incidH`"). For each of these outcome variables, the user defines the `source` compartment(s) in the infectious disease model that they draw from and  whether they draw from the `incidence` (new individuals entering into that compartment) or `prevalence` (total current individuals in that compartment). Each new outcome variable is always associated with two mandatory parameters:&#x20;
+
+* `probability` of being counted in this outcome variable if in the source compartment
+* &#x20;`delay` between when an individual enters the `source` compartment and when they are counted in the outcome variable
+
+and one optional parameter
+
+* `duration` after entering that an individual is counted as part of the outcome variable
+
+The `value` of the `probability`, `delay`, and `duration` parameters can be a single value or come from [distribution](introduction-to-configuration-files.md#distributions).&#x20;
+
+Outcome model parameters `probability`, `delay`, and `distribution` can have an additional attribute beyond `value` called `modifier_key`. This value is explained in the section on coding [`time-dependent parameter modifications`](intervention-templates.md) (also known as "modifiers") as it provides a way to have the same modifier act on multiple different outcomes.&#x20;
+
+{% hint style="info" %}
+Just like the case for [compartment model parameters](compartmental-model-structure.md#specifying-compartmental-model-parameters-seir-parameters), when outcome parameters are drawn from a distribution, each time the model is run, a different value for this parameter will be drawn from this distribution, but that value will be used for all calculations within this model run. Note that understanding when a new parameter values from this distribution is drawn becomes more complicated when the model is run in [Inference](../../model-inference/inference-description.md) mode. In Inference mode, we distinguish model runs as occurring in different "slots" – i.e., completely independent model instances that could be run on different processing cores in a parallel computing environment – and different "iterations" of the model that occur sequentially when the model is being fit to data and update fitted parameters each time based on the fit quality found in the previous iteration. A new parameter values is only drawn from the above distribution **once per slot**. Within a slot, at each iteration during an inference run, the parameter is only changed if it is being fit and the inference algorithm decides to perturb it to test a possible improved fit. Otherwise, it would maintain the same value no matter how many times the model was run within a slot.
+{% endhint %}
 
 **Example**
 
@@ -71,7 +92,7 @@ The `outcomes` config section consists of a list of defined outcome variables (o
 
 ####
 
-<table><thead><tr><th width="165">Config item</th><th>Required?</th><th>Type/format</th><th>Description</th></tr></thead><tbody><tr><td>source</td><td>Yes</td><td>Varies</td><td>The infection model variable or outcome variable from which the named outcome variable is created</td></tr><tr><td><code>probability</code></td><td>Yes, unless sum option is used instead</td><td>value or distribution</td><td>The probability that an individual in the <code>source</code> variable appears in the named outcome variable</td></tr><tr><td><code>delay</code></td><td>Yes, unless sum option is used instead</td><td>value or distribution</td><td>The time delay between individual's appearance in <code>source</code> variable and appearance in named outcome variable</td></tr><tr><td><code>duration</code></td><td>No</td><td>value or distribution</td><td>The duration of time an individual remains counted within the  named outcome variablet</td></tr><tr><td><code>sum</code></td><td>No</td><td>List</td><td>A list of other outcome variables to sum into the current outcome variable</td></tr></tbody></table>
+<table><thead><tr><th width="165">Config item</th><th>Required?</th><th>Type/format</th><th>Description</th></tr></thead><tbody><tr><td><code>source</code></td><td>Yes</td><td>Varies</td><td>The infection model variable or outcome variable from which the named outcome variable is created</td></tr><tr><td><code>probability</code></td><td>Yes, unless sum option is used instead</td><td>value or distribution</td><td>The probability that an individual in the <code>source</code> variable appears in the named outcome variable</td></tr><tr><td><code>delay</code></td><td>Yes, unless sum option is used instead</td><td>value or distribution</td><td>The time delay between individual's appearance in <code>source</code> variable and appearance in named outcome variable</td></tr><tr><td><code>duration</code></td><td>No</td><td>value or distribution</td><td>The duration of time an individual remains counted within the  named outcome variablet</td></tr><tr><td><code>sum</code></td><td>No</td><td>List</td><td>A list of other outcome variables to sum into the current outcome variable</td></tr></tbody></table>
 
 #### `source`&#x20;
 
@@ -134,13 +155,11 @@ outcomes:
 
 #### `probability`&#x20;
 
-Required, unless [`sum`](outcomes-for-compartments.md#sum) option is used instead. `Probability` is the fraction of individuals in the source compartment who are counted as part of this outcome variable (if the source is incidence; if the source is prevalence it is the fraction of individuals per day).&#x20;
-
-`probability` can be a single value or a [distribution](introduction-to-configuration-files.md#distributions) (in which case each time the model is run, a different value for this parameter will be drawn from this distribution, but that value will be used for all calculations within this model run). It must be between 0 and 1.&#x20;
+Required, unless [`sum`](outcomes-for-compartments.md#sum) option is used instead. `Probability` is the fraction of individuals in the source compartment who are counted as part of this outcome variable (if the source is incidence; if the source is prevalence it is the fraction of individuals per day). It must be between 0 and 1.&#x20;
 
 Specifying the probability creates a parameter called `outcome_name::probability` that can be referred to in the [`outcome_modifiers`](intervention-templates.md) section of the config. The value of this parameter can be changed using the `probability::intervention_param_name` option.&#x20;
 
-For example, to track the incidence of hospitalization when 5% of children but only 1% of adults infected require hospitalization:&#x20;
+For example, to track the incidence of hospitalization when 5% of children but only 1% of adults infected require hospitalization, and to create a `modifier_key` such that both of these rates could be modified by the same amount during some time period using the [`outcomes_modifier`](intervention-templates.md) section:
 
 ```
 outcomes:
@@ -149,13 +168,17 @@ outcomes:
       incidence:
         infection_state: "I"
         age_group: "child"
-    probability: 0.05
+    probability: 
+      value: 0.05
+      modifier_key: hosp_rate
   incidH_adult:
     source:
       incidence:
         infection_state: "I"
         age_group: "adult"
-    probability: 0.01
+    probability: 
+      value: 0.01
+      modifier_key: hosp_rate
 ```
 
 To track the incidence of diagnosed cases iterating over uncertainty in the case detection rate (ranging 20% to 30%), and naming this parameter "case\_detect\_rate"
@@ -169,18 +192,18 @@ outcomes:
     probability:
       value:
         distribution: uniform
-        low: 0.2
-        high: 0.3
+        low: 
+          value: 0.2
+        high: 
+          value: 0.3
       intervention_param_name: "case_detect_rate"
 ```
+
+Each time the model is run a new random value for the probability of case detection will be chosen.&#x20;
 
 #### Delay
 
 Required, unless [`sum`](outcomes-for-compartments.md#sum) option is used instead. `delay` is the time delay between when individuals are chosen from the source compartment and when they are counted as part of this outcome variable.&#x20;
-
-`delay` can be a single value or a [distribution](introduction-to-configuration-files.md#distributions) (in which case each time the model is run, a different value for this parameter will be drawn from this distribution, but that value will be used for all calculations within this model run. Note that a delay distribution here **does not mean** that the delay time varies between individuals - it is identical).&#x20;
-
-Specifying the delay creates a parameter called `outcome_name::delay` that can be referred to in the [`outcome_modifiers`](intervention-templates.md) section of the config. The value of this parameter can be changed using the `delay::intervention_param_name` option.&#x20;
 
 For example, to track the incidence of hospitalization when 5% of children are hospitalized and hospitalization occurs 7 days after infection:
 
@@ -191,17 +214,35 @@ outcomes:
       incidence:
         infection_state: "I"
         age_group: "child"
-    probability: 0.05
-    delay: 7
+    probability: 
+      value: 0.05
+    delay: 
+      value: 7
+```
+
+To iterate over uncertainty in the exact delay time, we could include some variation between simulations in the delay time using a normal distribution with standard devation of 2 (truncating to make sure the delay does not become negative). Note that a delay distribution here **does not mean** that the delay time varies between individuals - it is identical).&#x20;
+
+```
+outcomes:
+  incidH_child:
+    source:
+      incidence:
+        infection_state: "I"
+        age_group: "child"
+    probability: 
+      value: 0.05
+    delay: 
+      value: 
+        distribution: truncnorm
+        mean: 7
+        sd: 2
+        a: 0
+        b: Inf
 ```
 
 #### Duration
 
 By default, all outcome variables describe incidence (new individuals entering each day). However, they can also track an associated "prevalence" if the user specifies how long individuals will stay classified as the outcome state the outcome variable describes. This is the `duration` parameter.&#x20;
-
-`duration` can be a single value or a [distribution](introduction-to-configuration-files.md#distributions) (in which case each time the model is run, a different value for this parameter will be drawn from this distribution, but that value will be used for all calculations within this model run. Note that a distribution of durations here **does not mean** that the duration time varies between individuals - it is identical).&#x20;
-
-Specifying the duration creates a parameter called `outcome_name::duration` that can be referred to in the [`outcome_modifiers`](intervention-templates.md) section of the config.  The value of this parameter can be changed using the `duration::intervention_param_name` option.&#x20;
 
 When the duration parameter is set, a new outcome variable is automatically created and named with the name of the original outcome variable + "\_curr". This name can be changed using the `duration::name` option.&#x20;
 
@@ -214,9 +255,12 @@ outcomes:
       incidence:
         infection_state: "I"
         age_group: "child"
-    probability: 0.05
-    delay: 7
-    duration: 3
+    probability: 
+      value: 0.05
+    delay: 
+      value: 7
+    duration: 
+      value: 3
 ```
 
 which creates the variable "incidH\_child\_curr" to track all currently hospitalized children. Since it doesn't make sense to call this new outcome variable an incidence, as it is a prevalence, we could instead rename it:
@@ -228,8 +272,10 @@ outcomes:
       incidence:
         infection_state: "I"
         age_group: "child"
-    probability: 0.05
-    delay: 7
+    probability: 
+      value: 0.05
+    delay: 
+      value: 7
     duration: 
       value: 3
       name: "hosp_child_curr"
@@ -239,7 +285,7 @@ outcomes:
 
 Optional. `sum` is used to create new outcome variables that are sums over other previously defined outcome variables.&#x20;
 
-If included, `source`, `probability`, `delay`, and `duration` will be ignored.&#x20;
+If `sum` is included, `source`, `probability`, `delay`, and `duration` will be ignored.&#x20;
 
 For example, to track new hospital admissions and current hospitalizations separately for children and adults, as well as for all ages combined
 

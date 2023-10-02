@@ -388,13 +388,15 @@ Parameters can take on three types of values:
 
 ### Specifying fixed parameter values
 
-Parameters can be assigned values by simply stating their numeric value after their name. For example, in a config describing a simple SIR model with transmission rate $$\beta$$ (`beta`) = 0.1/day and recovery rate $$\gamma$$ (`gamma`) = 0.2/day. This could be specified as
+Parameters can be assigned values by using the `value` argument after their name and then simply stating their numeric argument. For example, in a config describing a simple SIR model with transmission rate $$\beta$$ (`beta`) = 0.1/day and recovery rate $$\gamma$$ (`gamma`) = 0.2/day. This could be specified as
 
 ```
 seir:
   parameters:
-    beta: 0.1
-    gamma: 0.2
+    beta: 
+      value: 0.1
+    gamma: 
+      value: 0.2
 ```
 
 The full model section of the config could then read
@@ -418,8 +420,10 @@ seir:
       rate: [gamma]
       proportion_exponent: [1,1]
   parameters:
-    beta: 0.1
-    gamma: 0.2
+    beta: 
+      value: 0.1
+    gamma: 
+      value: 0.2
 ```
 
 For the stratified SI model described [above](compartmental-model-structure.md#transition-globs), this portion of the config would read
@@ -440,18 +444,23 @@ seir:
     rate: [[beta], [theta_u,theta_v]]
     proportion_exponent: [[1,1], [alpha_u,alpha_v]]
   parameters:
-    beta: 0.1
-    theta_u: 0.6
-    theta_v: 0.5
-    alpha_u: 0.9
-    alpha_v: 0.8
+    beta: 
+      value: 0.1
+    theta_u: 
+      value: 0.6
+    theta_v: 
+      value: 0.5
+    alpha_u: 
+      value: 0.9
+    alpha_v: 
+      value: 0.8
 ```
 
 If there are no parameter values that need to be specified (all rates given numeric values when defining model transitions), the `seir::parameters` section of the config can be left blank or omitted.
 
 ### Specifying parameters values from distributions
 
-Parameter values can also be specified as random values drawn from a distribution, as a way of including uncertainty in parameters in the model output. In this case, every time the model is run independently, a new random value of the parameter is drawn. For example, to choose the same value of `beta` = 0.1 each time the model is run but to choose a random values of `gamma` with mean on a log scale of $$e^{-1.6} = 0.2$$ and standard deviation on a log scale of $$e^{0.2} = 1.2$$ (e.g., 1.2-fold variation).
+Parameter values can also be specified as random values drawn from a distribution, as a way of including uncertainty in parameters in the model output. In this case, every time the model is run independently, a new random value of the parameter is drawn. For example, to choose the same value of `beta` = 0.1 each time the model is run but to choose a random values of `gamma` with mean on a log scale of $$e^{-1.6} = 0.2$$ and standard deviation on a log scale of $$e^{0.2} = 1.2$$ (e.g., 1.2-fold variation):
 
 ```
 seir:
@@ -475,7 +484,7 @@ Note that understanding when a new parameter values from this distribution is dr
 
 Sometimes, we want to be able to specify model parameters that have different values at different timepoints. For example, the relative transmissibility may vary throughout the year based on the weather conditions, or the rate at which individuals are vaccinated may vary as vaccine programs are rolled out. One way to do this is to instead specify the parameter values as a timeseries.
 
-This can be done by providing a data file in .csv format that has a list of values of the parameter for a corresponding timepoint and subpopulation name. One column should be `date` and the others should be the `subpop` names of each subpopulation. For time periods in between those specified in the file, the model will linearly interpolate between parameter values.
+This can be done by providing a data file in .csv or .parquet format that has a list of values of the parameter for a corresponding timepoint and subpopulation name. One column should be `date` and the others should be the `subpop` names of each subpopulation. For time periods in between those specified in the file, the model will linearly interpolate between parameter values.
 
 For example, for an SIR model with a simple [two-province population structure](specifying-population-structure.md#example-1) where the relative transmissibility peaks on January 1 then decreases linearly to a minimal value on June 1 then increases linearly again, but varies more in the small province than the large province, the `theta` parameter could be constructed from the file **seasonal\_transmission\_2pop.csv** with contents
 
@@ -507,15 +516,19 @@ seir:
       rate: [gamma]
       proportion_exponent: 1
   parameters:
-    beta: 0.1
-    gamma: 0.2
+    beta: 
+      value: 0.1
+    gamma: 
+      value: 0.2
     theta:
        timeseries: data/seasonal_transmission.csv
 ```
 
 The first and last date in the `date` column should correspond to the start\_date and end\_date for the simulation specified in the header of the config.
 
-Note that there is an alternative way to specify time dependence in parameter values that is described in the [Specifying interventions](intervention-templates.md) section. That method allows the user to define intervention parameters that apply specific additive or multiplicative shifts to other parameter values for a defined time interval. Interventions are useful if the parameter doesn't vary frequently and if the values of the shift is unknown and it is desired to either sample over uncertainty in it or try to estimate its value by fitting the model to data. If the parameter varies frequently and its value or relative value over time is known, specifying it as a timeseries is more efficient.
+Note that there is an alternative way to specify time dependence in parameter values that is described in the [Specifying time-varying parameter modifications](intervention-templates.md) section. That method allows the user to define intervention parameters that apply specific additive or multiplicative shifts to other parameter values for a defined time interval. Interventions are useful if the parameter doesn't vary frequently and if the values of the shift is unknown and it is desired to either sample over uncertainty in it or try to estimate its value by fitting the model to data. If the parameter varies frequently and its value or relative value over time is known, specifying it as a timeseries is more efficient.
+
+Compartmental model parameters can have an additional attribute beyond `value` or `timeseries`, which is called `stacked_modifier_method`. This value is explained in the section on coding [`time-dependent parameter modifications`](intervention-templates.md) (also known as "modifiers") as it determines what happens when two different modifiers act on the same parameter at the same time (are they combined additively or multiplicatively?).&#x20;
 
 ## Specifying model simulation method `(seir::integration)`
 
