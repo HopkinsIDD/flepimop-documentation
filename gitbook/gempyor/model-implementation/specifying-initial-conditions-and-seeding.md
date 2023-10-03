@@ -272,4 +272,13 @@ The simulation would be initiated on 2021-06-01 with these values in each compar
 
 #### SetInitialConditionsFolderDraw, FromFileFolderDraw
 
-initial\_file\_type:&#x20;
+The way that initial conditions is specified with `SetInitialConditions` and `FromFile` results in a single value for each compartment and does not easily allow the user to instead specify a distribution (like is possible for compartmental or outcome model parameters). If a user wants to use different possible initial condition values each time the model is run, the way to do this is to instead specify a folder containing a set of file with initial condition values for each simulation that will be run. The user can do this using files with the format described in i`nitial_conditions::method::SetInitialConditions` using instead `method::SetInitialConditionsFolder` draw. Similarly, to provide a folder of initial condition files with the format described in `initial_conditions::method:FromFile` using instead `method::FromFileFolderDraw`.&#x20;
+
+Each file in the folder needs to be named according to the same naming conventions as the model output files: run\_number.runID.file\_type.\[csv or parquet] where ....\[DESCRIBE] as it is now taking the place of the seeding files the model would normally output&#x20;
+
+Only one additional config argument is needed to use a FolderDraw method for initial conditions:
+
+`initial_file_type`:  either `seir` or `seed`
+
+When using FolderDraw methods, `initial_conditions_file` should now be the path to the directory that contains the folder with all the initial conditions files. For example, if you are using output from another model run and so the files are in an seir folder within a model\_output folder which is in within your project directory, you would use initial\_conditions\_file: model\_output&#x20;
+
