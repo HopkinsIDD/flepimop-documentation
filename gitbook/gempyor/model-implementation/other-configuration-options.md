@@ -73,9 +73,9 @@ interventions:
   scenarios:
     - None
     - Lockdown
-  settings:
+  modifiers:
     None:
-      template: SinglePeriodModifier
+      method: SinglePeriodModifier
       parameter: r0
       period_start_date: 2020-04-01
       period_end_date: 2020-05-15
@@ -84,7 +84,7 @@ interventions:
         value: 0
         settings:
     Lockdown:
-      template: SinglePeriodModifier
+      method: SinglePeriodModifier
       parameter: r0
       period_start_date: 2020-04-01
       period_end_date: 2020-05-15
@@ -134,7 +134,7 @@ Before running the simulation, the script `build_US_setup.R` can be run to get t
 This example simulates COVID-19 in the New England states, assuming no transmission from other states, using 2019 census data for the population sizes and a pre-created file for estimated interstate commutes during the 2011-2015 period.
 
 ```
-spatial_setup:
+subpop_setup:
   census_year: 2010
   state_level: TRUE
   geodata: geodata_2019_statelevel.csv

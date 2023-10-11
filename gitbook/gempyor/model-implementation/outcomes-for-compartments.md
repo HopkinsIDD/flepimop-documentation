@@ -19,7 +19,7 @@ The `outcomes` section is not required in the config. However, there are benefit
 As an example, imagine we are simulating an SIR-style model and want to compare it to real epidemic data in which cases of infection and death from infection are reported. Our model doesn't explicitly include death, but suppose we know that 1% of all infections eventually lead to hospitalization, and that hospitalization occurs on average 1 week after infection. We know that not all infections are reported as cases, and assume that only 50% are detected and are reported 2 days after infection begins. The model and `outcomes` section of the config for these outcomes, which we call `incidC` (daily incidence of cases) and `incidH` (daily incidence of hospital admission) would be
 
 <pre><code>compartments:
-  infection_state: ["S", "I", "R"]
+  infection_stage: ["S", "I", "R"]
   
 seir:
   transitions:
@@ -48,7 +48,7 @@ seir:
     incidC:
       source:
         incidence:
-          infection_state: "I"
+          infection_stage: "I"
       probability: 
         value: 0.5
       delay: 
@@ -56,7 +56,7 @@ seir:
     incidH:
       source:
         incidence:
-          infection_state: "I"
+          infection_stage: "I"
       probability: 
         value: 0.01
       delay: 
@@ -220,7 +220,7 @@ outcomes:
       value: 7
 ```
 
-To iterate over uncertainty in the exact delay time, we could include some variation between simulations in the delay time using a normal distribution with standard devation of 2 (truncating to make sure the delay does not become negative). Note that a delay distribution here **does not mean** that the delay time varies between individuals - it is identical).&#x20;
+To iterate over uncertainty in the exact delay time, we could include some variation between simulations in the delay time using a normal distribution with standard deviation of 2 (truncating to make sure the delay does not become negative). Note that a delay distribution here **does not mean** that the delay time varies between individuals - it is identical).&#x20;
 
 ```
 outcomes:
