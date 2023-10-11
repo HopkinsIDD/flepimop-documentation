@@ -8,7 +8,7 @@ description: >-
 
 **Modifiers** are a powerful feature in _flepiMoP_ to enable users to modify any of the parameters being specified in the model during particular time periods. They can be used, for example, to mirror public health control interventions, like non-pharmaceutical interventions (NPIs) or increased access to diagnosis or care, or annual seasonal variations in disease parameters. Modifiers can act on any of the transmission model parameters or observation model parameters.&#x20;
 
-In the `seir_modifiers` and `outcomes_modifiers` sections of the configuration file the user can specify several possible types of modifiers which will then be implemented in the model. Each modifier changes a parameter during one or multiple time periods and for one or multiple specified subpopulations.
+In the `seir_modifiers` and `outcome_modifiers` sections of the configuration file the user can specify several possible types of modifiers which will then be implemented in the model. Each modifier changes a parameter during one or multiple time periods and for one or multiple specified subpopulations.
 
 We currently support the following intervention types. Each of these is described in detail below:
 
@@ -62,7 +62,7 @@ seir_modifiers:
 ```
 
 {% hint style="info" %}
-The `seir_modifiers::scenarios` and`outcomes_modifiers::scenarios` sections are optional. If the `scenarios` section section is **not** included, the model will run with all of the modifiers turned "on".&#x20;
+The `seir_modifiers::scenarios` and`outcome_modifiers::scenarios` sections are optional. If the `scenarios`section is **not** included, the model will run with all of the modifiers turned "on".&#x20;
 {% endhint %}
 
 {% hint style="info" %}
@@ -87,7 +87,7 @@ seir_modifiers:
 or
 
 ```
-outcomes_modifiers
+outcome_modifiers
   scenarios:
     -BaselineTesting
     -TestShortage
