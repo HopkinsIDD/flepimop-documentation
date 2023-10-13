@@ -10,7 +10,7 @@ The model will output 2–6 different types of files depending on whether the co
 
 These files contain the values of the variables for both the infection and (if included) observational model at each point in time and for each subpopulation. A new file of the same type is produced for each independent simulation and each intervention scenario. Other files report the values of the initial conditions, seeding, and model parameters for each subpopulation and independent simulation (since parameters may be chosen to vary randomly between simulations). When [model inference](broken-reference/) is run, there are also file types reporting the model likelihood (relative to the provided data) and files for each iteration of the inference algorithm.
 
-Within the `model_output` directory in the project's directory, the files will be organized into folders named for the file types: `seir`, `spar`, `snpi`, `hpar`, `hnpi`, `seed`, `init`, or `llik` (see descriptions below). Within each file type folder, files will further be organized by the simulation name (name in config), the intervention scenario names (specified with interventions:scenarios in config), and the run\_id (the date and time of the simulation, by default). For example:
+Within the `model_output` directory in the project's directory, the files will be organized into folders named for the file types: `seir`, `spar`, `snpi`, `hpar`, `hnpi`, `seed`, `init`, or `llik` (see descriptions below). Within each file type folder, files will further be organized by the simulation name (`setup_name` in config), the modifier scenario names - if scenarios exist for either `seir` or `outcome` parameters (specified with `seir_modifiers::scenarios` and `outcome_modifiers::scenarios` in config), and the `run_id` (the date and time of the simulation, by default). For example:
 
 <pre><code><strong>flepimop_sample
 </strong>├── model_output
@@ -32,6 +32,8 @@ The example files outputs we show were generated with the following configuratio
 ```
 TBA
 ```
+
+The types and contents of the model output files changes slightly depending on whether the model is run as a forward simulation only, or is run in inference mode, in which parameter values are estimated by comparing the model to data. Output specific to model inference is described in a [separate section](../model-inference/inference-model-output.md).&#x20;
 
 ## SEIR (infection model output)
 
@@ -59,13 +61,13 @@ There will be a separate `seir` file output for each slot (independent simulatio
 
 ## SPAR (infection model parameter values)
 
-The files in the `spar` folder contain the parameters that define the transitions in the `seir` compartmental structure.&#x20;
+The files in the `spar` folder contain the parameters that define the transitions in the compartmental model of disease transmission, defined in the `seir::parameters` section of the config.&#x20;
 
 The `value` column gives the numerical values of the parameters defined in the corresponding column `parameter`.
 
 ## SNPI (infection model parameter intervention values)
 
-Files in the `snpi` folder contain the parameter intervention values for each subpopulation. They contain the interventions that apply to a given subpopulation and the dates within which they apply, and the value of the reduction to the given parameter.
+Files in the `snpi` folder contain the time-dependent modifications to the transmission model parameter values (defined in `seir_modifiers` section of the config) for each subpopulation. They contain the interventions that apply to a given subpopulation and the dates within which they apply, and the value of the reduction to the given parameter.
 
 The meanings of the columns are:
 
@@ -97,13 +99,13 @@ The meanings of the columns are:
 
 ## HNPI (observation model parameter intervention values)
 
-Files in the `hnpi` folder contain any parameter intervention values that apply to the outcomes model. They contain the values of the outcome intervention parameters, and the dates to which they apply in a given subpopulation.
+Files in the `hnpi` folder contain any parameter modifier values that apply to the outcomes model, defined in the `outcome_modifiers` section of the config. They contain the values of the outcome parameter modifiers, and the dates to which they apply in a given subpopulation.
 
 The meanings of the columns are:
 
 `subpop` – The values of this column are the names of the nodes from the `geodata` file.
 
-`npi_name` – The names/labels of the intervention parameters, defined by the user in the config file, which applies to the given node and time period.
+`npi_name` – The names/labels of the modifier parameters, defined by the user in the config file, which applies to the given node and time period.
 
 `start_date` – The start date of this intervention, as defined in the configuration file.
 
@@ -111,11 +113,11 @@ The meanings of the columns are:
 
 `parameter` – The outcome parameter to which the intervention applies.
 
-`reduction` – The values in this column are the reduction values of the intervention parameters, which apply to the given parameter in a given subpopulation. Note that these are strictly reductions **(see description on other page?)**; thus a negative value corresponds to an increase in the parameter, while a positive value corresponds to a decrease in the parameter.
+`reduction` – The values in this column are the reduction values of the intervention parameters, which apply to the given parameter in a given subpopulation. Note that these are strictly reductions; thus a negative value corresponds to an increase in the parameter, while a positive value corresponds to a decrease in the parameter.
 
 ## SEED (model seeding values)
 
-Files in the `seed` folder contain the seeded values of the infection model. They contain the amounts seeded into each destination variable, and the variable they are seeded from. The user can provide a single seeding file (which will be used across all simulations), or, if multiple simulations are being run the user can provide a separate file for each simulation.&#x20;
+Files in the `seed` folder contain the seeded values of the infection model. They contain the amounts seeded into each variable, the variable they are seeded from, and the time at which the seeding occurs. The user can provide a single seeding file (which will be used across all simulations), or, if multiple simulations are being run the user can provide a separate file for each simulation.&#x20;
 
 The meanings of the columns are:
 
@@ -133,7 +135,7 @@ The meanings of the columns are:
 
 ## INIT (model initial conditions)
 
-Files in the `init` folder contain the initial values of the infection model. Either seed or init files will be present, depending on the configuration of the model (see ...). These files contain the initial conditions of the infection model at the start date defined in the configuration file. As with seeding, the user can provide a single initial conditions file (which will be used across all simulations), or, if multiple simulations are being run the user can provide a separate file for each simulation.&#x20;
+Files in the `init` folder contain the initial values of the infection model. Either seed or init files will be present, depending on the configuration of the model . These files contain the initial conditions of the infection model at the start date defined in the configuration file. As with seeding, the user can provide a single initial conditions file (which will be used across all simulations), or, if multiple simulations are being run the user can provide a separate file for each simulation.&#x20;
 
 The meanings of the columns are:
 
@@ -143,46 +145,6 @@ The meanings of the columns are:
 
 `amount` -  The amount initialized seeded in the given subpopulation at the start date defined in the configuration file.&#x20;
 
-## LLIK (inference runs only)
-
-During inference runs, an additional file type, `llik`, is created, which is described in the [Inference Model Output](../model-inference/inference-model-output.md) section.
-
-These files contain the log-likelihoods of the model simulation for each subpopulation, as well as some diagnostics on acceptance.
-
-The meanings of the columns are:
-
-`ll` - These values are the log-likelihoods of the given subpopulation.&#x20;
-
-`filename` - ...
-
-`subpop` - The values of this column are the names of the nodes from the `geodata` file.
-
-`accept` -&#x20;
-
-`accept_avg` -&#x20;
-
-`accept_prob` -&#x20;
 
 
-
-
-
-For inference runs, `...` _flepiMoP_ produces one file per parallel slot, for both global and chimeric outputs...
-
-```
-flepimop_sample
-├── model_output
-│   ├── seir
-│   ├── spar
-│   ├── snpi
-│   └── llik
-│       └── sample_2pop
-│           └── None
-│               └── 2023.05.24.02/12/48.
-│                   ├── chimeric
-│                   └── global
-│                       ├── final
-│                       │   └── 000000001.2023.05.24.02/12/48..llik.parquet
-│                       └── intermediate
-│                           └── 000000001.000000001.2023.05.24.02/12/48..llik.parquet
-```
+###

@@ -15,12 +15,12 @@ _(give a simple configuration for a toy model with two subpopulations, SEIR, sin
 When referring to config items (individual parameters), we use their full position in the outline. For example, in the sample config file above, we denote
 
 ```
-spatial_setup:
+subpop_setup:
   ...
   geodata: minimal
 ```
 
-as `spatial_setup::geodata` having a value of `minimal`
+as `subpop_setup::geodata` having a value of `minimal`
 
 ## Notation
 
