@@ -16,7 +16,7 @@ An example section of a configuration file defining a simple SIR model is below.
 
 ```
 compartments:
-  infection_state: ["S", "I", "R"]
+  infection_stage: ["S", "I", "R"]
   
 seir:
   transitions:
@@ -44,11 +44,11 @@ seir:
 
 The first stage of specifying the model is to define the infection states (variables) that the model will track. These "compartments" are defined first in the `compartments` section of the config file, before describing the processes that lead to transitions between them. The compartments are defined separately from the rest of the model because they are also used by the `seeding` section that defines initial conditions and importations.
 
-For simple disease models, the compartments can simply be listed with whatever notation the user chooses. For example, for a simple SIR model, the compartments could be `["S", "I", "R"]`. The config also requires that there be a variable name for the property of the individual that these compartments describe, which for example in this case could be `infection_state`
+For simple disease models, the compartments can simply be listed with whatever notation the user chooses. For example, for a simple SIR model, the compartments could be `["S", "I", "R"]`. The config also requires that there be a variable name for the property of the individual that these compartments describe, which for example in this case could be `infection_stage`
 
 ```
 compartments:
-  infection_state: ["S", "I", "R"]
+  infection_stage: ["S", "I", "R"]
 ```
 
 Our syntax allows for more complex models to be specified without much additional notation. For example, consider a model of a disease that followed SIR dynamics but for which individuals could receive vaccination, which might change how they experience infection.
@@ -57,14 +57,14 @@ In this case we can specify compartments as the cross product of multiple states
 
 ```
  compartments:
-   infection_state: ["S", "I", "R"]
+   infection_stage: ["S", "I", "R"]
    vaccination_status: ["unvaccinated", "vaccinated"]
 ```
 
 Corresponds to 6 compartments, which the code internally converts to this data frame
 
 ```
-infection_state, vaccination_status, compartment_name
+infection_stage, vaccination_status, compartment_name
 S,               unvaccinated,       S_unvaccinated
 I,               unvaccinated,       I_unvaccinated
 R,               unvaccinated,       R_unvaccinated
@@ -81,7 +81,7 @@ For example, consider a model of a disease that follows SI dynamics in two separ
 
 ```
  compartments:
-   infection_state: ["S", "I"]
+   infection_stage: ["S", "I"]
    age_group: ["child", "adult"]
    vaccination_status: ["unvaccinated", "1dose", "2dose"]
 ```
@@ -89,7 +89,7 @@ For example, consider a model of a disease that follows SI dynamics in two separ
 corresponding to 12 compartments, 4 of which are unnecessary to the model
 
 ```
-infection_state, age_group, vaccination_status, compartment_name
+infection_stage, age_group, vaccination_status, compartment_name
 S,		 child,	    unvaccinated,	S_child_unvaccinated	
 I,		 child,	    unvaccinated,	I_child_unvaccinated
 S,		 adult,	    unvaccinated,	S_adult_unvaccinated
@@ -430,7 +430,7 @@ For the stratified SI model described [above](compartmental-model-structure.md#t
 
 ```
 compartments:
-  infection_state: ["S", "I", "R"]
+  infection_stage: ["S", "I", "R"]
   vaccination_status: ["unvaccinated", "vaccinated"]
   
 seir:
@@ -499,7 +499,7 @@ as a part of a configuration file with the model sections:
 
 ```
 compartments:
-  infection_state: ["S", "I", "R"]
+  infection_stage: ["S", "I", "R"]
 
 seir:
   transitions:

@@ -47,7 +47,7 @@ The meanings of the columns are:
 
 `mc_value_type` – either `prevalence` or `incidence`. Variable values are reported both as a **prevalence** (number of individuals in that state measured instantaneously at the start of the day, equivalent to the meaning of the S, I, or R variable in the differential equations or their stochastic representation) and as **incidence** (total number of individuals who newly entered this state, from all other states, over the course of the 24-hour period comprising that calendar day).
 
-`mc_infection_state`, `mc_vaccination_stage`, etc. – The name of the compartment for which the value is reported, broken down into the infection stage for each state type (eg. vaccination, age).
+`mc_infection_stage`, `mc_vaccination_status`, etc. – The name of the compartment for which the value is reported, broken down into the infection stage for each state type (eg. vaccination, age).
 
 `mc_name` – The name of the compartment for which the value is reported, which is a concatenation of the compartment status in each state type.
 
@@ -125,9 +125,9 @@ The meanings of the columns are:
 
 `amount` - The amount seeded in the given subpopulation from source variables to destination variables, at the given date.&#x20;
 
-`source_infection_stage`, `source_vaccination_stage`, etc. -  The name of the compartment **from** which the amount is seeded, broken down into the infection stage for each state type (eg. vaccination, age).
+`source_infection_stage`, `source_vaccination_status`, etc. -  The name of the compartment **from** which the amount is seeded, broken down into the infection stage for each state type (eg. vaccination, age).
 
-`destination_infection_stage`, `destination_vaccination_stage`, etc. - The name of the compartment **into** which the amount is seeded, broken down into the infection stage for each state type (eg. vaccination, age).
+`destination_infection_stage`, `destination_vaccination_status`, etc. - The name of the compartment **into** which the amount is seeded, broken down into the infection stage for each state type (eg. vaccination, age).
 
 `no_perturb` - The values in this column can be either `true` or `false`. If true, then the amount and/or date can be perturbed if running an inference run. Whether the amount or date is perturbed is defined in the config using `perturb_amount` and `perturb_date`.&#x20;
 
@@ -139,7 +139,7 @@ The meanings of the columns are:
 
 `subpop` - The values of this column are the names of the nodes from the `geodata` file.
 
-`mc_infection_state`, `mc_vaccination_stage`, etc. - The name of the compartment for which the value is reported, broken down into the infection stage for each state type (eg. vaccination, age).
+`mc_infection_stage`, `mc_vaccination_status`, etc. - The name of the compartment for which the value is reported, broken down into the infection stage for each state type (eg. vaccination, age).
 
 `amount` -  The amount initialized seeded in the given subpopulation at the start date defined in the configuration file.&#x20;
 

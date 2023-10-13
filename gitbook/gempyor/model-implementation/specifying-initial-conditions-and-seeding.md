@@ -143,7 +143,7 @@ For example, a model with the following compartments
 
 ```
  compartments:
-   infection_state: ["S", "I", "R"]
+   infection_stage: ["S", "I", "R"]
    age_group: ["child", "adult"]
    vaccination_status: ["unvaxxed", "vaxxed"]
  
@@ -169,7 +169,7 @@ For example, for a model with the following `compartments` and `initial_conditio
 
 ```
  compartments:
-   infection_state: ["S", "I", "R"]
+   infection_stage: ["S", "I", "R"]
    age_group: ["child", "adult"]
    vaccination_status: ["unvaxxed", "vaxxed"]
    
@@ -222,7 +222,7 @@ name: test_simulation
 start_date: 2021-06-01
 
  compartments:
-   infection_state: ["S", "I", "R"]
+   infection_stage: ["S", "I", "R"]
    age_group: ["child", "adult"]
    vaccination_status: ["unvaxxed", "vaxxed"]
    
