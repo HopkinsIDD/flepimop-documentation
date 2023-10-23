@@ -1,5 +1,49 @@
 # Useful commands
 
+### Git setup
+
+Type the following line so git remembers your credential and you don't have to enter your token 6 times per day:
+
+```bash
+git config --global credential.helper store
+git config --global user.name "{NAME SURNAME}"
+git config --global user.email YOUREMAIL@EMAIL.COM
+git config --global pull.rebase false # so you use merge as the default reconciliation method
+```
+
+### Get a notification on your phone/mail when a run is done
+
+We use [ntfy.sh](https://ntfy.sh) for notification. Install ntfy on your Iphone or Android device. Then subscribe to the channel `ntfy.sh/flepimop_alerts` where you'll receive notifications when runs are done.
+
+* End of job notifications goes as urgent priority.
+
+### Install slack integration
+
+Within included example postprocessing scripts, we include a helper script that sends a slack message with some output snapshots of our model output. So our 🤖-friend can send us some notifications once a run is done.
+
+```
+cd /scratch4/struelo1/flepimop-code/
+nano slack_credentials.sh
+# and fill the file:
+export SLACK_WEBHOOK="{THE SLACK WEBHOOK FOR CSP_PRODUCTION}"
+export SLACK_TOKEN="{THE SLACK TOKEN}"
+
+```
+
+### Delphi **Epidata** API
+
+{% hint style="info" %}
+If you are using the **Delph Epidata API**, first [register for a key](https://cmu-delphi.github.io/delphi-epidata/). Once you have a key, add that below where you see \[YOUR API KEY]. Alternatively, you can put that key in your config file in the `inference` section as `gt_api_key: "YOUR API KEY"`.
+
+```bash
+export DELPHI_API_KEY="[YOUR API KEY]"
+```
+{% endhint %}
+
+## 🚀 Run inference using slurm (do everytime)
+
+
+
 TODO: add how to run test, and everything
 
 {% hint style="danger" %}
