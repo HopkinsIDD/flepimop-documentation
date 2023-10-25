@@ -125,7 +125,7 @@ The configuration items in the `initial_conditions` section of the config file a
 
 `initial_conditions:initial_file_type` Only required for `method: “FolderDraw”`. Description TBA
 
-`initial_conditions::allow_missing_nodes` Optional for all methods, determines what will happen if `initial_conditions_file` is missing values for some subpopulations. If FALSE, the default behavior, or unspecified, an error will occur if subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment (the “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group), unless another compartment is designated to hold the rest of the individuals.&#x20;
+`initial_conditions::allow_missing_subpops` Optional for all methods, determines what will happen if `initial_conditions_file` is missing values for some subpopulations. If FALSE, the default behavior, or unspecified, an error will occur if subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment (the “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group), unless another compartment is designated to hold the rest of the individuals.&#x20;
 
 `initial_conditions::allow_missing_compartments` Optional for all methods. If FALSE, the default behavior, or unspecified, an error will occur if any compartments are missing for any subpopulation. If TRUE, then it will be assumed there are zero individuals in compartments missing from the `initial_conditions file`.
 
@@ -176,7 +176,7 @@ For example, for a model with the following `compartments` and `initial_conditio
 initial_conditions:
     method: SetInitialConditions
     initial_conditions_file: initial_conditions.csv
-    allow_missing_nodes: TRUE
+    allow_missing_subpops: TRUE
     allow_missing_compartments: TRUE
 ```
 
@@ -203,13 +203,13 @@ the model will be started with half of the population of both subpopulations, co
 
 `initial_conditions::initial_conditions_file` must contain the following columns:
 
-* `subpop` – the name of the subpopulation for which the initial condition is being specified. By default, all subpopulations must be listed in this file, unless the `allow_missing_nodes` option is set to TRUE.
+* `subpop` – the name of the subpopulation for which the initial condition is being specified. By default, all subpopulations must be listed in this file, unless the `allow_missing_subpops` option is set to TRUE.
 * `mc_name` – the concatenated name of the compartment for which an initial condition is being specified. The order of the compartment groups in the name must be the same as the order in which these groups are defined in the config for the model, e.g., you cannot say `unvaccinated_S`.
 * `amount` – the value of the initial condition; either a numeric value or the string "rest".
 
 For each subpopulation, if there are compartments that are not listed in `SetInitialConditions`, an error will be thrown unless `allow_missing_compartments` is set to TRUE, in which case it will be assumed there are zero individuals in them. If the sum of the values of the initial conditions in all compartments in a location does not add up to the total population of that location (specified in the geodata file), an error will be thrown. To allocate all remaining individuals in a subpopulation (the difference between the total population size and those allocated by defined initial conditions) to a single pre-specified compartment, include this compartment in the `initial_conditions_file` but instead of a number in the `amount` column, put the word "rest".&#x20;
 
-If `allow_missing_nodes` is FALSE or unspecified, an error will occur if initial conditions for some subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment. (The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.)
+If `allow_missing_subpops` is FALSE or unspecified, an error will occur if initial conditions for some subpopulations are missing. If TRUE, then for subpopulations missing from the `initial_conditions` file, it will be assumed that all individuals begin in the first compartment. (The “first” compartment depends on how the model was specified, and will be the compartment that contains the first named category in each compartment group.)
 
 #### FromFile
 
@@ -230,7 +230,7 @@ initial_conditions:
     method: SetInitialConditions
     initial_conditions_file: initial_conditions_from_previous.csv
     allow_missing_compartments: FALSE
-    allow_missing_nodes: FALSE
+    allow_missing_subpops: FALSE
 ```
 
 with the accompanying geodata file
