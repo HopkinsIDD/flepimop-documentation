@@ -98,7 +98,7 @@ Just like the case for [compartment model parameters](compartmental-model-struct
 
 Required, unless [`sum`](outcomes-for-compartments.md#sum) option is used instead. This sub-section describes the compartment(s) in the infectious disease model from which this outcome variable is drawn. Outcome variables can be drawn from the `incidence` of a variable - meaning that some fraction of new individuals entering the infection model state each day are chosen to contribute to the outcome variable - or from the `prevalence`, meaning that each day some fraction of individuals currently in the infection state are chosen to contribute to the outcome variable. Note that whatever the source type, **the named outcome variable itself is always a measure of incidence**.&#x20;
 
-To specify which compartment(s) contribute the user must specify the state(s) within each model stratification. For stratifications not mentioned, the outcome will sum over all states in that strata.&#x20;
+To specify which compartment(s) contribute the user must specify the state(s) within each model stratification. For stratifications not mentioned, the outcome will sum over that states in all strata.&#x20;
 
 For example, consider a configuration in which the compartmental model was constructed to track infection status stratified by vaccination status and age group.  The following code would be used to create an outcome called `incidH_child` (incidence of hospitalization for children) and `incidH_adult` (incidence of hospitalization for adults) where some fraction of infected individuals would become hospitalized and we wanted to track separately track pediatric vs adult hospitalizations, but did not care about tracking the vaccination status of hospitalized individuals as in reality it was not tracked by the hospitals.&#x20;
 
@@ -120,6 +120,11 @@ outcomes:
       incidence:
         infection_state: "I"
         age_group: "adult"
+    ...
+  incidH_all:
+    source:
+      incidence:
+        infection_state: "I"
     ...
 ```
 
