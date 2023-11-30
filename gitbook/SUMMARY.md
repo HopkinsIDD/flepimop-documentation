@@ -70,7 +70,7 @@
 
 * [US specific How to Run](jhu-internal/us-specific-how-to-run/README.md)
   * [Running with Docker locally (outdated/US specific) 🛳](jhu-internal/us-specific-how-to-run/running-with-docker-locally.md)
-  * [Copy of Running on Rockfish/MARCC 🪨🐠](jhu-internal/us-specific-how-to-run/slurm-submission-on-marcc.md)
+  * [Running on Rockfish/MARCC - JHU 🪨🐠](jhu-internal/us-specific-how-to-run/slurm-submission-on-marcc.md)
 
 ## Group 1
 

@@ -227,7 +227,7 @@ start_date: 2021-06-01
    vaccination_status: ["unvaxxed", "vaxxed"]
    
 initial_conditions:
-    method: SetInitialConditions
+    method: FromFile
     initial_conditions_file: initial_conditions_from_previous.csv
     allow_missing_compartments: FALSE
     allow_missing_subpops: FALSE
@@ -270,7 +270,7 @@ The simulation would be initiated on 2021-06-01 with these values in each compar
 * `subpop_1`, `subpop_2`, etc. – one column for each different subpopulation, containing the value of the number of individuals in the described compartment in that subpopulation at the given date. Note that these are named after the nodenames defined by the user in the `geodata` file.
 * `date` – The calendar date in the simulation, in YYYY-MM-DD format. Only values with a date that matches to the simulation `start_date` will be used.&#x20;
 
-#### SetInitialConditionsFolderDraw, FromFileFolderDraw
+#### SetInitialConditions, FolderDraw, FromFileFolderDraw
 
 The way that initial conditions is specified with `SetInitialConditions` and `FromFile` results in a single value for each compartment and does not easily allow the user to instead specify a distribution (like is possible for compartmental or outcome model parameters). If a user wants to use different possible initial condition values each time the model is run, the way to do this is to instead specify a folder containing a set of file with initial condition values for each simulation that will be run. The user can do this using files with the format described in i`nitial_conditions::method::SetInitialConditions` using instead `method::SetInitialConditionsFolder` draw. Similarly, to provide a folder of initial condition files with the format described in `initial_conditions::method:FromFile` using instead `method::FromFileFolderDraw`.&#x20;
 
