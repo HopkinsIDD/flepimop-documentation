@@ -29,28 +29,14 @@ module load <gcc 9.x version>
 </strong>module load &#x3C;latest anaconda environment>
 </code></pre>
 
-Now you can set up your conda environment.
-
-This command is quite long you'll have the time to brew some nice coffee ☕️:
-
-{% code overflow="wrap" %}
-```bash
-conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot r-ggraph r-tidygraph
-```
-{% endcode %}
-
-<details>
-
-<summary>Expand if the conda does not work for no particular reason (just interrupted)</summary>
-
-If the dependencies are hard to satisfy, the above line might take so long that it's killed by the watchdog of your HPC. In this case, only, you can create the environment in two shorter commands:
+Now you need to create the conda environment. You will create the environment in two shorter commands, installing the python and R stuff separately. This can be extremely long if done in one command, so doing it in two helps. This command is quite long you'll have the time to brew some nice coffee ☕️:
 
 {% code overflow="wrap" %}
 ```bash
 # install all python stuff first
 conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk
 
-# activate the environment and install the R stuff
+# activate the enviromnment and install the R stuff
 conda activate flepimop-env
 conda install -c conda-forge r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot 
 ```
