@@ -35,20 +35,24 @@ Now you need to create the conda environment. You will create the environment in
 ```bash
 # install all python stuff first
 conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk
-
-# activate the enviromnment and install the R stuff
-conda activate flepimop-env
-conda install -c conda-forge r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot 
 ```
 {% endcode %}
 
-</details>
+The next step in preparing your environment is to install the necessary R packages. First, activate your environment, launch R and then install the following packages.&#x20;
+
+<pre class="language-bash" data-overflow="wrap"><code class="lang-bash"><strong>conda activate flepimop-env # this launches the environment you just created
+</strong>
+R # to launch R from command line
+
+<strong># while in R
+</strong><strong>install.packages(c("readr","sf","lubridate","tidyverse","gridExtra","reticulate","truncnorm","xts","ggfortify","flextable","doParallel","foreach","optparse","arrow","devtools","cowplot","ggraph"))
+</strong></code></pre>
 
 You are now ready to run using SLURM!
 
 ## 🗂️ Files and folder organization
 
-HPC administrators are likely to provide different partitions with different properties for your use. We recommend a partition that supports a **shared environment** and **storage intensive** needs.&#x20;
+HPC administrators are likely to provide different partitions with different properties for your use. We recommend a partition that supports a **shared environment** and **storage intensive** needs.
 
 For example, we use a scratch partition with 20T of space, which has a primary user, and other users share this storage. In our setup this looks like: `/scratch4/primary-user/` . We will describe this setup as an example, but note that your HPC setup might be different (if so, change the relevant paths).
 
@@ -63,7 +67,7 @@ We recommend setting up two folders: one containing the code, and one for storin
 Note that the repository should be cloned **flat,** i.e the `flepiMoP` repository is at the same level as the data repository, not inside it.
 {% endhint %}
 
-* **output folder:**`/scratch4/primary-user/flepimop-runs` \
+* **output folder:**`/scratch4/primary-user/flepimop-runs`\
   After an inference run finishes, it's output and the logs files are copied from the project folder where the model is run from, to `scratch4/primary-user/flepimop-runs/$JOB_NAME` where `JOB_NAME` is an environmental variable set up within the submission script (described below; this is usually of the form `USA-DATE`).
 
 <details>
@@ -106,7 +110,7 @@ This will prepare the environment and setup variables for the validation date, t
 
 <summary>what does this do || help: it returns an error</summary>
 
-This script runs the following commands to setup up the environment, which you can run individually as well.&#x20;
+This script runs the following commands to setup up the environment, which you can run individually as well.
 
 ```bash
 module purge
@@ -138,7 +142,7 @@ export FLEPI_RUN_INDEX=inference_test
 Check that the conda environment is activated: you should see`(flepimop-env)` on the left of your command-line prompt.
 {% endhint %}
 
-Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date) then you can skip these steps.&#x20;
+Then prepare the pipeline directory (if you have already done that and the pipeline hasn't been updated (`git pull` says it's up to date) then you can skip these steps.
 
 ### Define environment variables
 
@@ -162,7 +166,7 @@ Each installation step may take a few minutes to run.
 
 ### Run the code
 
-Everything is now ready 🎉  The next step depends on what sort of simulation you want to run: One that includes inference (fitting model to data) or only a forward simulation (non-inference). Inference is run from R, while forward-only simulations are run directly from the Python package `gempyor`.
+Everything is now ready 🎉 The next step depends on what sort of simulation you want to run: One that includes inference (fitting model to data) or only a forward simulation (non-inference). Inference is run from R, while forward-only simulations are run directly from the Python package `gempyor`.
 
 In either case, navigate to the project directory and make sure to delete any old model output files that are there. Note that in the example config provided, the output is saved to `model_output`, but this might be otherwise defined in `config::model_output_dirname.`
 
@@ -201,7 +205,7 @@ python $FLEPI_PATH/batch/inference_job_launcher.py --slurm 2>&1 | tee $FLEPI_RUN
 
 This command infers everything from you environment variables, if there is a resume or not, what is the run\_id, etc. The part after the "2" makes sure this file output is redirected to a script for logging, but has no impact on your submission.
 
-This launches a batch job to your HPC, with each slot on a separate node.&#x20;
+This launches a batch job to your HPC, with each slot on a separate node.
 
 If you'd like to have more control, you can specify the arguments manually:
 
@@ -224,7 +228,7 @@ git push --set-upstream origin $branch
 </code></pre>
 
 {% hint style="danger" %}
-**DO NOT** move to a different git branch after this step, as the run will use data in the current directory.&#x20;
+**DO NOT** move to a different git branch after this step, as the run will use data in the current directory.
 {% endhint %}
 
 ## 🛠 Helpful tools and other notes
@@ -239,7 +243,7 @@ log_{scenario}_{FLEPI_RUN_INDEX}_{JOB_NAME}_{seir_modifier_scenario}_{outcome_mo
 ```
 {% endcode %}
 
-To view these as they are being written, type&#x20;
+To view these as they are being written, type
 
 {% code overflow="wrap" %}
 ```bash
@@ -263,7 +267,7 @@ The options here are `[-n tasks or cores]`, `[-t walltime]`, `[-p partition]` an
 
 ### Moving files to your local computer
 
-Often you'll need to move files back and forth between your HPC and your local computer. To do this, your HPC might suggest [Filezilla](https://filezilla-project.org/) or [Globus file manager](https://www.globus.org/). You can also use commands `scp` or `rsync` (check what works for your HPC).&#x20;
+Often you'll need to move files back and forth between your HPC and your local computer. To do this, your HPC might suggest [Filezilla](https://filezilla-project.org/) or [Globus file manager](https://www.globus.org/). You can also use commands `scp` or `rsync` (check what works for your HPC).
 
 <pre class="language-bash"><code class="lang-bash"><strong># To get files from HPC to local computer
 </strong><strong>scp -r &#x3C;user>@&#x3C;data transfer node>:"&#x3C;file path of what you want>" &#x3C;where you want to put it in your local>
@@ -275,10 +279,9 @@ rsync local-file user@remote-host:remote-file
 
 ### Other helpful commands
 
-If your system is approaching a file number quota, you can find subfolders that contain a large number of files by typing:&#x20;
+If your system is approaching a file number quota, you can find subfolders that contain a large number of files by typing:
 
 ```bash
 find . -maxdepth 1 -type d | while read -r dir
  do printf "%s:\t" "$dir"; find "$dir" -type f | wc -l; done 
 ```
-

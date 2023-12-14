@@ -2,7 +2,7 @@
 description: Short internal tutorial on running locally using an "Anaconda" environment.
 ---
 
-# Running locally in a conda environment 🐍
+# Running locally in a conda environment (outdated) 🐍
 
 
 
@@ -10,23 +10,58 @@ description: Short internal tutorial on running locally using an "Anaconda" envi
 :warning: This is not currently working. Problem with package conflicts, so conda environment is not building on all platforms
 {% endhint %}
 
-### 🧱Setup (do this once)
+### Access model files
+
+As is the case for any run, first see the [Before any run](before-any-run.md) section to ensure you have access to the correct files needed to run. On your local machine, determine the file paths to:
+
+* the directory containing the flepimop code (likely the folder you cloned from Github), which we'll call `FLEPI_PATH`
+* the directory containing your project code including input configuration file and population structure (again likely from Github), which we'll call `DATA_PATH`
+
+{% hint style="info" %}
+For example, if you clone your Github repositories into a local folder called Github and are using the flepimop\_sample as a project repository, your directory names could be\
+\
+_**On Mac:**_&#x20;
+
+\<dir1> = /Users/YourName/Github/flepiMoP
+
+\<dir2> = /Users/YourName/Github/flepimop\_sample\
+\
+_**On Windows:**_ \
+\<dir1> = C:\Users\YourName\Github\flepiMoP
+
+\<dir2> = C:\Users\YourName\Github\flepimop\_sample\
+
+
+(hint: if you navigate to a directory like `C:\Users\YourName\Github` using `cd C:\Users\YourName\Github`, modify the above `<dir1>` paths to be `.\flepiMoP` and `.\flepimop_sample)`
+{% endhint %}
+
+## 🧱 Setup (do this once)
 
 #### Installing the `conda` environment
 
-The simplest way to get everything to work is to build an Anaconda environment. Install (or update) Anaconda on your computer. You can either use the command line (here) or the graphical user interface (you just tick the packages you want). With the command line it's this one-liner:
+The simplest way to get everything to work is to build an Anaconda environment. Install (or update) Anaconda on your computer. We find that it is easiest to create your conda environment by installing required python packages, then installing R packages separately once your conda environment has been built as not all R packages can be found on conda.&#x20;
+
+You can either use the command line (here) or the graphical user interface (you just tick the packages you want). With the command line it's this one-liner:
 
 <pre class="language-bash" data-overflow="wrap"><code class="lang-bash">conda update conda # makes sure you have a recent conda instatllation
 
 # be sure to copy the whole thing as a single line ! copy it to your text editor
-<strong>conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk r-readr r-sf r-lubridate r-tigris r-tidyverse r-gridextra r-reticulate r-truncnorm r-xts r-ggfortify r-flextable r-doparallel r-foreach r-arrow r-optparse r-devtools r-tidycensus r-cdltools r-cowplot r-ggraph r-tidygraph
+<strong>conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk
 </strong></code></pre>
 
-Anaconda will take some time, to come up with a proposal that works will all dependencies.&#x20;
+Anaconda will take some time, to come up with a proposal that works with all dependencies. This creates a `conda` environment named `flepimop-env` that has all the necessary python packages.  \
+\
+The next step in preparing your environment is to install the necessary R packages. First, activate your environment, launch R and then install the following packages.&#x20;
 
-This creates a `conda` environment named `flepimop-env` that has all the necessary packages. &#x20;
+<pre class="language-bash" data-overflow="wrap"><code class="lang-bash"><strong>conda activate flepimop-env # this launches the environment you just created
+</strong>
+R # to launch R from command line
 
-If you'd like you can install `rstudio` as a package as well, but I think your Rstudio should be able to find your conda R without problems.
+<strong># while in R
+</strong><strong>install.packages(c("readr","sf","lubridate","tidyverse","gridExtra","reticulate","truncnorm","xts","ggfortify","flextable","doParallel","foreach","optparse","arrow","devtools","cowplot","ggraph"))
+</strong></code></pre>
+
+If you'd like, you can install `rstudio` as a package as well.
 
 <details>
 
@@ -38,65 +73,44 @@ Anaconda is the most reproducible way to run our model. However, you can still p
 
 </details>
 
-## 🚀 Run inference
+## 🚀 Run the model
 
-#### Fill the environment variables (do this every time)
-
-First, you'll need to fill in some variables that are used by the model. This can be done in a script (an example is provided at the end of this page). For your first time, it's better to run each command individually to be sure it exits successfully.&#x20;
-
-First, in `myparentfolder` populate the folder name variables:
-
-```bash
-export FLEPI_PATH=$(pwd)/flepiMoP
-export DATA_PATH=$(pwd)/Flu_USA
-```
-
-Note: you can replace `Flu_USA` with any relevant data folder you wish, e.g., `COVID19_USA`.
-
-Then, export variables for some flags and the census API key (you can use your own):
-
-{% code overflow="wrap" %}
-```bash
-export FLEPI_STOCHASTIC_RUN=false
-export FLEPI_RESET_CHIMERICS=TRUE
-export CENSUS_API_KEY="6a98b751a5a7a6fc365d14fa8e825d5785138935"
-```
-{% endcode %}
-
-#### Install the packages (do this every time the flepiMoP repository has changed)
-
-Activate your conda environment, if you have one.
+Activate your conda environment, which we built above.
 
 ```bash
 conda activate flepimop-env
 ```
 
-In this conda environment, commands with R and python will uses this environment's R and python. Go into the flepiMoP repo (making sure it is up to date on your favorite branch) and do the installation required of the repository:
+In this `conda` environment, commands with R and python will uses this environment's R and python.&#x20;
+
+### Define environment variables
+
+First, you'll need to fill in some variables that are used by the model. This can be done in a script (an example is provided at the end of this page). For your first time, it's better to run each command individually to be sure it exits successfully.&#x20;
+
+First, in `myparentfolder` populate the folder name variables for the paths to the flepimop code folder and the project folder:
 
 ```bash
-cd $FLEPI_PATH   # it'll move to the flepiMoP/ directory
-Rscript build/local_install.R               # Install the R stuff, will fail
-pip install --no-deps -e gempyor_pkg/ # install gempyor
-git lfs install
-git lfs pull
+export FLEPI_PATH=$(pwd)/flepiMoP
+export DATA_PATH=$(pwd)/flepimop_sample
 ```
 
-{% hint style="danger" %}
-When running `local_install.R` the first time, you will get an error:&#x20;
+Go into the code directory (making sure it is up to date on your favorite branch) and do the installation required of the repository:
 
-<pre><code><strong>ERROR: dependency ‘report.generation’ is not available for package ‘inference’
-</strong><strong>[...]
-</strong><strong>installation of package ‘./R/pkgs//inference’ had non-zero exit status
-</strong></code></pre>
+```bash
+cd $FLEPI_PATH # move to the flepimop directory
+Rscript build/local_install.R # Install R packages
+pip install --no-deps -e flepimop/gempyor_pkg/ # Install Python package gempyor
+```
 
-and the second time it'll finish successfully (no non-zero exit status at the end). That's because there is a circular dependency in this file (inference requires report.generation which is built after) and will hopefully get fixed.&#x20;
+Each installation step may take a few minutes to run.
 
-For subsequent runs, once is enough because the package is already installed once.
+{% hint style="info" %}
+Note: These installations take place in your conda environment and not the local operating system. They must be made once while in your environment and need not be done for every time you run a model, provided they have been installed once. You will need an active internet connection for installing the R packages (since some are hosted online), but not for other steps of running the model.
 {% endhint %}
 
 <details>
 
-<summary>Help! I still have errors</summary>
+<summary>Help! I have errors in installation</summary>
 
 If you get an error because no cran mirror is selected, just create in your home directory a `.Rprofile`file:
 
@@ -111,68 +125,107 @@ local({r <- getOption("repos")
 
 Perhaps this should be added to the top of the local\_install.R script #todo
 
+
+
+When running `local_install.R` the first time, you may get an error:&#x20;
+
+<pre><code><strong>ERROR: dependency ‘report.generation’ is not available for package ‘inference’
+</strong><strong>[...]
+</strong><strong>installation of package ‘./R/pkgs//inference’ had non-zero exit status
+</strong></code></pre>
+
+and the second time it'll finish successfully (no non-zero exit status at the end). That's because there is a circular dependency in this file (inference requires report.generation which is built after) and will hopefully get fixed.&#x20;
+
+For subsequent runs, once is enough because the package is already installed once.
+
 </details>
+
+Other environmental variables can be set at any point in process of setting up your model run. These options are listed in ...&#x20;
+
+For example, some frequently used environmental variables which we recommend setting are:
+
+{% code overflow="wrap" %}
+```bash
+export FLEPI_STOCHASTIC_RUN=false
+export FLEPI_RESET_CHIMERICS=TRUE
+```
+{% endcode %}
 
 ### Run the code
 
-Everything is now ready. 🎉 Let's do some clean-up in the data folder (these files might not exist, but it's good practice to make sure your simulation isn't re-using some old files).
+Everything is now ready. 🎉&#x20;
+
+The next step depends on what sort of simulation you want to run: One that includes inference (fitting model to data) or only a forward simulation (non-inference). Inference is run from R, while forward-only simulations are run directly from the Python package `gempyor`.
+
+In either case, navigate to the project folder and make sure to delete any old model output files that are there.
 
 ```bash
-cd $DATA_PATH       # goes to Flu_USA
-git restore data/
-rm -rf data/mobility_territories.csv data/geodata_territories.csv data/us_data.csv
+cd $DATA_PATH       # goes to your project repository
 rm -r model_output/ # delete the outputs of past run if there are
 ```
 
-Stay in `$DATA_PATH`, select a config, activate the conda enviroment (if not already done) and build the setup. Then, run inference:
+#### Inference run
+
+An inference run requires a configuration file that has an `inference` section. Stay in the `$DATA_PATH` folder, and run the inference script, providing the name of the configuration file you want to run (ex. `config.yml`). In the example data folder (flepimop\_sample), try out the example config XXX.&#x20;
 
 ```bash
-conda activate flepimop-env
-export CONFIG_PATH=config_SMH_R1_lowVac_optImm_2022.yml
+Rscript  $FLEPI_PATH/flepimop/main_scripts/inference_main.R -c config.yml
+```
 
-Rscript $FLEPI_PATH/datasetup/build_US_setup.R
+This will run the model and create [a lot of output files](../gempyor/output-files.md) in `$DATA_PATH/model_output/`.&#x20;
 
-# For covid do
-Rscript $FLEPI_PATH/datasetup/build_covid_data.R
+The last few lines visible on the command prompt should be:
 
-# For Flu do
-Rscript $FLEPI_PATH/datasetup/build_flu_data.R
+> \[\[1]]
+>
+> \[\[1]]\[\[1]]
+>
+> \[\[1]]\[\[1]]\[\[1]]
+>
+> NULL
 
-Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R.R -j 1 -n 1 -k 3
+If you want to quickly do runs with options different from those encoded in the configuration file, you can do that from the command line, for example
+
+```
+Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R -j 1 -n 1 -k 1 -c config.yml
 ```
 
 where:
 
 * `n` is the number of parallel inference slots,
-* `j` is the number of CPU cores it'll use in your machine,
+* `j` is the number of CPU cores to use on your machine (if `j` > `n`, only `n` cores will actually be used. If `j` <`n`, some cores will run multiple slots in sequence)
 * `k` is the number of iterations per slots.
 
-It should run successfully and create a lot of files in `model_output/`.&#x20;
+#### Non-inference run
 
-Okay, I'll make a part 2 on how to plot and debug what happened. You can also try to knit the Rmd file in `flepiMoP/flepimop/gempyor_pkg/docs` which will show you how to analyze these files.
+Stay in the `$DATA_PATH` folder, and run a simulation directly from forward-simulation Python package `gempyor`. To do this, call `gempyor-simulate` providing the name of the configuration file you want to run (ex. `config.yml`).  An example config is provided in `flepimop_sample/config_sample_2pop_interventions.yml.`
+
+```
+gempyor-simulate -c config.yml
+```
+
+{% hint style="warning" %}
+It is currently required that all configuration files have an `interventions` section. There is currently no way to simulate a model with no interventions, though this functionality is expected soon. For now, simply create an intervention that has value zero.&#x20;
+{% endhint %}
+
+You can also try to knit the Rmd file in `flepiMoP/flepimop/gempyor_pkg/docs` which will show you how to analyze these files.
 
 ### Do it all with a script
 
-The following script does all the above commands in an easy script. Save it in `myparentfolder` as `quick_setup_flu.sh`. Then, just go to `myparentfolder` and type `source quick_setup_flu.sh` and it'll do everything for you!
+The following script does all the above commands in an easy script. Save it in `myparentfolder` as `quick_setup.sh`. Then, just go to `myparentfolder` and type `source quick_setup_flu.sh` and it'll do everything for you!
 
 <pre class="language-bash" data-title="quick_setup_flu.sh" data-line-numbers><code class="lang-bash">export FLEPI_PATH=$(pwd)/flepiMoP
-export DATA_PATH=$(pwd)/Flu_USA
-export FLEPI_STOCHASTIC_RUN=false
-export FLEPI_RESET_CHIMERICS=TRUE
+export DATA_PATH=$(pwd)/flepimop_sample
 
-cd $COVID_PATH
+cd $FLEPI_PATH
 Rscript build/local_install.R
 pip install --no-deps -e gempyor_pkg/ # before: python setup.py develop --no-deps
-git lfs install
-git lfs pull
-export CENSUS_API_KEY="6a98b751a5a7a6fc365d14fa8e825d5785138935"
-cd $DATA_PATH
-<strong>git restore data/
-</strong>rm -rf data/mobility_territories.csv data/geodata_territories.csv data/us_data.csv
-export CONFIG_PATH=config_SMH_R1_lowVac_optImm_2022.yml
-Rscript $FLEPI_PATH/datasetup/build_US_setup.R
-echo "might want to rm -R model_output"
-echo "now you can type: Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R.R -j 1 -n 1 -k 1"
+<strong>
+</strong>cd $DATA_PATH
+rm -rf model_output
+export CONFIG_PATH=config.yml # set your configuration file path
+
+Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R.R -j 1 -n 1 -k 1
 </code></pre>
 
 

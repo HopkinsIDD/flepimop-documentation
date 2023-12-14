@@ -42,9 +42,8 @@
 ## 🛠 How To Run
 
 * [Before any run](how-to-run/before-any-run.md)
-* [How to Run (to be deleted soon)](how-to-run/how-to-run.md)
-* [Running with Docker locally 🛳](how-to-run/running-with-docker-locally.md)
 * [Running locally](how-to-run/running-locally.md)
+* [Running with Docker locally 🛳](how-to-run/running-with-docker-locally.md)
 * [Running locally in a conda environment (outdated) 🐍](how-to-run/quick-start-guide-conda.md)
 * [Running on SLURM HPC](how-to-run/slurm-submission-on-marcc.md)
 * [Running on AWS 🌳](how-to-run/running-on-aws.md)

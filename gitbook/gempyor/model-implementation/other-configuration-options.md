@@ -8,7 +8,7 @@ In addition to the configuration file and the command line, the inputs described
 
 In all cases, command line arguments override configuration file entries which override environmental variables. The order of command line arguments does not matter.
 
-Details on how to run the model, including how to add command line arguments or environmental variables, are in the section [How to Run](../../how-to-run/how-to-run.md).
+Details on how to run the model, including how to add command line arguments or environmental variables, are in the section [How to Run](broken-reference).
 
 ### Command-line only inputs
 
@@ -93,7 +93,7 @@ interventions:
         value: 0.7
 ```
 
-To run this model directly in Python (it can alternatively be run from R, for all details see section [How to Run](../../how-to-run/how-to-run.md)), we could use the command line entry
+To run this model directly in Python (it can alternatively be run from R, for all details see section [How to Run](broken-reference)), we could use the command line entry
 
 ```
 > gempyor-seir -c sir_control.yml

@@ -29,7 +29,7 @@ How to create a repository on Github: [https://docs.github.com/en/get-started/qu
 
 #### Add config file
 
-Put your model configuration file(s) directly in this repository
+Put your model configuration file(s) directly in this repository.
 
 #### Create a data folder
 
@@ -43,9 +43,13 @@ If you have any trouble or questions while trying to run flepimop, please report
 
 ### Deciding how to run
 
-The code is written in a combination of [R](https://www.r-project.org/) and [Python](https://www.python.org/). The Python part of the model is a package called `gempyor`, and includes all the code to simulate the epidemic model and the observational model and apply time-dependent interventions. The R component conducts the (optional) parameter inference, and all the (optional) pre and post processing scripts are also written in R. Most uses of the code require interacting with components written in both languages, and thus making sure that both are installed along with a set of required packages. However, Python alone can be used to do forward simulations of the model.&#x20;
+The code is written in a combination of [R](https://www.r-project.org/) and [Python](https://www.python.org/). The Python part of the model is a package called `gempyor`, and includes all the code to simulate the epidemic model and the observational model and apply time-dependent interventions. The R component conducts the (optional) parameter inference, and all the (optional) pre and post processing scripts are also written in R. Most uses of the code require interacting with components written in both languages, and thus making sure that both are installed along with a set of required packages. However, Python alone can be used to do forward simulations of the model using _gempyor_.&#x20;
 
-Because of the need for multiple software packages and dependencies, we
+Because of the need for multiple software packages and dependencies, we describe different ways you can run the model, depending on the requirements of your model setup. &#x20;
+
+For running the model locally, especially for testing, non-inference runs, and short chains, we provide a guide for [setting up and running in a conda environment](quick-start-guide-conda.md), and [provide a Docker container for use](running-with-docker-locally.md). A Docker container is an environment which is isolated from the rest of the operating system i.e. you can create files, programs, delete and everything but that will not affect your OS. It is a local virtual OS within your OS. We recommend Docker for users who are not familiar with setting up environments and seek a containerized environment to quickly launch jobs.&#x20;
+
+For longer inference runs across multiple slots, we provide instructions and scripts for two methods to launch on SLURM HPC and on AWS using Docker. These methods are best for launching large jobs (long inference chains, multi-core and computationally expensive model runs), but not the best methods for debugging model setups.
 
 (Fill in with pros and cons of different methods, which users they are best for)
 

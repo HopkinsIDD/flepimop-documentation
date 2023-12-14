@@ -190,7 +190,7 @@ rm -rf model_output
 Rscript $FLEPI_PATH/flepimop/main_scripts/inference_main.R -j 1 -n 1 -k 1 -c config.yml
 </code></pre>
 
-### Non inference run
+### Non-inference run
 
 Stay in the `$DATA_PATH` folder, and run a simulation directly from forward-simulation Python package `gempyor,`call `gempyor-simulate` providing the name of the configuration file you want to run (ex. `config.yml`)&#x20;
 
