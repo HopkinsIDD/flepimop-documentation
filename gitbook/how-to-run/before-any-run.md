@@ -4,6 +4,17 @@ In order to run any model with flepiMoP, you need access to two separate directo
 
 For both the project repository and flepiMoP code repository, make sure you're on the correct branch, then pull updates from Github. Take note of the local file path to each directory.
 
+{% hint style="info" %}
+These directories can be located on your computer wherever you prefer, but we recommend you clone these **flat**, e.g.
+
+```
+parentdirectory
+├── flepiMoP
+├── flepimop_sample
+└── project_directory_1
+```
+{% endhint %}
+
 ### 📂 Create a project repository from `flepimop_sample`&#x20;
 
 In order to create a project respository from the [flepimop\_sample](https://github.com/HopkinsIDD/flepimop\_sample) repository follow these steps:
