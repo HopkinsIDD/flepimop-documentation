@@ -32,6 +32,8 @@ _**On Windows:**_ \
 
 (hint: if you navigate to a directory like `C:\Users\YourName\Github` using `cd C:\Users\YourName\Github`, modify the above `<dir1>` paths to be `.\flepiMoP` and `.\flepimop_sample)`
 
+
+
 :warning: Note again that these are best cloned **flat.**
 {% endhint %}
 
@@ -140,7 +142,7 @@ For subsequent runs, once is enough because the package is already installed onc
 
 </details>
 
-Other environmental variables can be set at any point in process of setting up your model run. These options are listed in ...&#x20;
+Other environmental variables can be set at any point in process of setting up your model run. These options are listed in ... ADD ENVAR PAGE
 
 For example, some frequently used environmental variables which we recommend setting are:
 
