@@ -2,9 +2,7 @@
 description: Short internal tutorial on running locally using an "Anaconda" environment.
 ---
 
-# Running locally in a conda environment (outdated) 🐍
-
-
+# Running locally in a conda environment 🐍
 
 {% hint style="warning" %}
 :warning: This is not currently working. Problem with package conflicts, so conda environment is not building on all platforms
@@ -33,6 +31,8 @@ _**On Windows:**_ \
 
 
 (hint: if you navigate to a directory like `C:\Users\YourName\Github` using `cd C:\Users\YourName\Github`, modify the above `<dir1>` paths to be `.\flepiMoP` and `.\flepimop_sample)`
+
+:warning: Note again that these are best cloned **flat.**
 {% endhint %}
 
 ## 🧱 Setup (do this once)
