@@ -34,7 +34,7 @@ _**On Windows:**_ \
 Note that Docker file and directory names are case sensitive
 {% endhint %}
 
-## Set up Docker
+## 🧱 Set up Docker
 
 [Docker](https://www.docker.com/) is a software platform that allows you to build, test, and deploy applications quickly. Docker packages software into standardized units called **containers** that have everything the software needs to run including libraries, system tools, code, and runtime. This means you can run and install software without installing the dependencies in the local operating system.
 

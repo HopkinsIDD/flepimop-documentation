@@ -41,7 +41,7 @@ _**On Windows:**_ \
 
 #### Installing the `conda` environment
 
-The simplest way to get everything to work is to build an Anaconda environment. Install (or update) Anaconda on your computer. We find that it is easiest to create your conda environment by installing required python packages, then installing R packages separately once your conda environment has been built as not all R packages can be found on conda.&#x20;
+One of simplest ways to get everything to work is to build an Anaconda environment. Install (or update) Anaconda on your computer. We find that it is easiest to create your conda environment by installing required python packages, then installing R packages separately once your conda environment has been built as not all R packages can be found on conda.&#x20;
 
 You can either use the command line (here) or the graphical user interface (you just tick the packages you want). With the command line it's this one-liner:
 
