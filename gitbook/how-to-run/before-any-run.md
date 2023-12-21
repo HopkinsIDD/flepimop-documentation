@@ -1,11 +1,11 @@
 # Before any run: organizing your folders
 
-In order to run any model with flepiMoP, you need access to two separate directories: One containing the flepiMoP code (**code** directory), and another containing the specific input files to run the model of your choosing (and to save the output from that model) (**project** directory). The [flepiMoP code](https://github.com/HopkinsIDD/flepiMoP) is available in a public repository on Github which can be pulled locally to serve as the code directory. We highly recommend also using Github to create your project directory by making a fork of  [flepimop\_sample](https://github.com/HopkinsIDD/flepimop\_sample). If you need to create your own project repository from scratch, see instructions [below](before-any-run.md#create-a-project-repository).
+In order to run any model with flepiMoP, you need access to two separate directories: One containing the flepiMoP code (**code** directory), and another containing the specific input files to run the model of your choosing (and to save the output from that model) (**project** directory). The [flepiMoP code](https://github.com/HopkinsIDD/flepiMoP) is available in a public repository on Github which can be pulled locally to serve as the code directory. We highly recommend also using Github to create your project directory. To get familiar with the code, we recommend starting with our example configurations by making a fork of  [flepimop\_sample](https://github.com/HopkinsIDD/flepimop\_sample). If you need to create your own project repository from scratch, see instructions [below](before-any-run.md#create-a-project-repository).
 
 For both the project repository and flepiMoP code repository, make sure you're on the correct branch, then pull updates from Github. Take note of the local file path to each directory.
 
 {% hint style="info" %}
-These directories can be located on your computer wherever you prefer, but we recommend you clone these **flat**, e.g.
+These directories can be located on your computer wherever you prefer, as you can tell flepiMoP where they are, but we recommend you clone these **flat**, e.g.
 
 ```
 parentdirectory
@@ -17,7 +17,7 @@ parentdirectory
 
 ### 📂 Create a project repository from `flepimop_sample`&#x20;
 
-In order to create a project respository from the [flepimop\_sample](https://github.com/HopkinsIDD/flepimop\_sample) repository follow these steps:
+In order to create a project repository from the [flepimop\_sample](https://github.com/HopkinsIDD/flepimop\_sample) repository follow these steps:
 
 1. Fork the  [flepimop\_sample](https://github.com/HopkinsIDD/flepimop\_sample) repository to your desired github giving it a repository name. Instructions for forking a repository are available [here](https://docs.github.com/en/get-started/quickstart/fork-a-repo).
 2. Clone the repository locally using the command:\
