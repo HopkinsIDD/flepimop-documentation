@@ -25,7 +25,7 @@
   * [Code structure](model-inference/inference-implementation/code-structure.md)
 * [Inference Model Output](model-inference/inference-model-output.md)
 
-## 🖥 More
+## 🖥️ More
 
 * [Setting up the model and post-processing](more/setting-up-the-model-and-post-processing/README.md)
   * [Config writer](more/setting-up-the-model-and-post-processing/config-writer.md)
@@ -39,7 +39,7 @@
   * [Swapping model modules](more/advanced/swapping-model-modules.md)
   * [Resuming inference runs](more/advanced/resuming-inference-runs.md)
 
-## 🛠 How To Run
+## 🛠️ How To Run
 
 * [Before any run: organizing your folders](how-to-run/before-any-run.md)
 * [Quick Start Guide](how-to-run/quick-start-guide.md)
@@ -51,7 +51,7 @@
 * [Common errors](how-to-run/common-errors.md)
 * [Useful commands](how-to-run/useful-commands.md)
 
-## 🗜 Development
+## 🗜️ Development
 
 * [Python guidelines for developers](development/python-guidelines-for-developers.md)
 
@@ -70,6 +70,7 @@
 * [US specific How to Run](jhu-internal/us-specific-how-to-run/README.md)
   * [Running with Docker locally (outdated/US specific) 🛳](jhu-internal/us-specific-how-to-run/running-with-docker-locally.md)
   * [Running on Rockfish/MARCC - JHU 🪨🐠](jhu-internal/us-specific-how-to-run/slurm-submission-on-marcc.md)
+* [Inference scratch](jhu-internal/inference-scratch.md)
 
 ## Group 1
 
