@@ -20,7 +20,7 @@ Though, for troubleshooting importation, just the package ```reticulate``` will 
 
 ## 🚧 Error Troubleshooting
 
-#### If you run into errors, that are some steps you can take (or may need to take) to help *gempyor* import correctly.
+#### If you run into errors, there are some steps you can take (or may need to take) to help *gempyor* import correctly.
 
 1. Configure which version of Python to use
     - The ```reticulate::use_python()``` function can be used to do this
@@ -35,4 +35,4 @@ Though, for troubleshooting importation, just the package ```reticulate``` will 
     - In RStudio, simply running ```py_config()``` will provide more information about the version of Python currently being used by ```reticulate```
     -  This version should match what is returned when you run the command line command ```python3 --version``` (when in your flepiMoP directory).
 
-#### After completing steps 1 and 2, retry to initialize ```gempyor <- reticulate::import("gempyor")```. If you continue to hve roadblocks (**especially** if you have recently made changes in your flepiMoP directory), closing your RStudio session ad re-opening your file could mitigate these issues. 
+#### After completing steps 1 and 2, retry initializing ```gempyor <- reticulate::import("gempyor")```. If you continue to have roadblocks (**especially** if you have recently made changes in your flepiMoP directory), closing your RStudio session ad re-opening your file could mitigate these issues. 
