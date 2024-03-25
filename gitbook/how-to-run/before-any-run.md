@@ -1,4 +1,4 @@
-# Before any run: organizing your folders
+# Before any run
 
 ## &#x20;⇅ Get set up to use Github
 
@@ -87,7 +87,7 @@ Because of the need for multiple software packages and dependencies, we describe
 
 Since you will be editing files in your **project repository** frequently, get in the habit of using the git workflow - committing those changes when you've completed a concrete task, pushing your changes to the remote (online) version of your repository on Github.com, and making sure to fetch changes from the remote version to download to your local version before you start a new task (if you share your project with others or switch computers).&#x20;
 
-The setup described above assumes that a typical user will not be editing the core `flepimop` user code. If however you are involved in the project in a way that you do plan on editing code, or if you want to add your own enhancements, please **fork the repository** and create a version in your own account, instead of just cloning our version.&#x20;
+The setup described above assumes that a typical user will not be editing the core `flepimop` user code. If however you are involved in the project in a way that you do plan on editing code, or if you want to add your own enhancements, please consider **forking the repository** and create a version in your own account, instead of just cloning our (user:HopkinsIDD) version. Set your [fork to be synced](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) with the HopkinsIDD version though, so that you get notified of code updates or bug fixes that may also impact your fork. &#x20;
 
 
 
