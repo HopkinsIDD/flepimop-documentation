@@ -20,6 +20,7 @@
 
 * [Inference Description](model-inference/inference-description.md)
 * [Inference Implementation](model-inference/inference-implementation/README.md)
+  * [Specifying data source and fitted variables](model-inference/inference-implementation/specifying-data-source-and-fitted-variables.md)
   * [(OLD) Configuration options](model-inference/inference-implementation/configuration-options.md)
   * [(OLD) Configuration setup](model-inference/inference-implementation/old-configuration-setup.md)
   * [Code structure](model-inference/inference-implementation/code-structure.md)
