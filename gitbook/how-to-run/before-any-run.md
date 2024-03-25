@@ -77,7 +77,7 @@ Now you area ready to run the code using your desired method (see below)!
 If you have any trouble or questions while trying to run `flepimop`, please report them on the [GitHub Q\&A](https://github.com/HopkinsIDD/flepiMoP/discussions/categories/q-a).
 {% endhint %}
 
-### Deciding how to run
+### 🤔 Deciding how to run
 
 The code is written in a combination of [R](https://www.r-project.org/) and [Python](https://www.python.org/). The Python part of the model is a package called [_gempyor_](../gempyor/model-description.md), and includes all the code to simulate the epidemic model and the observational model and apply time-dependent interventions. The R component conducts the (optional) parameter inference, and all the (optional) provided pre and post processing scripts are also written in R. Most uses of the code require interacting with components written in both languages, and thus making sure that both are installed along with a set of required packages. However, Python alone can be used to do forward simulations of the model using `gempyor`.&#x20;
 
