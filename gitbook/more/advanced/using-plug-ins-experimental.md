@@ -12,6 +12,8 @@ Here is an example, to set a random initial condition, where each subpopulation 
 initial_conditions:
   method: plugin
   plugin_file_path: model_input/my_initial_conditions.py
+  # you can also include some configuration for your plugin:
+  ub_prop_infected: 0.001 # upper bound of the uniform distribution
 ```
 
 This file contains a class that inherits from a gempyor class, which means that everything already defined in gempyor is available but you can overwrite any single method. Here, we will rewrite the load and draw methods of the initial conditions methods
@@ -26,7 +28,7 @@ class InitialConditions(gempyor.seeding_ic.InitialConditions):
         y0 = np.zeros((setup.compartments.compartments.shape[0], setup.nsubpops))
         S_idx = setup.compartments.get_comp_idx({"infection_stage":"S"})
         I_idx = setup.compartments.get_comp_idx({"infection_stage":"I"})
-        prop_inf = np.random.uniform(low=0,high=.001, size=setup.nsubpops)
+        prop_inf = np.random.uniform(low=0,high=self.config["ub_prop_infected"].get(), size=setup.nsubpops)
         y0[S_idx, :] = setup.subpop_pop * (1-prop_inf)
         y0[I_idx, :] = setup.subpop_pop * prop_inf
         
