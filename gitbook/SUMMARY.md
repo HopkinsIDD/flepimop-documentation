@@ -38,6 +38,7 @@
   * [Additional parameter options](more/advanced/additional-parameter-options.md)
   * [Swapping model modules](more/advanced/swapping-model-modules.md)
   * [Resuming inference runs](more/advanced/resuming-inference-runs.md)
+  * [Using plug-ins 🧩\[experimental\]](more/advanced/using-plug-ins-experimental.md)
 
 ## 🛠️ How To Run
 
