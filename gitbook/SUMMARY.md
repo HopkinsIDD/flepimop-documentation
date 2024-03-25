@@ -42,7 +42,7 @@
 
 ## 🛠️ How To Run
 
-* [Before any run: organizing your folders](how-to-run/before-any-run.md)
+* [Before any run](how-to-run/before-any-run.md)
 * [Quick Start Guide](how-to-run/quick-start-guide.md)
 * [Advanced run guides](how-to-run/advanced-run-guides/README.md)
   * [Running with Docker locally 🛳](how-to-run/advanced-run-guides/running-with-docker-locally.md)
