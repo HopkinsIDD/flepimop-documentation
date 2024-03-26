@@ -226,6 +226,6 @@ rm -rf model_output
 gempyor-simulate -c new_config_inference.yml
 ```
 
-## Next steps
+### Next steps
 
 These configs and notebooks should be a good starting point for getting started with flepiMoP. To explore other running options, see [How to run: Advanced](advanced-run-guides/).&#x20;
