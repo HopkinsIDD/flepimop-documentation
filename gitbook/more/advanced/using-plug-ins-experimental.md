@@ -24,7 +24,7 @@ import numpy as np
 
 class InitialConditions(gempyor.seeding_ic.InitialConditions):
 
-    def draw(self, sim_id: int, setup) -> np.ndarray:
+    def get_from_config(self, sim_id: int, setup) -> np.ndarray:
         y0 = np.zeros((setup.compartments.compartments.shape[0], setup.nsubpops))
         S_idx = setup.compartments.get_comp_idx({"infection_stage":"S"})
         I_idx = setup.compartments.get_comp_idx({"infection_stage":"I"})
@@ -34,8 +34,8 @@ class InitialConditions(gempyor.seeding_ic.InitialConditions):
         
         return y0
     
-    def load(self, sim_id: int, setup) -> np.ndarray:
-        return self.draw(sim_id=sim_id, setup=setup)
+    def get_from_file(self, sim_id: int, setup) -> np.ndarray:
+        return self.get_from_config(sim_id=sim_id, setup=setup)
 ```
 
 You can use any code within these functions, as long as the return object has the shape and type that gempyor expect (and that is _undocumented_ and still subject to change, but as you see in this case gempyor except an array (a matrix) of shape: number of compartments X number of subpopulations). You can e.g call bash functions or excute R scripts such as below
@@ -46,12 +46,12 @@ import numpy as np
 
 class InitialConditions(gempyor.seeding_ic.InitialConditions):
 
-    def draw(self, sim_id: int, setup) -> np.ndarray:
+    def get_from_config(self, sim_id: int, setup) -> np.ndarray:
         import rpy2.robjects as robjects
         robjects.r.source("path_to_your_Rscript.R", encoding="utf-8")
         y0 = robjects.r["initial_condition_fromR"]
         return y0
     
-    def load(self, sim_id: int, setup) -> np.ndarray:
-        return self.draw(sim_id=sim_id, setup=setup)
+    def get_from_file(self, sim_id: int, setup) -> np.ndarray:
+        return self.get_from_config(sim_id=sim_id, setup=setup)
 ```
