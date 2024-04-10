@@ -57,7 +57,7 @@ Now you need to create the conda environment. You will create the environment in
 {% code overflow="wrap" %}
 ```bash
 # install all python stuff first
-conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk
+conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz emcee xarray boto3 slack_sdk
 
 # activate the enviromnment and install the R stuff
 conda activate flepimop-env

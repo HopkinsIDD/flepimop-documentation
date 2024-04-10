@@ -44,7 +44,7 @@ You can either use the command line (here) or the graphical user interface (you 
 <pre class="language-bash" data-overflow="wrap"><code class="lang-bash">conda update conda # makes sure you have a recent conda instatllation
 
 # be sure to copy the whole thing as a single line ! copy it to your text editor
-<strong>conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz boto3 slack_sdk
+<strong>conda create -c conda-forge -n flepimop-env numba pandas numpy seaborn tqdm matplotlib click confuse pyarrow sympy dask pytest scipy graphviz emcee xarray boto3 slack_sdk
 </strong></code></pre>
 
 Anaconda will take some time, to come up with a proposal that works with all dependencies. This creates a `conda` environment named `flepimop-env` that has all the necessary python packages.  \
