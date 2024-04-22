@@ -6,10 +6,6 @@ description: >-
 
 # Quick Start Guide
 
-{% hint style="danger" %}
-DEV NOTE: Currently, users should use the `breaking-improvments` branches of both the `flepimop_sample`repository and the `flepimop` repository. Documentation is written for those branches. Once they are merged with the `main` branches, this warning will be removed.
-{% endhint %}
-
 ## 🧱 Set up&#x20;
 
 ### Access model files
