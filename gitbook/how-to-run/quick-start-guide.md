@@ -84,7 +84,7 @@ Python 3 is installed by default on recent MacOS installation. If it is not, you
 To install the python portions of the code (_gempyor_ ) and all the necessary dependencies, go to the flepiMoP directory and run the installation, using the following commands:
 
 ```bash
-cd FLEPI_PATH
+cd $FLEPI_PATH
 pip install -e flepimop/gempyor_pkg/ # Install Python package gempyor (and dependencies)
 ```
 
