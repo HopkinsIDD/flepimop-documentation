@@ -202,7 +202,7 @@ Currently, the following properties must be the same across all subpopulations:
 
 * the compartmental model structure
 * the form of the likelihood function used to estimate parameters by fitting the model to data (LINK)
-* MORE
+* ...
 
 #### Mixing between subpopulations
 
@@ -236,7 +236,11 @@ If an alternative compartmental disease model is created that has other interact
 
 ### Initial conditions
 
-(Different types of initial conditions aka “seeding”). Still needs to be filled in.
+Initial conditions can be specified by setting the values of the compartments in the disease transmission model at time zero, or the start of the simulation. For example, we might assume that for day zero of an outbreak the whole population is susceptible except for one single infected individual, i.e. $$S(0) = N-1$$ and $$I(0) = 1$$. Alternatively, we might assume that a certain proportion of the population has prior immunity from previous infection or vaccination. 
+
+It might also be necessary to model instantaneous changes in values of model variables at any time during a simulation. We call this 'seeding'. For example, individuals may import infection from other external populations, or instantaneous mutations may occur, leading to new variants of the pathogen. These processes can be modeled with seeding, allowing individuals to change state at specified times independently of model equations. 
+
+We also note that seeding can also be used as a convenient way to specify initial conditions, particularly ealy in an outbreak where the outbreak is triggered by a few 'seedings'.
 
 ### Time-dependent interventions
 
