@@ -10,7 +10,7 @@ Comments can be added to the config file by starting with the hash key (`#`) the
 
 ## Example
 
-_(give a simple configuration for a toy model with two subpopulations, SEIR, single "cases" outcome, single seeded infection, single NPI that starts after some time?)_
+_(give a simple configuration for a toy model with two subpopulations, SEIR, single "cases" outcome, single seeded infection, single NPI that starts after some time? this page is currently under development, please see our_ [_example repo_](https://github.com/HopkinsIDD/flepimop\_sample) _for some simple configurations)_&#x20;
 
 When referring to config items (individual parameters), we use their full position in the outline. For example, in the sample config file above, we denote
 
@@ -28,7 +28,7 @@ Parameters and other options specified in the configuration files can take on a 
 
 * **dates** are specified as \[year]-\[month]-\[day]. (e.g., 2020-01-31)
 * **boolean** values are either "TRUE" or "FALSE"
-* **files** names are ....
+* **files** names are strings
 * **probability** is a float between 0 and 1
 * **distribution** is a probability distribution from which a random value for the parameter is drawn each time a new simulation is run (or chain, if doing inference), and is specified with the following config structure:
 

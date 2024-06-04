@@ -21,38 +21,35 @@ end_date: 2020-12-31
 nslots: 100
 
 spatial_setup:
-  geodata: geodata.csv
-  mobility: mobility.csv
-  popnodes: population
+  geodata: model_input/geodata.csv
+  mobility: model_input/mobility.csv
 ```
 
 ## Items and options
 
-| Config Item | Required?    | Type/Format  | Description                                |
-| ----------- | ------------ | ------------ | ------------------------------------------ |
-| geodata     | **required** | path to file | path to file relative to `data_path`       |
-| popnodes    | **required** | string       | name of population column in `geodata`     |
-| nodenames   | **required** | string       | name of location nodes column in `geodata` |
-| mobility    | **required** | path to file | path to file relative to `data_path`       |
+| Config Item | Required?    | Type/Format  | Description                           |
+| ----------- | ------------ | ------------ | ------------------------------------- |
+| geodata     | **required** | path to file | path to file relative to `data_path`  |
+| mobility    | **required** | path to file | path to file relative to `data_path`  |
+| selected    | **optional** | string       | name of selected location in`geodata` |
 
 ### `geodata` file
 
-* `geodata` is a .csv with column headers, with at least two columns: `nodenames` and `popnodes`.
+* `geodata` is a .csv with column headers, with at least two columns: `subpop` and `population`.
 * `nodenames` is the name of a column in `geodata` that specifies unique geographical identification strings for each subpopulation.
-* `popnodes` is the name of a column in `geodata` that specifies the population size (number of individual residents) of the subpopulation given in the`nodenames` column.
-* `include_in_report` is the name of an optional column in `geodata` that specifies which `nodenames` are included in the report. Models may include more locations than simply the location of interest.
+* `selected` is the list of selected locations in geodata to be modeled
 
 #### Example geodata file format
 
 ```
-subpop,population,include_in_report
-10001,1000,TRUE
-20002,2000,FALSE
+subpop,population
+10001,1000
+20002,2000
 ```
 
 ### `mobility` file
 
-The `mobility` file is a .csv file (it has to contain .csv as extension) with long form comma separated values. Columns have to be named `ori`, `dest`, `amount,` with amount being the average number individuals moving from the origin subpopulation `ori` to destination subpopulation `dest` on any given day. Details on the mathematics of this model of contact are explained in the [Model Description section](../model-description.md#mixing-between-subpopulations). Unassigned relations are assumed to be zero. The location entries in the `ori` and `dest` columns should match exactly the `nodenames` column in `geodata.csv`
+The `mobility` file is a .csv file (it has to contain .csv as extension) with long form comma separated values. Columns have to be named `ori`, `dest`, `amount,` with amount being the average number individuals moving from the origin subpopulation `ori` to destination subpopulation `dest` on any given day. Details on the mathematics of this model of contact are explained in the [Model Description section](../model-description.md#mixing-between-subpopulations). Unassigned relations are assumed to be zero. The location entries in the `ori` and `dest` columns should match exactly the `subpop` column in `geodata.csv`
 
 #### Example mobility file format
 
@@ -77,12 +74,11 @@ To simulate a simple population structure with two subpopulations, a large provi
 
 ```
 spatial_setup:
-  geodata: geodata.csv
-  mobility: mobility.csv
-  popnodes: population
+  geodata: model_input/geodata.csv
+  mobility: model_input/mobility.csv
 ```
 
-`geodata.csv` contains the population structure (with `nodename` column `subpop` and `popnodes` column `population`)
+`geodata.csv` contains the population structure (with columns `subpop` and `population`)
 
 ```
 subpop,          population
@@ -98,6 +94,3 @@ large_province, small_province, 100
 small_province, large_province, 50
 ```
 
-#### Example 2
-
-(Give example with US states)
