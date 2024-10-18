@@ -1,3 +1,6 @@
+This repository is deprecated, the flepiMop Documentation is now part of the flepiMoP repository: https://github.com/HopkinsIDD/flepiMoP
+
+
 # Home
 
 Welcome to the FlepiMoP wiki!
